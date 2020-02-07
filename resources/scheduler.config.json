@@ -1,0 +1,19 @@
+{
+  "jobs": [
+    {
+      "name": "all_instance_state_job",
+      "jobClass": "InstanceStateJob",
+      "cronExpression": "*/15 * * * * *",
+      "enabled": true
+    },
+    {
+      "name": "non_stable_instance_state_job",
+      "jobClass": "InstanceStateJob",
+      "cronExpression": "* * * * * *",
+      "params": {
+        "states": ["BUILDING", "STARTING", "REBOOTING", "STOPPING", "DELETED"]
+      },
+      "enabled": true
+    }
+  ]
+}
