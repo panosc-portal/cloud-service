@@ -1,5 +1,8 @@
 # Cloud Service
 
+[![Actions Status](https://github.com/panosc-portal/cloud-service/workflows/Node%20CI/badge.svg)](https://github.com/panosc-portal/cloud-service/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 The Cloud Service is a microservice of the PaNOSC Common Portal.
 
 The Cloud Service performs two main tasks: firstly, it provides a catalogue of data analysis environment Plans (Remote Desktop and Notebook) and currently available Instances (analysis machines). Secondly it works as a proxy to concrete Cloud Providers where the data analysis environments are running.
