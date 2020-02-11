@@ -1,8 +1,8 @@
 import { testDataSource } from '../fixtures/datasources/testdb.datasource';
 import * as fs from 'fs';
-import { TypeORMDataSource } from '../../datasources';
 import { logger } from '../../utils';
 import { EntityManager } from 'typeorm';
+import { TypeORMDataSource } from '../../datasources';
 
 async function emptyDatabase(entityManager: EntityManager) {
   const tables = ['plan', 'provider'];
@@ -39,4 +39,8 @@ export async function givenInitialisedDatabase(datasource: TypeORMDataSource) {
       logger.error(error);
     }
   }
+}
+
+export async function closeTestDatabase() {
+  await testDataSource.stop();
 }

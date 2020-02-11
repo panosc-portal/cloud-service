@@ -1,5 +1,5 @@
 import { expect } from '@loopback/testlab';
-import { givenInitialisedTestDatabase } from '../../helpers/database.helper';
+import { givenInitialisedTestDatabase, closeTestDatabase } from '../../helpers/database.helper';
 import { createTestApplicationContext, TestApplicationContext } from '../../helpers/context.helper';
 import { Provider } from '../../../models';
 
@@ -9,6 +9,8 @@ describe('ProviderService', () => {
   before('get context', async () => {
     context = createTestApplicationContext();
   });
+
+  after('close db connect', closeTestDatabase);
 
   beforeEach('Initialise Database', givenInitialisedTestDatabase);
 

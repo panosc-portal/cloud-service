@@ -11,7 +11,7 @@ export class TypeORMDataSource implements LifeCycleObserver {
   private _connection: Connection;
   private _connectionPromise: Promise<Connection>;
 
-  constructor(/*@inject(CoreBindings.APPLICATION_INSTANCE) private application?: CloudProviderKubernetesApplication*/) {
+  constructor() {
     this._config = {
       type: APPLICATION_CONFIG().database.type,
       host: APPLICATION_CONFIG().database.host,
@@ -43,6 +43,7 @@ export class TypeORMDataSource implements LifeCycleObserver {
       logger.info('Closing database connection');
       await this._connection.close();
       this._connection = null;
+      this._connectionPromise = null;
     }
   }
 
@@ -52,14 +53,15 @@ export class TypeORMDataSource implements LifeCycleObserver {
       if (connection == null && this._connectionPromise == null) {
         this._connectionPromise = createConnection(this._config);
         connection = this._connection = await this._connectionPromise;
-        
+        this._connectionPromise = null;
+
       } else if (connection == null && this._connectionPromise != null) {
         connection = await this._connectionPromise;
       }
 
       return connection;
     } catch (error) {
-      logger.error(`Could not connect to the Postgres database : ${error.message}`);
+      logger.error(`Could not connect to the database : ${error.message}`);
       process.exit();
     }
   }

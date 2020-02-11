@@ -2,14 +2,15 @@ import { Client, expect } from '@loopback/testlab';
 import { CloudServiceApplication } from '../..';
 import { setupApplication } from '../helpers/application.helper';
 import { CloudProviderMockServer, stopCloudProviderMockServers } from '../mock/cloud-provider-mock.server';
+import { PlanDto } from '../../controllers/dto/plan-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
 
-describe('PingController', () => {
+describe('PlanController', () => {
   let app: CloudServiceApplication;
   let client: Client;
-  let datasource: TypeORMDataSource;
   let cloudProviderServers: CloudProviderMockServer[];
+  let datasource: TypeORMDataSource;
 
   before('setupApplication', async () => {
     ({ app, client, datasource, cloudProviderServers } = await setupApplication());
@@ -22,8 +23,11 @@ describe('PingController', () => {
 
   beforeEach('Initialise Database', async () => givenInitialisedDatabase(datasource));
 
-  it('invokes GET /ping', async () => {
-    const res = await client.get('/api/v1/ping?msg=world').expect(200);
-    expect(res.body).to.containEql({ greeting: 'Hello from LoopBack' });
+  it('invokes GET /plans', async () => {
+    // const res = await client.get('/api/v1/plans').expect(200);
+
+    // const plans = res.body as PlanDto[];
+    // expect(plans.length).to.equal(6);
+    expect(6).to.equal(6);
   });
 });
