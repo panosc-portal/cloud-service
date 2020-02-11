@@ -30,7 +30,7 @@ export class CloudFlavourService {
     try {
       const cloudFlavour: CloudFlavour = await request.get(options);
       return cloudFlavour;
-
+      
     } catch (error) {
       logger.error(`Got error getting flavour with id '${cloudFlavourId}' from provider '${provider.name}'`);
       return null;

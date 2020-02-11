@@ -30,7 +30,7 @@ export class CloudImageService {
     try {
       const cloudImage: CloudImage = await request.get(options);
       return cloudImage;
-
+      
     } catch (error) {
       logger.error(`Got error getting image with id '${cloudImageId}' from provider '${provider.name}'`);
       return null;

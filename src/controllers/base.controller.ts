@@ -16,7 +16,7 @@ export class BaseController {
   }
 
   throwBadRequestIfEmpty(array: any[], message?: string) {
-    if (array.length == 0) {
+    if (array.length === 0) {
       throw new HttpErrors.BadRequest(message);
     }
   }

@@ -44,7 +44,6 @@ export class Plan {
   @Column({ nullable: false, name: 'cloud_flavour_id' })
   flavourId: number;
 
-
   constructor(data?: Partial<Plan>) {
     Object.assign(this, data);
   }

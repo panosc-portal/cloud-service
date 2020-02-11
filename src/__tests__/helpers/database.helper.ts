@@ -9,7 +9,7 @@ async function emptyDatabase(entityManager: EntityManager) {
   for (const table of tables) {
     try {
       await entityManager.query(`delete from ${table};`);
-
+      
     } catch (error) {
       logger.error(error.message);
     }

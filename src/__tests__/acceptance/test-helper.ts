@@ -1,9 +1,5 @@
-import {CloudServiceApplication} from '../..';
-import {
-  createRestAppClient,
-  givenHttpServerConfig,
-  Client,
-} from '@loopback/testlab';
+import { CloudServiceApplication } from '../..';
+import { createRestAppClient, givenHttpServerConfig, Client } from '@loopback/testlab';
 
 export async function setupApplication(): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({
@@ -15,7 +11,7 @@ export async function setupApplication(): Promise<AppWithClient> {
   });
 
   const app = new CloudServiceApplication({
-    rest: restConfig,
+    rest: restConfig
   });
 
   await app.boot();
@@ -23,7 +19,7 @@ export async function setupApplication(): Promise<AppWithClient> {
 
   const client = createRestAppClient(app);
 
-  return {app, client};
+  return { app, client };
 }
 
 export interface AppWithClient {

@@ -4,7 +4,6 @@ import { CloudProtocol } from './cloud-protocol.model';
 
 @model()
 export class CloudInstance {
-
   @property({
     type: 'number',
     id: true
@@ -22,7 +21,7 @@ export class CloudInstance {
   description?: string;
 
   @property({
-    type: 'string',
+    type: 'string'
   })
   hostname: string;
 

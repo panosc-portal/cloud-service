@@ -33,28 +33,32 @@ export class PlanController extends BaseController {
   })
   async getAll(): Promise<PlanDto[]> {
     const plans = await this._planService.getAll();
-    const providers = plans.map(plan => plan.provider).filter((item, pos, array) => array.indexOf(item) == pos);
-    const allProviderImagesAndFlavours = await Promise.all(providers.map(async provider => ({
-      provider: provider,
-      images: await this._cloudImageService.getAll(provider),
-      flavours: await this._cloudFlavourService.getAll(provider)
-    })));
+    const providers = plans.map(plan => plan.provider).filter((item, pos, array) => array.indexOf(item) === pos);
+    const allProviderImagesAndFlavours = await Promise.all(
+      providers.map(async provider => ({
+        provider: provider,
+        images: await this._cloudImageService.getAll(provider),
+        flavours: await this._cloudFlavourService.getAll(provider)
+      }))
+    );
 
     // Convert to map
     const providerImagesAndFlavours = allProviderImagesAndFlavours.reduce((map, obj) => {
       map.set(obj.provider.id, obj);
       return map;
-    }, new Map<number, {provider: Provider, images: CloudImage[], flavours: CloudFlavour[]}>());
+    }, new Map<number, { provider: Provider; images: CloudImage[]; flavours: CloudFlavour[] }>());
 
-
-    const planDtos = plans.map(plan => new PlanDto({
-      id: plan.id,
-      name: plan.name,
-      description: plan.description,
-      provider: plan.provider,
-      image: providerImagesAndFlavours.get(plan.provider.id).images.find(image => image.id === plan.imageId),
-      flavour: providerImagesAndFlavours.get(plan.provider.id).flavours.find(flavour => flavour.id === plan.flavourId)
-    }));
+    const planDtos = plans.map(
+      plan =>
+        new PlanDto({
+          id: plan.id,
+          name: plan.name,
+          description: plan.description,
+          provider: plan.provider,
+          image: providerImagesAndFlavours.get(plan.provider.id).images.find(image => image.id === plan.imageId),
+          flavour: providerImagesAndFlavours.get(plan.provider.id).flavours.find(flavour => flavour.id === plan.flavourId)
+        })
+    );
 
     return planDtos;
   }
@@ -159,7 +163,7 @@ export class PlanController extends BaseController {
   private async _convertPlan(plan: Plan): Promise<PlanDto> {
     const [image, flavour] = await Promise.all([
       this._cloudImageService.getById(plan.imageId, plan.provider),
-      this._cloudFlavourService.getById(plan.flavourId, plan.provider),
+      this._cloudFlavourService.getById(plan.flavourId, plan.provider)
     ]);
 
     const planDto = new PlanDto({

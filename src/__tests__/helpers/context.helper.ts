@@ -6,7 +6,6 @@ export interface TestApplicationContext {
   providerRepository: ProviderRepository;
 
   providerService: ProviderService;
-
 }
 
 export function createTestApplicationContext(): TestApplicationContext {

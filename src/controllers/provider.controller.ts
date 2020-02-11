@@ -87,8 +87,7 @@ export class ProviderController extends BaseController {
       }
     }
   })
-  async update(@param.path.number('id') id: number, @requestBody() providerDto: ProviderDto
-  ): Promise<Provider> {
+  async update(@param.path.number('id') id: number, @requestBody() providerDto: ProviderDto): Promise<Provider> {
     this.throwBadRequestIfNull(providerDto, 'Provider with given id does not exist');
     this.throwBadRequestIfNotEqual(id, providerDto.id, 'Id in path is not the same as body id');
 

@@ -28,7 +28,7 @@ describe('ProviderService', () => {
 
   it('saves a provider', async () => {
     const providers = await providerService.getAll();
-    expect(providers.length).to.equal(3);
+    const providerCount = providers.length;
 
     const provider = new Provider({
       name: 'provider 3',
@@ -40,6 +40,9 @@ describe('ProviderService', () => {
 
     const persistedProvider = await providerService.getById(provider.id);
     expect(persistedProvider || null).to.not.be.null();
+
+    const providers2 = await providerService.getAll();
+    expect(providers2.length).to.equal(providerCount + 1);
   });
 
   it('deletes a provider', async () => {

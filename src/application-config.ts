@@ -1,24 +1,24 @@
 export class ApplicationConfig {
   database: {
-    type: string,
-    host: string,
-    port: string,
-    userName: string,
-    password: string,
-    name: string,
-    schema: string,
-    synchronize: boolean,
-    logging: boolean
-  }
+    type: string;
+    host: string;
+    port: string;
+    userName: string;
+    password: string;
+    name: string;
+    schema: string;
+    synchronize: boolean;
+    logging: boolean;
+  };
 
   logging: {
-    level: string
-  }
+    level: string;
+  };
 
   scheduler: {
-    enabled: boolean,
-    config: string
-  }
+    enabled: boolean;
+    config: string;
+  };
 
   constructor(data?: Partial<ApplicationConfig>) {
     Object.assign(this, data);
@@ -45,10 +45,13 @@ export function APPLICATION_CONFIG(): ApplicationConfig {
         level: process.env.CLOUD_SERVICE_LOG_LEVEL
       },
       scheduler: {
-        enabled: process.env.CLOUD_SERVICE_SCHEDULER_ENABLED != null ? (process.env.CLOUD_SERVICE_SCHEDULER_CONFIG === 'true') : true,
+        enabled:
+          process.env.CLOUD_SERVICE_SCHEDULER_ENABLED != null
+            ? process.env.CLOUD_SERVICE_SCHEDULER_CONFIG === 'true'
+            : true,
         config: process.env.CLOUD_SERVICE_SCHEDULER_CONFIG
       }
-    }
+    };
   }
 
   return applicationConfig;
