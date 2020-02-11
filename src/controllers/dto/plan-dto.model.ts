@@ -1,6 +1,7 @@
 import { model, property } from '@loopback/repository';
 import { ProviderDto } from './provider-dto.model';
-import { CloudImage, CloudFlavour } from '../../models';
+import { CloudImage, CloudFlavour, Plan } from '../../models';
+import { CloudImageService, CloudFlavourService } from '../../services';
 
 @model()
 export class PlanDto {
@@ -24,5 +25,24 @@ export class PlanDto {
 
   constructor(data?: Partial<PlanDto>) {
     Object.assign(this, data);
+  }
+
+  static async createForPlan(plan: Plan, cloudImageService: CloudImageService, cloudFlavourService: CloudFlavourService): Promise<PlanDto> {
+    // Get image and flavour from the provider
+    const [image, flavour] = await Promise.all([
+      cloudImageService.getById(plan.imageId, plan.provider),
+      cloudFlavourService.getById(plan.flavourId, plan.provider)
+    ]);
+
+    const planDto = new PlanDto({
+      id: plan.id,
+      name: plan.name,
+      description: plan.description,
+      provider: plan.provider,
+      image: image,
+      flavour: flavour
+    });
+
+    return planDto;
   }
 }

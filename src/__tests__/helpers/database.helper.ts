@@ -5,11 +5,11 @@ import { logger } from '../../utils';
 import { EntityManager } from 'typeorm';
 
 async function emptyDatabase(entityManager: EntityManager) {
-  const tables = ['provider', 'plan'];
+  const tables = ['plan', 'provider'];
   for (const table of tables) {
     try {
       await entityManager.query(`delete from ${table};`);
-      
+
     } catch (error) {
       logger.error(error.message);
     }

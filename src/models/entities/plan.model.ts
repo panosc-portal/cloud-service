@@ -35,13 +35,13 @@ export class Plan {
   @property({
     type: 'number'
   })
-  @Column({ nullable: false, name: 'cloud_image_id' })
+  @Column({ name: 'cloud_image_id', nullable: false })
   imageId: number;
 
   @property({
     type: 'number'
   })
-  @Column({ nullable: false, name: 'cloud_flavour_id' })
+  @Column({ name: 'cloud_flavour_id', nullable: false })
   flavourId: number;
 
   constructor(data?: Partial<Plan>) {
