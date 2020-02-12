@@ -1,5 +1,3 @@
-import { bind, BindingScope } from '@loopback/core';
-import { inject } from '@loopback/context';
 import { AxiosInstance } from 'axios';
 import { Provider } from '../../models';
 import { logger } from '../../utils';

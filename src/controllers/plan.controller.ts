@@ -155,7 +155,7 @@ export class PlanController extends BaseController {
     return PlanDto.createForPlan(persistedPlan, this._cloudImageService, this._cloudFlavourService);
   }
 
-  @del('/plans/{id}', {
+  @del('/plans/{planId}', {
     summary: 'Delete a plan by a given identifier',
     responses: {
       '200': {

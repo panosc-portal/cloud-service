@@ -19,29 +19,63 @@ export class CloudProviderMockServer {
     this.port = this._serverData.port;
   }
 
-  start() {
-    if (this._server != null) {
-      return;
-    }
+  start(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this._server != null) {
+        return;
+      }
 
-    this.images = this._serverData.images;
-    this.flavours = this._serverData.flavours;
-    this.instances = this._serverData.instances;
+      this.images = this._serverData.images;
+      this.flavours = this._serverData.flavours;
+      this.instances = this._serverData.instances;
 
-    const app = express();
+      const app = express();
 
-    app.get('/api/v1/flavours', (req, res) => {
-      logger.info(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+      app.use((req, res, next) => {
+        logger.info(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+        next();
+      })
 
-      res.status(200).send(this.flavours);
+      app.get('/api/v1/flavours', (req, res) => {
+        res.status(200).send(this.flavours);
+      });
+
+      app.get('/api/v1/flavours/:flavourId', (req, res) => {
+        const flavourId = +req.params.flavourId;
+        const flavour = this.flavours.find(flavour => flavour.id === flavourId);
+        if (flavour != null) {
+          res.status(200).send(flavour);
+
+        } else {
+          return res.status(404);
+        }
+      });
+
+      app.get('/api/v1/images', (req, res) => {
+        res.status(200).send(this.images);
+      });
+
+      app.get('/api/v1/images/:imageId', (req, res) => {
+        const imageId = +req.params.imageId;
+        const image = this.images.find(image => image.id === imageId);
+        if (image != null) {
+          res.status(200).send(image);
+
+        } else {
+          return res.status(404);
+        }
+      });
+
+      this._server = app.listen(this.port, (error) => {
+        if (error) {
+          logger.error(`Failed to start Cloud Provider Mock Server on poirt ${this.port}: ${error}`);
+
+        } else {
+          logger.info(`Cloud Provider Mock Server listening on port ${this.port}`)
+          resolve();
+        }
+      });
     });
-
-    app.get('/api/v1/images', (req, res) => {
-      logger.info(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-      res.status(200).send(this.images);
-    });
-
-    this._server = app.listen(this.port, () => logger.info(`Cloud Provider Mock Server listening on port ${this.port}`));
   }
 
   stop(): Promise<void> {
@@ -63,14 +97,12 @@ export class CloudProviderMockServer {
   }
 }
 
-export function startCloudProviderMockServers() {
-  const servers = cloudProviderData.map(serverData => {
-    const server = new CloudProviderMockServer(serverData);
-    server.start();
-    return server;
-  })
+export function cloudProviderMockServers(): CloudProviderMockServer[] {
+  return cloudProviderData.map(serverData => new CloudProviderMockServer(serverData));
+}
 
-  return servers;
+export function startCloudProviderMockServers(servers: CloudProviderMockServer[]): Promise<any> {
+  return Promise.all(servers.map(server => server.start()));
 }
 
 export function stopCloudProviderMockServers(servers: CloudProviderMockServer[]): Promise<any> {

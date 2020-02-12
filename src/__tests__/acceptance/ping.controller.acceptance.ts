@@ -1,7 +1,7 @@
 import { Client, expect } from '@loopback/testlab';
 import { CloudServiceApplication } from '../..';
 import { setupApplication } from '../helpers/application.helper';
-import { CloudProviderMockServer, stopCloudProviderMockServers } from '../mock/cloud-provider-mock.server';
+import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProviderMockServers } from '../mock/cloud-provider-mock.server';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
 
@@ -11,13 +11,23 @@ describe('PingController', () => {
   let datasource: TypeORMDataSource;
   let cloudProviderServers: CloudProviderMockServer[];
 
-  before('setupApplication', async () => {
+  before('setup application', async () => {
     ({ app, client, datasource, cloudProviderServers } = await setupApplication());
   });
 
-  after(async () => {
-    await stopCloudProviderMockServers(cloudProviderServers);
+  after('stop application', async () => {
     await app.stop();
+  });
+
+  beforeEach('Initialise Database and start mock servers', async () => {
+    await Promise.all([
+      givenInitialisedDatabase(datasource),
+      startCloudProviderMockServers(cloudProviderServers)
+    ]);
+  });
+
+  afterEach('Stop mock servers', async () => {
+    await stopCloudProviderMockServers(cloudProviderServers);
   });
 
   beforeEach('Initialise Database', async () => givenInitialisedDatabase(datasource));
