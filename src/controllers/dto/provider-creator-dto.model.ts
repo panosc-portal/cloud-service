@@ -8,7 +8,7 @@ export class ProviderCreatorDto {
   @property({ type: 'string' })
   description?: string;
 
-  @property({ type: 'number', required: true })
+  @property({ type: 'string', required: true })
   url: string;
 
   constructor(data?: Partial<ProviderCreatorDto>) {

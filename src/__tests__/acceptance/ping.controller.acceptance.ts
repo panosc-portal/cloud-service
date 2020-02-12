@@ -9,25 +9,17 @@ describe('PingController', () => {
   let app: CloudServiceApplication;
   let client: Client;
   let datasource: TypeORMDataSource;
-  let cloudProviderServers: CloudProviderMockServer[];
 
   before('setup application', async () => {
-    ({ app, client, datasource, cloudProviderServers } = await setupApplication());
+    ({ app, client, datasource } = await setupApplication());
   });
 
   after('stop application', async () => {
     await app.stop();
   });
 
-  beforeEach('Initialise Database and start mock servers', async () => {
-    await Promise.all([
-      givenInitialisedDatabase(datasource),
-      startCloudProviderMockServers(cloudProviderServers)
-    ]);
-  });
-
-  afterEach('Stop mock servers', async () => {
-    await stopCloudProviderMockServers(cloudProviderServers);
+  beforeEach('Initialise Database', async () => {
+    await givenInitialisedDatabase(datasource);
   });
 
   beforeEach('Initialise Database', async () => givenInitialisedDatabase(datasource));

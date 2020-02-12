@@ -54,6 +54,9 @@ describe('PlanController', () => {
   });
 
   it('invokes POST /api/v1/plans', async () => {
+    const initRes = await client.get('/api/v1/plans').expect(200);
+    const initPlans = initRes.body as PlanDto[];
+
     const planData = {
       name: 'new plan',
       description: 'A new plan',
@@ -71,7 +74,7 @@ describe('PlanController', () => {
     const res2 = await client.get('/api/v1/plans').expect(200);
 
     const plans = res2.body as PlanDto[];
-    expect(plans.length).to.equal(7);
+    expect(plans.length).to.equal(initPlans.length + 1);
 
     const res3 = await client.get(`/api/v1/plans/${plan.id}`).expect(200);
 
