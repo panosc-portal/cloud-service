@@ -11,10 +11,10 @@ import { PlanDto } from './dto/plan-dto.model';
 export class PlanController extends BaseController {
   constructor(
     @inject('services.PlanService') private _planService: PlanService,
-    @inject('services.CloudImageService') private _cloudImageService: CloudImageService,
-    @inject('services.CloudFlavourService') private _cloudFlavourService: CloudFlavourService,
-    @inject('services.ProviderService') private _providerService: ProviderService) {
-    super();
+    @inject('services.ProviderService') private _providerService: ProviderService,
+    @inject('services.CloudImageService') cloudImageService: CloudImageService,
+    @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService) {
+    super(cloudImageService, cloudFlavourService);
   }
 
   @get('/plans', {
@@ -34,43 +34,8 @@ export class PlanController extends BaseController {
     // Get all plans from DB
     const plans = await this._planService.getAll();
 
-    // From plans get all providers
-    const providers = plans.map(plan => plan.provider).filter((provider, pos, array) => array.map(mapProvider => mapProvider.id).indexOf(provider.id) === pos);
-
-    // Get all cloud images and flavours from all providers
-    const allProviderImagesAndFlavours = await Promise.all(
-      providers.map(async provider => {
-        const [images, flavours] = await Promise.all([
-          this._cloudImageService.getAll(provider),
-          this._cloudFlavourService.getAll(provider)
-        ]);
-
-        return {
-          provider: provider,
-          images: images,
-          flavours: flavours
-        };
-      })
-    );
-
-    // Convert to map
-    const providerImagesAndFlavours = allProviderImagesAndFlavours.reduce((map, obj) => {
-      map.set(obj.provider.id, obj);
-      return map;
-    }, new Map<number, { provider: Provider; images: CloudImage[]; flavours: CloudFlavour[] }>());
-
-    // Enrich plan data with images and flavours
-    const planDtos = plans.map(plan => new PlanDto({
-        id: plan.id,
-        name: plan.name,
-        description: plan.description,
-        provider: plan.provider,
-        image: providerImagesAndFlavours.get(plan.provider.id).images.find(image => image.id === plan.imageId),
-        flavour: providerImagesAndFlavours.get(plan.provider.id).flavours.find(flavour => flavour.id === plan.flavourId)
-      })
-    );
-
-    return planDtos;
+    // Convert to DTOs
+    return this.convertPlans(plans);
   }
 
   @get('/plans/{planId}', {
@@ -90,7 +55,7 @@ export class PlanController extends BaseController {
     const plan = await this._planService.getById(planId);
     this.throwNotFoundIfNull(plan, 'Plan with given id does not exist');
 
-    return PlanDto.createForPlan(plan, this._cloudImageService, this._cloudFlavourService);
+    return this.convertPlan(plan);
   }
 
   @post('/plans', {
@@ -119,7 +84,7 @@ export class PlanController extends BaseController {
     });
 
     const persistedPlan = await this._planService.save(plan);
-    return PlanDto.createForPlan(persistedPlan, this._cloudImageService, this._cloudFlavourService);
+    return this.convertPlan(persistedPlan);
   }
 
   @put('/plans/{planId}', {
@@ -152,7 +117,7 @@ export class PlanController extends BaseController {
     plan.flavourId = planUpdator.flavourId;
 
     const persistedPlan = await this._planService.save(plan);
-    return PlanDto.createForPlan(persistedPlan, this._cloudImageService, this._cloudFlavourService);
+    return this.convertPlan(persistedPlan);
   }
 
   @del('/plans/{planId}', {

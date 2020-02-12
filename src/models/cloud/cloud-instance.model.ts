@@ -1,6 +1,9 @@
 import { model, property } from '@loopback/repository';
 import { CloudInstanceState } from './cloud-instance-state.model';
 import { CloudProtocol } from './cloud-protocol.model';
+import { CloudFlavour } from './cloud-flavour.model';
+import { CloudImage } from './cloud-image.model';
+import { CloudInstanceUser } from './cloud-instance-user.model';
 
 @model()
 export class CloudInstance {
@@ -31,26 +34,6 @@ export class CloudInstance {
   computeId: string;
 
   @property({
-    type: 'string'
-  })
-  status: string;
-
-  @property({
-    type: 'string'
-  })
-  statusMessage: string;
-
-  @property({
-    type: 'number'
-  })
-  currentCPU: number;
-
-  @property({
-    type: 'number'
-  })
-  currentMemory: number;
-
-  @property({
     type: 'date'
   })
   createdAt: Date;
@@ -66,20 +49,25 @@ export class CloudInstance {
   })
   protocols: CloudProtocol[];
 
-  get state(): CloudInstanceState {
-    return new CloudInstanceState({
-      status: this.status,
-      cpu: this.currentCPU,
-      memory: this.currentMemory
-    });
-  }
+  @property({
+    type: CloudFlavour
+  })
+  flavour: CloudFlavour;
 
-  set state(value: CloudInstanceState) {
-    this.status = value.status;
-    this.statusMessage = value.message;
-    this.currentCPU = value.cpu;
-    this.currentMemory = value.memory;
-  }
+  @property({
+    type: CloudImage
+  })
+  image: CloudImage;
+
+  @property({
+    type: CloudInstanceUser
+  })
+  user: CloudInstanceUser;
+
+  @property({
+    type: CloudInstanceState
+  })
+  state: CloudInstanceState;
 
   constructor(data?: Partial<CloudInstance>) {
     Object.assign(this, data);

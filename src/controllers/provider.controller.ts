@@ -10,10 +10,10 @@ import { PlanDto } from './dto/plan-dto.model';
 export class ProviderController extends BaseController {
   constructor(
     @inject('services.PlanService') private _planService: PlanService,
-    @inject('services.CloudImageService') private _cloudImageService: CloudImageService,
-    @inject('services.CloudFlavourService') private _cloudFlavourService: CloudFlavourService,
-    @inject('services.ProviderService') private _providerService: ProviderService) {
-    super();
+    @inject('services.ProviderService') private _providerService: ProviderService,
+    @inject('services.CloudImageService') cloudImageService: CloudImageService,
+    @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService) {
+    super(cloudImageService, cloudFlavourService);
   }
 
   @get('/providers', {
