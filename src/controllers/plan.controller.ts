@@ -35,15 +35,22 @@ export class PlanController extends BaseController {
     const plans = await this._planService.getAll();
 
     // From plans get all providers
-    const providers = plans.map(plan => plan.provider).filter((item, pos, array) => array.indexOf(item) === pos);
+    const providers = plans.map(plan => plan.provider).filter((provider, pos, array) => array.map(mapProvider => mapProvider.id).indexOf(provider.id) === pos);
 
     // Get all cloud images and flavours from all providers
     const allProviderImagesAndFlavours = await Promise.all(
-      providers.map(async provider => ({
-        provider: provider,
-        images: await this._cloudImageService.getAll(provider),
-        flavours: await this._cloudFlavourService.getAll(provider)
-      }))
+      providers.map(async provider => {
+        const [images, flavours] = await Promise.all([
+          this._cloudImageService.getAll(provider),
+          this._cloudFlavourService.getAll(provider)
+        ]);
+
+        return {
+          provider: provider,
+          images: images,
+          flavours: flavours
+        };
+      })
     );
 
     // Convert to map

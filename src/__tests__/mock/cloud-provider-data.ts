@@ -1,6 +1,6 @@
 import { CloudImage, CloudFlavour, CloudInstance } from "../../models";
 
-interface CloudProviderMockServerData {
+export interface CloudProviderMockServerData {
   port: number;
   images: CloudImage[];
   flavours: CloudFlavour[];

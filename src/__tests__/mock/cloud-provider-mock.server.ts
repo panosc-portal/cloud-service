@@ -2,7 +2,7 @@ import * as express from 'express';
 import { lifeCycleObserver } from '@loopback/core';
 import { buildLogger } from '../../utils';
 import { CloudImage, CloudFlavour, CloudInstance } from '../../models';
-import { cloudProviderData } from './cloud-provider-data';
+import { cloudProviderData, CloudProviderMockServerData } from './cloud-provider-data';
 
 const logger = buildLogger('[Cloud Provider Mock Server]', 240);
 
@@ -15,8 +15,8 @@ export class CloudProviderMockServer {
   flavours: CloudFlavour[] = [];
   instances: CloudInstance[] = [];
 
-  constructor(data: Partial<CloudProviderMockServer>) {
-    Object.assign(this, data);
+  constructor(private _serverData: CloudProviderMockServerData) {
+    this.port = this._serverData.port;
   }
 
   start() {
@@ -24,14 +24,22 @@ export class CloudProviderMockServer {
       return;
     }
 
-    this.images = [];
-    this.flavours = [];
-    this.instances = [];
+    this.images = this._serverData.images;
+    this.flavours = this._serverData.flavours;
+    this.instances = this._serverData.instances;
 
     const app = express();
+
     app.get('/api/v1/flavours', (req, res) => {
+      logger.info(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+
+      res.status(200).send(this.flavours);
     });
 
+    app.get('/api/v1/images', (req, res) => {
+      logger.info(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+      res.status(200).send(this.images);
+    });
 
     this._server = app.listen(this.port, () => logger.info(`Cloud Provider Mock Server listening on port ${this.port}`));
   }

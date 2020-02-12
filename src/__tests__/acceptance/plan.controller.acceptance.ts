@@ -24,10 +24,9 @@ describe('PlanController', () => {
   beforeEach('Initialise Database', async () => givenInitialisedDatabase(datasource));
 
   it('invokes GET /plans', async () => {
-    // const res = await client.get('/api/v1/plans').expect(200);
+    const res = await client.get('/api/v1/plans').expect(200);
 
-    // const plans = res.body as PlanDto[];
-    // expect(plans.length).to.equal(6);
-    expect(6).to.equal(6);
+    const plans = res.body as PlanDto[];
+    expect(plans.length).to.equal(6);
   });
 });
