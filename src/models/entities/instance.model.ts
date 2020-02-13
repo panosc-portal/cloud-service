@@ -14,18 +14,18 @@ export class Instance {
   id: number;
 
   @property({
-    type: 'string'
+    type: 'number'
   })
-  @Column({ length: 50, nullable: true, name: 'cloud_id' })
-  cloudId: string;
-
-  @Column({ name: 'deleted', nullable: false, default: false })
-  deleted: boolean;
+  @Column({ nullable: false, name: 'cloud_id' })
+  cloudId: number;
 
   @property({ type: Plan })
   @ManyToOne(type => Plan, { eager: true, nullable: false })
   @JoinColumn({ name: 'plan_id' })
   plan: Plan;
+
+  @Column({ name: 'deleted', nullable: false, default: false })
+  deleted: boolean;
 
   constructor(data?: Partial<Instance>) {
     Object.assign(this, data);

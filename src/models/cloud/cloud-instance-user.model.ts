@@ -3,12 +3,6 @@ import { model, property } from '@loopback/repository';
 @model()
 export class CloudInstanceUser {
   @property({
-    type: 'number',
-    id: true
-  })
-  id: number;
-
-  @property({
     type: 'number'
   })
   accountId: number;

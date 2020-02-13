@@ -35,7 +35,7 @@ describe('PlanController', () => {
     const res = await client.get('/api/v1/plans').expect(200);
 
     const plans = res.body as PlanDto[];
-    expect(plans.length).to.equal(6);
+    expect(plans.length).to.equal(7);
     expect(plans[0].id).to.equal(1);
     expect(plans[0].provider.id).to.equal(1);
     expect(plans[0].image.id).to.equal(1);
@@ -119,7 +119,7 @@ describe('PlanController', () => {
     const initRes = await client.get('/api/v1/plans').expect(200);
     const initPlans = initRes.body as PlanDto[];
 
-    const res = await client.delete('/api/v1/plans/1').expect(200);
+    const res = await client.delete('/api/v1/plans/7').expect(200);
     const ok = res.body;
     expect(ok || null).to.not.be.null();
     expect(ok).to.equal(true);

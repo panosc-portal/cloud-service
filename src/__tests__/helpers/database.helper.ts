@@ -5,7 +5,7 @@ import { EntityManager } from 'typeorm';
 import { TypeORMDataSource } from '../../datasources';
 
 async function emptyDatabase(entityManager: EntityManager) {
-  const tables = ['plan', 'provider'];
+  const tables = ['instance', 'plan', 'provider'];
   for (const table of tables) {
     try {
       await entityManager.query(`delete from ${table};`);

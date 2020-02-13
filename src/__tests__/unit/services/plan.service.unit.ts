@@ -16,7 +16,7 @@ describe('PlanService', () => {
 
   it('gets all plans', async () => {
     const plans = await context.planService.getAll();
-    expect(plans.length).to.equal(6);
+    expect(plans.length).to.equal(7);
   });
 
   it('gets a plan', async () => {
@@ -54,7 +54,7 @@ describe('PlanService', () => {
     let plans = await context.planService.getAll();
     const planCount = plans.length;
 
-    const plan = plans.find(aPlan => aPlan.id === 2);
+    const plan = plans.find(aPlan => aPlan.id === 7);
 
     await context.planService.delete(plan);
 

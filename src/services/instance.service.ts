@@ -1,5 +1,5 @@
 import { bind, BindingScope } from '@loopback/core';
-import { Instance, Provider, CloudImage } from '../models';
+import { Instance } from '../models';
 import { InstanceRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 import { BaseService } from './base.service';

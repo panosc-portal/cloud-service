@@ -7,4 +7,8 @@ export class InstanceRepository extends BaseRepository<Instance, number> {
   constructor(@inject('datasources.typeorm') dataSource: TypeORMDataSource) {
     super(dataSource, Instance);
   }
+
+  find(): Promise<Instance[]> {
+    return super.find({ where: { deleted: false }, order: { id: 'ASC' } });
+  }
 }

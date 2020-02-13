@@ -29,19 +29,9 @@ export class CloudInstance {
   hostname: string;
 
   @property({
-    type: 'string'
-  })
-  computeId: string;
-
-  @property({
     type: 'date'
   })
   createdAt: Date;
-
-  @property({
-    type: 'date'
-  })
-  updatedAt: Date;
 
   @property({
     type: 'array',
@@ -62,7 +52,7 @@ export class CloudInstance {
   @property({
     type: CloudInstanceUser
   })
-  user: CloudInstanceUser;
+  user?: CloudInstanceUser;
 
   @property({
     type: CloudInstanceState

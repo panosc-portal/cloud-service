@@ -17,3 +17,29 @@ insert into plan (id, name, description, provider_id, cloud_image_id, cloud_flav
 values (5, 'plan 5', 'Plan 5', 2, 1, 1);
 insert into plan (id, name, description, provider_id, cloud_image_id, cloud_flavour_id)
 values (6, 'plan 6', 'Plan 6', 2, 1, 2);
+insert into plan (id, name, description, provider_id, cloud_image_id, cloud_flavour_id)
+values (7, 'plan 7', 'Plan 7 (unused)', 2, 2, 1);
+
+insert into instance (id, cloud_id, plan_id, deleted)
+values (1, 1, 1, false);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (2, 2, 2, false);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (3, 3, 3, false);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (4, 4, 4, false);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (5, 5, 1, false);
+insert into instance  (id, cloud_id, plan_id, deleted)
+values (6, 6, 2, false);
+insert into instance(id, cloud_id, plan_id, deleted)
+values (7, 1, 5, false);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (8, 2, 6, false);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (9, 3, 5, false);
+
+insert into instance (id, cloud_id, plan_id, deleted)
+values (10, 1, 1, true);
+insert into instance (id, cloud_id, plan_id, deleted)
+values (11, 1, 5, true);

@@ -27,7 +27,17 @@ export class CloudProviderMockServer {
 
       this.images = this._serverData.images;
       this.flavours = this._serverData.flavours;
-      this.instances = this._serverData.instances;
+      this.instances = this._serverData.instances.map(simplifiedInstance => new CloudInstance({
+        id: simplifiedInstance.id,
+        name: simplifiedInstance.name,
+        description: simplifiedInstance.description,
+        hostname: simplifiedInstance.hostname,
+        protocols: simplifiedInstance.protocols,
+        image: this.images.find(image => image.id === simplifiedInstance.imageId),
+        flavour: this.flavours.find(flavour => flavour.id === simplifiedInstance.flavourId),
+        createdAt: simplifiedInstance.createdAt,
+        state: simplifiedInstance.state
+      }));
 
       const app = express();
 
@@ -42,7 +52,7 @@ export class CloudProviderMockServer {
 
       app.get('/api/v1/flavours/:flavourId', (req, res) => {
         const flavourId = +req.params.flavourId;
-        const flavour = this.flavours.find(flavour => flavour.id === flavourId);
+        const flavour = this.flavours.find(aFlavour => aFlavour.id === flavourId);
         if (flavour != null) {
           res.status(200).send(flavour);
 
@@ -57,9 +67,24 @@ export class CloudProviderMockServer {
 
       app.get('/api/v1/images/:imageId', (req, res) => {
         const imageId = +req.params.imageId;
-        const image = this.images.find(image => image.id === imageId);
+        const image = this.images.find(anImage => anImage.id === imageId);
         if (image != null) {
           res.status(200).send(image);
+
+        } else {
+          return res.status(404);
+        }
+      });
+
+      app.get('/api/v1/instances', (req, res) => {
+        res.status(200).send(this.instances);
+      });
+
+      app.get('/api/v1/instances/:instanceId', (req, res) => {
+        const instanceId = +req.params.instanceId;
+        const instance = this.instances.find(anInstance => anInstance.id === instanceId);
+        if (instance != null) {
+          res.status(200).send(instance);
 
         } else {
           return res.status(404);
