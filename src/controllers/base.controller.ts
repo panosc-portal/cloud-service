@@ -30,7 +30,7 @@ export class BaseController {
     }
   }
 
-  async convertPlan(plan: Plan): Promise<PlanDto> {
+  protected async _convertPlan(plan: Plan): Promise<PlanDto> {
     // Get image and flavour from the provider
     const [image, flavour] = await Promise.all([
       this._cloudImageService.getById(plan.imageId, plan.provider),
@@ -49,7 +49,7 @@ export class BaseController {
     return planDto;
   }
 
-  async getProviderImagesAndFlavours(providers: Provider[]):Promise<Map<number, { provider: Provider; images: CloudImage[]; flavours: CloudFlavour[] }>> {
+  protected async _getProviderImagesAndFlavours(providers: Provider[]):Promise<Map<number, { provider: Provider; images: CloudImage[]; flavours: CloudFlavour[] }>> {
     // Get all cloud images and flavours from all providers
     const allProviderImagesAndFlavours = await Promise.all(
       providers.map(async provider => {
@@ -72,12 +72,12 @@ export class BaseController {
     return providerImagesAndFlavours;
   }
 
-  async convertPlans(plans: Plan[]): Promise<PlanDto[]> {
+  protected async _convertPlans(plans: Plan[]): Promise<PlanDto[]> {
     // From plans get all providers
     const providers = plans.map(plan => plan.provider).filter((provider, pos, array) => array.map(mapProvider => mapProvider.id).indexOf(provider.id) === pos);
 
     // Get cloud images and flavours map from all providers
-    const providerImagesAndFlavours = await this.getProviderImagesAndFlavours(providers);
+    const providerImagesAndFlavours = await this._getProviderImagesAndFlavours(providers);
 
     // Enrich plan data with images and flavours
     const planDtos = plans.map(plan => new PlanDto({

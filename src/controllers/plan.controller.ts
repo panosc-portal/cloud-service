@@ -1,12 +1,10 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Plan, CloudImage, Provider, CloudFlavour } from '../models';
+import { Plan } from '../models';
 import { inject } from '@loopback/context';
 import { PlanService, ProviderService, CloudFlavourService } from '../services';
 import { BaseController } from './base.controller';
-import { PlanCreatorDto } from './dto/plan-creator-dto.model';
-import { PlanUpdatorDto } from './dto/plan-updator-dto.model';
-import { CloudImageService } from '../services/cloud/cloud-image.service';
-import { PlanDto } from './dto/plan-dto.model';
+import { PlanDto, PlanCreatorDto, PlanUpdatorDto } from './dto';
+import { CloudImageService } from '../services';
 
 export class PlanController extends BaseController {
   constructor(
@@ -35,7 +33,7 @@ export class PlanController extends BaseController {
     const plans = await this._planService.getAll();
 
     // Convert to DTOs
-    return this.convertPlans(plans);
+    return this._convertPlans(plans);
   }
 
   @get('/plans/{planId}', {
@@ -55,7 +53,7 @@ export class PlanController extends BaseController {
     const plan = await this._planService.getById(planId);
     this.throwNotFoundIfNull(plan, 'Plan with given id does not exist');
 
-    return this.convertPlan(plan);
+    return this._convertPlan(plan);
   }
 
   @post('/plans', {
@@ -84,7 +82,7 @@ export class PlanController extends BaseController {
     });
 
     const persistedPlan = await this._planService.save(plan);
-    return this.convertPlan(persistedPlan);
+    return this._convertPlan(persistedPlan);
   }
 
   @put('/plans/{planId}', {
@@ -117,7 +115,7 @@ export class PlanController extends BaseController {
     plan.flavourId = planUpdator.flavourId;
 
     const persistedPlan = await this._planService.save(plan);
-    return this.convertPlan(persistedPlan);
+    return this._convertPlan(persistedPlan);
   }
 
   @del('/plans/{planId}', {

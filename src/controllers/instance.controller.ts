@@ -1,15 +1,15 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance, Provider, CloudInstance, } from '../models';
+import { Instance, CloudInstance, } from '../models';
 import { inject } from '@loopback/context';
-import { InstanceService, CloudFlavourService, CloudInstanceService } from '../services';
+import { InstanceService, CloudFlavourService, CloudInstanceService, CloudInstanceCreatorDto, PlanService, CloudImageService, CloudInstanceUpdatorDto } from '../services';
 import { BaseController } from './base.controller';
-import { CloudImageService } from '../services/cloud/cloud-image.service';
-import { InstanceDto } from './dto/instance-dto.model';
-import { hostname } from 'os';
+import { InstanceDto, InstanceCreatorDto, PlanDto } from './dto';
+import { InstanceUpdatorDto } from './dto/instance-updator-dto.model';
 
 export class InstanceController extends BaseController {
   constructor(
     @inject('services.InstanceService') private _instanceService: InstanceService,
+    @inject('services.PlanService') private _planService: PlanService,
     @inject('services.CloudInstanceService') private _cloudInstanceService: CloudInstanceService,
     @inject('services.CloudImageService') cloudImageService: CloudImageService,
     @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService) {
@@ -41,7 +41,7 @@ export class InstanceController extends BaseController {
 
     // Convert plans to DTOs and get cloud instances from all providers
     const [planDtos, allProviderInstances] = await Promise.all([
-      this.convertPlans(plans),
+      this._convertPlans(plans),
       Promise.all(
         providers.map(async provider => {
           const instances = await this._cloudInstanceService.getAll(provider);
@@ -58,21 +58,10 @@ export class InstanceController extends BaseController {
     const providerInstances = allProviderInstances.reduce((map, obj) => map.set(obj.provider.id, obj.instances), new Map<number, CloudInstance[]>());
 
     const instanceDtos = instances.map(instance => {
-      const cloudInstance = providerInstances.get(instance.plan.provider.id).find(cloudInstance => cloudInstance.id === instance.cloudId)
-      return new InstanceDto({
-        id: instance.id,
-        cloudId: instance.cloudId,
-        name: cloudInstance.name,
-        description: cloudInstance.description,
-        createdAt: cloudInstance.createdAt,
-        hostname: cloudInstance.hostname,
-        protocols: cloudInstance.protocols,
-        image: cloudInstance.image,
-        plan: planDtos.find(planDto => planDto.id === instance.plan.id),
-        flavour: cloudInstance.flavour,
-        state: cloudInstance.state,
-        user: cloudInstance.user
-      })
+      const cloudInstance = providerInstances.get(instance.plan.provider.id).find(cloudInstance => cloudInstance.id === instance.cloudId);
+      const planDto = planDtos.find(planDto => planDto.id === instance.plan.id);
+
+      return this._createInstanceDto(instance, cloudInstance, planDto);
     })
 
     return instanceDtos;
@@ -95,7 +84,8 @@ export class InstanceController extends BaseController {
     const instance = await this._instanceService.getById(instanceId);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
 
-    return null;
+    const cloudInstance = await this._convertInstance(instance);
+    return cloudInstance;
   }
 
   @post('/instances', {
@@ -111,8 +101,32 @@ export class InstanceController extends BaseController {
       }
     }
   })
-  async create(): Promise<InstanceDto> {
-    return null;
+  async create(@requestBody() instanceCreator: InstanceCreatorDto): Promise<InstanceDto> {
+    const plan = await this._planService.getById(instanceCreator.planId);
+    this.throwBadRequestIfNull(plan, 'Plan with given id does not exist');
+
+    const provider = plan.provider;
+
+    const cloudInstanceCreatorDto = new CloudInstanceCreatorDto({
+      name: instanceCreator.name,
+      description: instanceCreator.description,
+      imageId: plan.imageId,
+      flavourId: plan.flavourId,
+      user: instanceCreator.user
+    })
+
+    const [cloudInstance, planDto] = await Promise.all([
+      this._cloudInstanceService.save(cloudInstanceCreatorDto, provider),
+      this._convertPlan(plan)
+    ]);
+
+    const persistedInstance = await this._instanceService.save(new Instance({
+      cloudId: cloudInstance.id,
+      plan: plan
+    }));
+
+    const instanceDto = this._createInstanceDto(persistedInstance, cloudInstance, planDto);
+    return instanceDto;
   }
 
   @put('/instances/{instanceId}', {
@@ -128,8 +142,26 @@ export class InstanceController extends BaseController {
       }
     }
   })
-  async update(@param.path.number('instanceId') instanceId: number): Promise<InstanceDto> {
-    return null;
+  async update(@param.path.number('instanceId') instanceId: number, @requestBody() instanceUpdatorDto: InstanceUpdatorDto): Promise<InstanceDto> {
+    this.throwBadRequestIfNull(instanceUpdatorDto, 'Invalid instance in request');
+    this.throwBadRequestIfNotEqual(instanceId, instanceUpdatorDto.id, 'Id in path is not the same as body id');
+
+    // Get the instance
+    const instance = await this._instanceService.getById(instanceId);
+
+    const cloudInstanceUpdatorDto = new CloudInstanceUpdatorDto({
+      id: instance.cloudId,
+      name: instanceUpdatorDto.name,
+      description: instanceUpdatorDto.description
+    });
+
+    const [cloudInstance, planDto] = await Promise.all([
+      this._cloudInstanceService.update(cloudInstanceUpdatorDto, instance.plan.provider),
+      this._convertPlan(instance.plan)
+    ]);
+
+    const instanceDto = this._createInstanceDto(instance, cloudInstance, planDto);
+    return instanceDto;
   }
 
   @del('/instances/{instanceId}', {
@@ -144,9 +176,47 @@ export class InstanceController extends BaseController {
     const instance = await this._instanceService.getById(instanceId);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
 
-    // TODO
-    // delete on cloud provider
+    // Delete on cloud provider
+    const cloudInstanceDeleted = await this._cloudInstanceService.delete(instance.cloudId, instance.plan.provider);
 
-    return this._instanceService.delete(instance);
+    if (cloudInstanceDeleted) {
+      // (Soft) delete in local DB
+      instance.deleted = true;
+      const persistedInstance = await this._instanceService.save(instance);
+      return persistedInstance.deleted;
+
+    } else {
+      return false;
+    }
   }
+
+  private async _convertInstance(instance: Instance): Promise<InstanceDto> {
+
+    // Get plan details and cloud instance from the provider
+    const [planDto, cloudInstance] = await Promise.all([
+      this._convertPlan(instance.plan),
+      this._cloudInstanceService.getById(instance.cloudId, instance.plan.provider)
+    ])
+
+    const instanceDto = this._createInstanceDto(instance, cloudInstance, planDto);
+    return instanceDto;
+  }
+
+  private _createInstanceDto(instance: Instance, cloudInstance: CloudInstance, planDto: PlanDto): InstanceDto {
+    return new InstanceDto({
+      id: instance.id,
+      cloudId: instance.cloudId,
+      name: cloudInstance.name,
+      description: cloudInstance.description,
+      createdAt: cloudInstance.createdAt,
+      hostname: cloudInstance.hostname,
+      protocols: cloudInstance.protocols,
+      image: cloudInstance.image,
+      plan: planDto,
+      flavour: cloudInstance.flavour,
+      state: cloudInstance.state,
+      user: cloudInstance.user
+    });
+  }
+
 }

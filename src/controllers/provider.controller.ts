@@ -3,9 +3,7 @@ import { Provider, CloudImage, CloudFlavour } from '../models';
 import { inject } from '@loopback/context';
 import { ProviderService, CloudImageService, CloudFlavourService, PlanService } from '../services';
 import { BaseController } from './base.controller';
-import { ProviderCreatorDto } from './dto/provider-creator-dto.model';
-import { ProviderDto } from './dto/provider-dto.model';
-import { PlanDto } from './dto/plan-dto.model';
+import { PlanDto, ProviderDto, ProviderCreatorDto } from './dto';
 
 export class ProviderController extends BaseController {
   constructor(

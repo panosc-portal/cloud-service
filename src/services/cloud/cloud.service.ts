@@ -4,9 +4,9 @@ import { logger } from '../../utils';
 import { CloudApiClientService } from './cloud-api-client.service';
 
 export class CloudService<T> {
-  constructor(private _cloudApiClientService: CloudApiClientService, private _baseUrl: string) {}
+  constructor(protected _cloudApiClientService: CloudApiClientService, protected _baseUrl: string) {}
 
-  private _apiClient(provider: Provider): AxiosInstance {
+  protected _apiClient(provider: Provider): AxiosInstance {
     return this._cloudApiClientService.getApiClient(provider);
   }
 
@@ -18,7 +18,7 @@ export class CloudService<T> {
 
     } catch (error) {
       logger.error(`Got error getting ${this._baseUrl} from provider '${provider.name}': ${error}`);
-      return null;
+      throw error;
     }
   }
 
@@ -30,7 +30,7 @@ export class CloudService<T> {
 
     } catch (error) {
       logger.error(`Got error getting element from ${this._baseUrl} with id '${elementId}' from provider '${provider.name}': ${error}`);
-      return null;
+      throw error;
     }
   }
 }

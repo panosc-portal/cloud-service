@@ -1,22 +1,21 @@
 import { model, property } from '@loopback/repository';
-import { CloudInstanceUser } from '../../models/cloud/cloud-instance-user.model';
-import { PlanDto } from './plan-dto.model';
+import { CloudInstanceUser } from '../../models';
 
 @model()
-export class InstanceDto {
+export class InstanceCreatorDto {
   @property({ type: 'string' })
   name: string;
 
   @property({ type: 'string' })
   description: string;
 
-  @property({ type: PlanDto })
-  plan: PlanDto;
+  @property({ type: 'number' })
+  planId: number;
 
   @property({ type: CloudInstanceUser })
   user: CloudInstanceUser;
 
-  constructor(data?: Partial<InstanceDto>) {
+  constructor(data?: Partial<InstanceCreatorDto>) {
     Object.assign(this, data);
   }
 }
