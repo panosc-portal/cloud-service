@@ -1,6 +1,9 @@
 import { model, property } from '@loopback/repository';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Plan } from './plan.model';
+import { InstanceMember } from './instance-member.model';
+import { InstanceMemberRole } from './instance-member-role.enum';
+import { User } from './user.model';
 
 @Entity()
 @model()
@@ -24,10 +27,47 @@ export class Instance {
   @JoinColumn({ name: 'plan_id' })
   plan: Plan;
 
+  @property({
+    type: 'array',
+    itemType: 'object'
+  })
+  @OneToMany(type => InstanceMember, instanceMember => instanceMember.instance, {
+    eager: true,
+    cascade: true
+  })
+  members: InstanceMember[];
+  
   @Column({ name: 'deleted', nullable: false, default: false })
   deleted: boolean;
 
   constructor(data?: Partial<Instance>) {
     Object.assign(this, data);
+  }
+
+  addMember(user: User, role: InstanceMemberRole): InstanceMember {
+    if (this.members == null) {
+      this.members = [];
+    }
+
+    const existingMember = this.members.find(member => member.user.id === user.id && member.role === role);
+    if (existingMember == null) {
+      const member = new InstanceMember({
+        user: user,
+        role: role
+      });
+      this.members.push(member);
+      return member;
+    
+    } else {
+      return existingMember;
+    }
+  }
+
+  removeMember(instanceMember: InstanceMember): void {
+    if (this.members == null) {
+      return;
+    }
+
+    this.members = this.members.filter(member => member.user.id !== instanceMember.user.id || member.role !== instanceMember.role);
   }
 }

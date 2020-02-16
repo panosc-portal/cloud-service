@@ -43,3 +43,27 @@ insert into instance (id, cloud_id, plan_id, deleted)
 values (10, 1, 1, true);
 insert into instance (id, cloud_id, plan_id, deleted)
 values (11, 1, 5, true);
+
+insert into users (id, email, first_name, last_name)
+values (1, 'bloggs@example.com', 'Joe', 'Bloggs');
+insert into users (id, email, first_name, last_name)
+values (2, 'clayton@example.com', 'Kim', 'Clayton');
+insert into users (id, email, first_name, last_name)
+values (3, 'tote@example.com', 'Jamie', 'Hall');
+insert into users (id, email, first_name, last_name)
+values (4, 'zimmerman@example.com', 'Zimmerman', 'Mcfarland');
+insert into users (id, email, first_name, last_name)
+values (5, 'wilkinson@example.com', 'Mark', 'Wilkinson');
+insert into users (id, email, first_name, last_name)
+values (6, 'clarkson@example.com', 'Tim', 'Clarkson');
+
+insert INTO instance_member (id, user_id, instance_id, role, created_at)
+values (1, 1, 1, 'OWNER', '2019-01-01');
+insert INTO instance_member (id, user_id, instance_id, role, created_at)
+values (2, 2, 1, 'USER', '2019-01-01');
+insert INTO instance_member (id, user_id, instance_id, role, created_at)
+values (3, 3, 1, 'GUEST', '2019-01-01');
+insert INTO instance_member (id, user_id, instance_id, role, created_at)
+values (4, 1, 2, 'USER', '2019-01-01');
+insert INTO instance_member (id, user_id, instance_id, role, created_at)
+values (5, 1, 3, 'OWNER', '2019-01-01');

@@ -1,5 +1,6 @@
 import { BaseRepository } from '../repositories';
 import { Where, Command, NamedParameters, PositionalParameters, AnyObject } from '@loopback/repository';
+import { FindConditions } from 'typeorm';
 
 export class BaseService<T extends { id: number }, R extends BaseRepository<T, number>> {
   constructor(protected _repository: R) {}
@@ -16,8 +17,12 @@ export class BaseService<T extends { id: number }, R extends BaseRepository<T, n
     return this._repository.save(object);
   }
 
-  delete(object: T): Promise<boolean> {
+  delete(object: T ): Promise<boolean> {
     return this._repository.deleteById(object.id);
+  }
+
+  deleteWhere(findConditions: FindConditions<T>): Promise<boolean> {
+    return this._repository.deleteWhere(findConditions);
   }
 
   count(where?: Where): Promise<number> {

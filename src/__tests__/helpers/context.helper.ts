@@ -1,6 +1,6 @@
 import { testDataSource } from '../fixtures/datasources/testdb.datasource';
-import { ProviderRepository, PlanRepository, InstanceRepository } from '../../repositories';
-import { ProviderService, PlanService, InstanceService } from '../../services';
+import { ProviderRepository, PlanRepository, InstanceRepository, UserRepository, InstanceMemberRepository } from '../../repositories';
+import { ProviderService, PlanService, InstanceService, UserService, InstanceMemberService } from '../../services';
 
 export interface TestApplicationContext {
   providerRepository: ProviderRepository;
@@ -9,15 +9,23 @@ export interface TestApplicationContext {
   planService: PlanService;
   instanceRepository: InstanceRepository;
   instanceService: InstanceService;
+  userRepository: UserRepository;
+  userService: UserService;
+  instanceMemberRepository: InstanceMemberRepository;
+  instanceMemberService: InstanceMemberService;
 }
 
 export function createTestApplicationContext(): TestApplicationContext {
-  const providerRepository: ProviderRepository = new ProviderRepository(testDataSource);
-  const providerService: ProviderService = new ProviderService(providerRepository);
-  const planRepository: PlanRepository = new PlanRepository(testDataSource);
-  const planService: PlanService = new PlanService(planRepository);
-  const instanceRepository: InstanceRepository = new InstanceRepository(testDataSource);
-  const instanceService: InstanceService = new InstanceService(instanceRepository);
+  const providerRepository = new ProviderRepository(testDataSource);
+  const providerService = new ProviderService(providerRepository);
+  const planRepository = new PlanRepository(testDataSource);
+  const planService = new PlanService(planRepository);
+  const userRepository = new UserRepository(testDataSource);
+  const userService = new UserService(userRepository);
+  const instanceMemberRepository = new InstanceMemberRepository(testDataSource);
+  const instanceMemberService = new InstanceMemberService(instanceMemberRepository);
+  const instanceRepository = new InstanceRepository(testDataSource);
+  const instanceService = new InstanceService(instanceRepository, instanceMemberService);
 
   return {
     providerRepository,
@@ -25,6 +33,10 @@ export function createTestApplicationContext(): TestApplicationContext {
     planRepository,
     planService,
     instanceRepository,
-    instanceService
+    instanceService,
+    userRepository,
+    userService,
+    instanceMemberRepository,
+    instanceMemberService,
   };
 }

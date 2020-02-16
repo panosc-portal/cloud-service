@@ -44,11 +44,11 @@ export class InstanceController extends BaseController {
       this._convertPlans(plans),
       Promise.all(
         providers.map(async provider => {
-          const instances = await this._cloudInstanceService.getAll(provider);
+          const cloudInstances = await this._cloudInstanceService.getAll(provider);
 
           return {
             provider: provider,
-            instances: instances
+            instances: cloudInstances
           };
         })
       )
@@ -58,8 +58,8 @@ export class InstanceController extends BaseController {
     const providerInstances = allProviderInstances.reduce((map, obj) => map.set(obj.provider.id, obj.instances), new Map<number, CloudInstance[]>());
 
     const instanceDtos = instances.map(instance => {
-      const cloudInstance = providerInstances.get(instance.plan.provider.id).find(cloudInstance => cloudInstance.id === instance.cloudId);
-      const planDto = planDtos.find(planDto => planDto.id === instance.plan.id);
+      const cloudInstance = providerInstances.get(instance.plan.provider.id).find(aCloudInstance => aCloudInstance.id === instance.cloudId);
+      const planDto = planDtos.find(aPlanDto => aPlanDto.id === instance.plan.id);
 
       return this._createInstanceDto(instance, cloudInstance, planDto);
     })

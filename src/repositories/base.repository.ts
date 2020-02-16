@@ -1,5 +1,5 @@
 import { TypeORMDataSource } from '../datasources';
-import { Repository, ObjectType, FindManyOptions } from 'typeorm';
+import { Repository, ObjectType, FindManyOptions, FindConditions } from 'typeorm';
 import { Where, Command, NamedParameters, PositionalParameters, AnyObject } from '@loopback/repository';
 
 interface ParamterizedClause {
@@ -50,6 +50,13 @@ export class BaseRepository<T, ID> {
     await this.init();
 
     await this._repository.delete(id);
+    return true;
+  }
+
+  async deleteWhere(findConditions: FindConditions<T>): Promise<boolean> {
+    await this.init();
+
+    await this._repository.delete(findConditions);
     return true;
   }
 
