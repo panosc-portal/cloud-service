@@ -1,4 +1,3 @@
-import { model, property } from '@loopback/repository';
 import { CloudProtocol, CloudInstanceState } from '../../models';
 import { CloudInstanceUser } from '../../models/cloud/cloud-instance-user.model';
 
