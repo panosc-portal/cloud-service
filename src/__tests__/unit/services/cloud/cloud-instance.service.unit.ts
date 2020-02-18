@@ -140,7 +140,7 @@ describe('CloudInstanceService', () => {
     expect(cloudInstanceState.memory).to.equal(1024);
   });
 
-  it('gets a cloudInstance state', async () => {
+  it('executes and action', async () => {
     const provider = await context.providerService.getById(1);
     expect(provider || null).to.not.be.null();
 

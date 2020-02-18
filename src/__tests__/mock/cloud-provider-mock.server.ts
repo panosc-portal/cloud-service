@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { lifeCycleObserver } from '@loopback/core';
 import { buildLogger } from '../../utils';
-import { CloudImage, CloudFlavour, CloudInstance, Instance, CloudInstanceState, CloudProtocol, CloudInstanceCommand, CloudInstanceCommandType } from '../../models';
+import { CloudImage, CloudFlavour, CloudInstance, CloudInstanceState, CloudProtocol, CloudInstanceCommand, CloudInstanceCommandType } from '../../models';
 import { cloudProviderData, CloudProviderMockServerData } from './cloud-provider-data';
 import { CloudInstanceCreatorDto, CloudInstanceUpdatorDto } from '../../services';
 
@@ -97,8 +97,8 @@ export class CloudProviderMockServer {
         const instanceCreatorDto = req.body as CloudInstanceCreatorDto;
 
         // Validate image Id and flavour Id
-        const image = this.images.find(image => image.id === instanceCreatorDto.imageId);
-        const flavour = this.flavours.find(flavour => flavour.id === instanceCreatorDto.flavourId);
+        const image = this.images.find(anImage => anImage.id === instanceCreatorDto.imageId);
+        const flavour = this.flavours.find(aFlavour => aFlavour.id === instanceCreatorDto.flavourId);
 
         if (image == null) {
           return res.status(400).send(`Image not found with id ${instanceCreatorDto.imageId}`);

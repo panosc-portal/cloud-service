@@ -1,5 +1,5 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance, CloudInstance, } from '../models';
+import { Instance, CloudInstance, InstanceMemberRole, User, } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, CloudInstanceCreatorDto, PlanService, CloudImageService, CloudInstanceUpdatorDto } from '../services';
 import { BaseController } from './base.controller';
@@ -120,10 +120,19 @@ export class InstanceController extends BaseController {
       this._convertPlan(plan)
     ]);
 
-    const persistedInstance = await this._instanceService.save(new Instance({
+    const instance = new Instance({
       cloudId: cloudInstance.id,
       plan: plan
-    }));
+    });
+    const user = new User({
+      id: instanceCreator.user.accountId,
+      firstName: instanceCreator.user.firstName,
+      lastName: instanceCreator.user.lastName,
+      email: ''
+    })
+    instance.addMember(user, InstanceMemberRole.OWNER);
+
+    const persistedInstance = await this._instanceService.save(instance);
 
     const instanceDto = this._createInstanceDto(persistedInstance, cloudInstance, planDto);
     return instanceDto;
@@ -215,7 +224,7 @@ export class InstanceController extends BaseController {
       plan: planDto,
       flavour: cloudInstance.flavour,
       state: cloudInstance.state,
-      user: cloudInstance.user
+      members: instance.members
     });
   }
 

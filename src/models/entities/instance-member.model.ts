@@ -16,11 +16,11 @@ export class InstanceMember {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @property({ 
-    type: User, 
-    required: true 
+  @property({
+    type: User,
+    required: true
   })
-  @ManyToOne(type => User, { eager: true, nullable: false })
+  @ManyToOne(type => User, { eager: true, nullable: false, cascade: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

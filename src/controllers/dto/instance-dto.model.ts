@@ -1,6 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { CloudImage, CloudFlavour, CloudProtocol, CloudInstanceState } from '../../models';
-import { CloudInstanceUser } from '../../models/cloud/cloud-instance-user.model';
+import { CloudImage, CloudFlavour, CloudProtocol, CloudInstanceState, InstanceMember } from '../../models';
 import { PlanDto } from './plan-dto.model';
 
 @model()
@@ -35,11 +34,11 @@ export class InstanceDto {
   @property({ type: PlanDto })
   plan: PlanDto;
 
-  @property({ type: CloudInstanceUser })
-  user: CloudInstanceUser;
-
   @property({ type: CloudInstanceState })
   state: CloudInstanceState;
+
+  @property({ type: 'array', itemType: 'object' })
+  members: InstanceMember[];
 
   constructor(data?: Partial<InstanceDto>) {
     Object.assign(this, data);

@@ -1,7 +1,6 @@
 import { model, property } from '@loopback/repository';
 import { ProviderDto } from './provider-dto.model';
-import { CloudImage, CloudFlavour, Plan } from '../../models';
-import { CloudImageService, CloudFlavourService } from '../../services';
+import { CloudImage, CloudFlavour } from '../../models';
 
 @model()
 export class PlanDto {

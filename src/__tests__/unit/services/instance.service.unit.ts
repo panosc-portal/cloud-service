@@ -1,7 +1,7 @@
 import { expect } from '@loopback/testlab';
 import { givenInitialisedTestDatabase, closeTestDatabase } from '../../helpers/database.helper';
 import { createTestApplicationContext, TestApplicationContext } from '../../helpers/context.helper';
-import { Instance, InstanceMemberRole } from '../../../models';
+import { Instance, InstanceMemberRole, User } from '../../../models';
 
 describe('InstanceService', () => {
   let context: TestApplicationContext;
@@ -80,6 +80,47 @@ describe('InstanceService', () => {
 
     const instances2 = await context.instanceService.getAll();
     expect(instances2.length).to.equal(instanceCount + 1);
+  });
+
+
+  it('saves an instance with a new member', async () => {
+    const instances = await context.instanceService.getAll();
+    const instanceCount = instances.length;
+    const users = await context.userService.getAll();
+    const userCount = users.length;
+
+    const plan = await context.planService.getById(1);
+    expect(plan || null).to.not.be.null();
+
+    const user = new User({
+      id: 1000,
+      firstName: 'bing',
+      lastName: 'Bangbong',
+      email: 'bing@bangbong.me'
+    });
+
+    const instance = new Instance({
+      cloudId: 10,
+      plan: plan,
+    });
+    instance.addMember(user, InstanceMemberRole.OWNER);
+
+    await context.instanceService.save(instance);
+    expect(instance.id || null).to.not.be.null();
+
+    const persistedInstance = await context.instanceService.getById(instance.id);
+    expect(persistedInstance || null).to.not.be.null();
+    expect(persistedInstance.deleted).to.equal(false);
+    expect(persistedInstance.members || null).to.not.be.null();
+    expect(persistedInstance.members.length).to.equal(1);
+    expect(persistedInstance.members[0].user || null).to.not.be.null();
+    expect(persistedInstance.members[0].user.id).to.equal(1000);
+
+    const instances2 = await context.instanceService.getAll();
+    expect(instances2.length).to.equal(instanceCount + 1);
+    const users2 = await context.userService.getAll();
+    expect(users2.length).to.equal(userCount + 1);
+
   });
 
   it('adds a member to an instance', async () => {

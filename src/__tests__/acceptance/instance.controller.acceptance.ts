@@ -5,6 +5,9 @@ import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProvid
 import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
+import { InstanceCreatorDto } from '../../controllers/dto';
+import { CloudInstanceUser, InstanceMemberRole } from '../../models';
+import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
 
 describe('InstanceController', () => {
   let app: CloudServiceApplication;
@@ -48,7 +51,7 @@ describe('InstanceController', () => {
     expect(cloudInstance.flavour.id).to.equal(1);
   });
 
-  it('invokes GET /api/v1/instances/1', async () => {
+  it('invokes GET /api/v1/instances/{:id}', async () => {
     const res = await client.get('/api/v1/instances/1').expect(200);
 
     const cloudInstance = res.body as InstanceDto;
@@ -64,91 +67,97 @@ describe('InstanceController', () => {
     expect(cloudInstance.flavour.id).to.equal(1);
   });
 
-  // it('invokes GET /api/v1/instances/{:id}', async () => {
-  //   const res = await client.get('/api/v1/instances/1').expect(200);
 
-  //   const instance = res.body as InstanceDto;
-  //   expect(instance || null).to.not.be.null();
-  //   expect(instance.id).to.equal(1);
-  //   expect(instance.provider.id).to.equal(1);
-  //   expect(instance.image.id).to.equal(1);
-  //   expect(instance.flavour.id).to.equal(1);
-  // });
+  it('invokes POST /api/v1/instances', async () => {
+    const initRes = await client.get('/api/v1/instances').expect(200);
+    const initInstances = initRes.body as InstanceDto[];
 
-  // it('invokes POST /api/v1/instances', async () => {
-  //   const initRes = await client.get('/api/v1/instances').expect(200);
-  //   const initInstances = initRes.body as InstanceDto[];
+    const instanceData = new InstanceCreatorDto({
+      name: 'new instance',
+      description: 'A new instance',
+      planId: 6,
+      user: new CloudInstanceUser({
+        accountId: 1000,
+        firstName: 'jo',
+        lastName: 'juja',
+        homePath: '/home/jojuja',
+        uid: 1,
+        gid: 2,
+        username: 'jojuja'
+      }),
+    });
 
-  //   const instanceData = {
-  //     name: 'new instance',
-  //     description: 'A new instance',
-  //     providerId: 2,
-  //     imageId: 2,
-  //     flavourId: 1
-  //   }
+    const res1 = await client.post('/api/v1/instances').send(instanceData).expect(200);
 
-  //   const res1 = await client.post('/api/v1/instances').send(instanceData).expect(200);
+    const instance = res1.body as InstanceDto;
+    expect(instance || null).to.not.be.null();
+    expect(instance.id || null).to.not.be.null();
 
-  //   const instance = res1.body as InstanceDto;
-  //   expect(instance || null).to.not.be.null();
-  //   expect(instance.id || null).to.not.be.null();
+    const res2 = await client.get('/api/v1/instances').expect(200);
 
-  //   const res2 = await client.get('/api/v1/instances').expect(200);
+    const instances = res2.body as InstanceDto[];
+    expect(instances.length).to.equal(initInstances.length + 1);
 
-  //   const instances = res2.body as InstanceDto[];
-  //   expect(instances.length).to.equal(initInstances.length + 1);
+    const res3 = await client.get(`/api/v1/instances/${instance.id}`).expect(200);
 
-  //   const res3 = await client.get(`/api/v1/instances/${instance.id}`).expect(200);
+    const instance2 = res3.body as InstanceDto;
+    expect(instance2 || null).to.not.be.null();
+    expect(instance2.id).to.equal(instance.id);
+    expect(instance2.plan || null).to.not.be.null();
+    expect(instance2.plan.id).to.equal(6);
+    expect(instance2.plan.provider || null).to.not.be.null();
+    expect(instance2.plan.provider.id).to.equal(2);
+    expect(instance2.image || null).to.not.be.null();
+    expect(instance2.image.id).to.equal(1);
+    expect(instance2.flavour || null).to.not.be.null();
+    expect(instance2.flavour.id).to.equal(2);
+    expect(instance2.state || null).to.not.be.null();
+    expect(instance2.members || null).to.not.be.null();
+    expect(instance2.members.length).to.equal(1);
+    expect(instance2.members[0].user.id).to.equal(instanceData.user.accountId);
+    expect(instance2.members[0].role).to.equal(InstanceMemberRole.OWNER);
+  });
 
-  //   const instance2 = res3.body as InstanceDto;
-  //   expect(instance2 || null).to.not.be.null();
-  //   expect(instance2.id).to.equal(instance.id);
-  //   expect(instance2.provider.id).to.equal(2);
-  //   expect(instance2.image.id).to.equal(2);
-  //   expect(instance2.flavour.id).to.equal(1);
-  // });
+  it('invokes PUT /api/v1/instances/{:id}', async () => {
 
-  // it('invokes PUT /api/v1/instances/{:id}', async () => {
+    const res = await client.get('/api/v1/instances/1').expect(200);
+    const instance = res.body as InstanceDto;
+    expect(instance || null).to.not.be.null();
+    expect(instance.id).to.equal(1);
 
-  //   const res = await client.get('/api/v1/instances/1').expect(200);
-  //   const instance = res.body as InstanceDto;
-  //   expect(instance || null).to.not.be.null();
-  //   expect(instance.id).to.equal(1);
+    const newName = 'a test';
+    const newDescripion = 'a test to test';
 
-  //   const newName = 'a test';
+    const res1 = await client.put(`/api/v1/instances/${instance.id}`).send(new InstanceUpdatorDto({
+      id: instance.id,
+      name: newName,
+      description: newDescripion,
+    })).expect(200);
+    const returnedInstance = res1.body as InstanceDto;
+    expect(returnedInstance || null).to.not.be.null();
+    expect(returnedInstance.id).to.equal(instance.id);
 
-  //   const res1 = await client.put(`/api/v1/instances/${instance.id}`).send({
-  //     id: instance.id,
-  //     name: newName,
-  //     description: instance.description,
-  //     providerId: instance.provider.id,
-  //     imageId: instance.image.id,
-  //     flavourId: instance.flavour.id
-  //   }).expect(200);
-  //   const returnedInstance = res1.body as InstanceDto;
-  //   expect(returnedInstance || null).to.not.be.null();
-  //   expect(returnedInstance.id).to.equal(instance.id);
+    const res2 = await client.get(`/api/v1/instances/${instance.id}`).expect(200);
+    const instance2 = res2.body as InstanceDto;
+    expect(instance2 || null).to.not.be.null();
+    expect(instance2.id).to.equal(instance.id);
+    expect(instance2.name).to.equal(newName);
+    expect(instance2.description).to.equal(newDescripion);
+  });
 
-  //   const res2 = await client.get(`/api/v1/instances/${instance.id}`).expect(200);
-  //   const instance2 = res2.body as InstanceDto;
-  //   expect(instance2 || null).to.not.be.null();
-  //   expect(instance2.id).to.equal(instance.id);
-  //   expect(instance2.name).to.equal(newName);
-  // });
+  it('invokes DEL /api/v1/instances/{:id}', async () => {
 
-  // it('invokes DEL /api/v1/instances/{:id}', async () => {
+    const initRes = await client.get('/api/v1/instances').expect(200);
+    const initInstances = initRes.body as InstanceDto[];
 
-  //   const initRes = await client.get('/api/v1/instances').expect(200);
-  //   const initInstances = initRes.body as InstanceDto[];
+    const res = await client.delete('/api/v1/instances/1').expect(200);
+    const ok = res.body;
+    expect(ok || null).to.not.be.null();
+    expect(ok).to.equal(true);
 
-  //   const res = await client.delete('/api/v1/instances/1').expect(200);
-  //   const ok = res.body;
-  //   expect(ok || null).to.not.be.null();
-  //   expect(ok).to.equal(true);
-
-  //   const finalRes = await client.get('/api/v1/instances').expect(200);
-  //   const finalInstances = finalRes.body as InstanceDto[];
-  //   expect(finalInstances.length).to.equal(initInstances.length - 1);
-  // });
+    const finalRes = await client.get('/api/v1/instances').expect(200);
+    const finalInstances = finalRes.body as InstanceDto[];
+    expect(finalInstances.length).to.equal(initInstances.length - 1);
+  });
 
 });
