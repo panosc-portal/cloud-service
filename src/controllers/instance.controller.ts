@@ -32,6 +32,7 @@ export class InstanceController extends BaseController {
   async getAll(): Promise<InstanceDto[]> {
     // Get all instances from DB
     const instances = await this._instanceService.getAll();
+    // const instances = await this._instanceService.getAllForUser();
 
     // Get all unique plans for the instances
     const plans = instances.map(instance => instance.plan).filter((plan, pos, array) => array.map(mapPlan => mapPlan.id).indexOf(plan.id) === pos);

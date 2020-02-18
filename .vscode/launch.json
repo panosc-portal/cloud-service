@@ -1,0 +1,85 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch all tests",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/dist/__tests__"
+            ],
+            "env": {
+                "NODE_ENV": "test",
+                "CLOUD_SERVICE_DATABASE_TYPE": "sqlite",
+                "CLOUD_SERVICE_DATABASE_NAME": ":memory:",
+                "CLOUD_SERVICE_DATABASE_SYNCHRONIZE": "true",
+                "CLOUD_SERVICE_DATABASE_LOGGING": "false",
+                "CLOUD_SERVICE_LOG_LEVEL": "error"
+            },
+            "preLaunchTask": "npm: pretest",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test single file",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/dist/__tests__/unit/services/cloud/cloud-instance.service.unit.js"
+            ],
+            "env": {
+                "NODE_ENV": "test",
+                "CLOUD_SERVICE_DATABASE_TYPE": "sqlite",
+                "CLOUD_SERVICE_DATABASE_NAME": ":memory:",
+                "CLOUD_SERVICE_DATABASE_SYNCHRONIZE": "true",
+                "CLOUD_SERVICE_DATABASE_LOGGING": "false",
+                "CLOUD_SERVICE_LOG_LEVEL": "info"
+            },
+            "preLaunchTask": "npm: pretest",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run app",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/index.js",
+            "env": {
+                "NODE_ENV": "dev",
+                "CLOUD_SERVICE_DATABASE_TYPE": "postgres",
+                "CLOUD_SERVICE_DATABASE_PORT": "5432",
+                "CLOUD_SERVICE_DATABASE_HOST": "localhost",
+                "CLOUD_SERVICE_DATABASE_USERNAME": "panosc",
+                "CLOUD_SERVICE_DATABASE_PASSWORD": "panosc",
+                "CLOUD_SERVICE_DATABASE_NAME": "panosc",
+                "CLOUD_SERVICE_DATABASE_SCHEMA": "panosc",
+                "CLOUD_SERVICE_DATABASE_SYNCHRONIZE": "true",
+                "CLOUD_SERVICE_DATABASE_LOGGING": "false",
+                "CLOUD_SERVICE_LOG_LEVEL": "debug"
+            },
+            "preLaunchTask": "npm: build",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+        }
+    ]
+}

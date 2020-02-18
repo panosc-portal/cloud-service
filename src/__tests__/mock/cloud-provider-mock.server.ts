@@ -1,8 +1,9 @@
 import * as express from 'express';
 import { lifeCycleObserver } from '@loopback/core';
 import { buildLogger } from '../../utils';
-import { CloudImage, CloudFlavour, CloudInstance } from '../../models';
+import { CloudImage, CloudFlavour, CloudInstance, Instance, CloudInstanceState, CloudProtocol, CloudInstanceCommand, CloudInstanceCommandType } from '../../models';
 import { cloudProviderData, CloudProviderMockServerData } from './cloud-provider-data';
+import { CloudInstanceCreatorDto, CloudInstanceUpdatorDto } from '../../services';
 
 const logger = buildLogger('[Cloud Provider Mock Server]', 240);
 
@@ -40,9 +41,10 @@ export class CloudProviderMockServer {
       }));
 
       const app = express();
+      app.use(express.json());
 
       app.use((req, res, next) => {
-        logger.info(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+        logger.info(`[${req.method}] ${req.protocol}://${req.get('host')}${req.originalUrl}`);
         next();
       })
 
@@ -88,6 +90,117 @@ export class CloudProviderMockServer {
 
         } else {
           return res.status(404);
+        }
+      });
+
+      app.post('/api/v1/instances', (req, res) => {
+        const instanceCreatorDto = req.body as CloudInstanceCreatorDto;
+
+        // Validate image Id and flavour Id
+        const image = this.images.find(image => image.id === instanceCreatorDto.imageId);
+        const flavour = this.flavours.find(flavour => flavour.id === instanceCreatorDto.flavourId);
+
+        if (image == null) {
+          return res.status(400).send(`Image not found with id ${instanceCreatorDto.imageId}`);
+
+        } else if (image == null) {
+          return res.status(400).send(`Image not found with id ${instanceCreatorDto.imageId}`);
+
+        } else {
+          const instance = new CloudInstance({
+            id: this.instances.length + 1,
+            name: instanceCreatorDto.name,
+            description: instanceCreatorDto.description,
+            image: image,
+            flavour: flavour,
+            createdAt: new Date(),
+            hostname: `instance${this.instances.length + 1}.host.eu`,
+            user: instanceCreatorDto.user,
+            state: new CloudInstanceState({
+              cpu: flavour.cpu,
+              memory: flavour.memory,
+              message: '',
+              status: 'BUILDING'
+            }),
+            protocols: image.protocols.map(protocol => new CloudProtocol({name: protocol.name, port: 30000 + Math.round(Math.random() * 2767)}))
+          })
+
+          this.instances.push(instance);
+          return res.status(200).send(instance);
+        }
+      });
+
+      app.put('/api/v1/instances/:instanceId', (req, res) => {
+        const instanceUpdatorDto = req.body as CloudInstanceUpdatorDto;
+
+        const instanceId = +req.params['instanceId'];
+
+        const instance = this.instances.find(anInstance => anInstance.id === instanceId);
+
+        // Validate instance and Id
+        if (instance == null) {
+          return res.status(404).send(`Instance not found with id ${instanceUpdatorDto.id}`);
+
+        } else if (instanceUpdatorDto.id !== instanceId) {
+          return res.status(400).send(`instanceId path parameter does not match body instance id`);
+
+        } else {
+          instance.name = instanceUpdatorDto.name == null ? instance.name : instanceUpdatorDto.name;
+          instance.description = instanceUpdatorDto.description == null ? instance.description : instanceUpdatorDto.description;
+
+          return res.status(200).send(instance);
+        }
+      });
+
+      app.delete('/api/v1/instances/:instanceId', (req, res) => {
+        const instanceId = +req.params['instanceId'];
+
+        const instance = this.instances.find(anInstance => anInstance.id === instanceId);
+
+        // Validate instance and Id
+        if (instance == null) {
+          return res.status(404).send(`Instance not found with id ${instanceId}`);
+
+        } else {
+          this.instances = this.instances.filter(anInstance => anInstance.id !== instance.id);
+
+          return res.status(200).send(true);
+        }
+      });
+
+      app.get('/api/v1/instances/:instanceId/state', (req, res) => {
+        const instanceId = +req.params.instanceId;
+        const instance = this.instances.find(anInstance => anInstance.id === instanceId);
+        if (instance != null) {
+          res.status(200).send(instance.state);
+
+        } else {
+          return res.status(404);
+        }
+      });
+
+
+      app.post('/api/v1/instances/:instanceId/actions', (req, res) => {
+        const cloudInstanceCommand = req.body as CloudInstanceCommand;
+
+        const instanceId = +req.params['instanceId'];
+
+        const instance = this.instances.find(anInstance => anInstance.id === instanceId);
+
+        // Validate instance and Id
+        if (instance == null) {
+          return res.status(404).send(`Instance not found with id ${instanceId}`);
+
+        } else {
+          if (cloudInstanceCommand.type === CloudInstanceCommandType.REBOOT) {
+            instance.state.status = 'REBOOTING';
+          } else if (cloudInstanceCommand.type === CloudInstanceCommandType.SHUTDOWN) {
+            instance.state.status = 'STOPPING';
+          } else if (cloudInstanceCommand.type === CloudInstanceCommandType.START) {
+            instance.state.status = 'STARTING';
+          }
+
+          return res.status(200).send(instance);
         }
       });
 
