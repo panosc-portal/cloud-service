@@ -1,5 +1,5 @@
 import { TypeORMDataSource } from '../datasources';
-import { Repository, ObjectType, FindManyOptions, FindConditions } from 'typeorm';
+import { Repository, ObjectType, FindManyOptions, FindConditions, QueryBuilder, SelectQueryBuilder } from 'typeorm';
 import { Where, Command, NamedParameters, PositionalParameters, AnyObject } from '@loopback/repository';
 
 interface ParamterizedClause {
@@ -88,6 +88,10 @@ export class BaseRepository<T, ID> {
     await this.init();
     const result = await this._repository.query(<string>command, <any[]>parameters);
     return result;
+  }
+
+  createQueryBuilder(alias: string): SelectQueryBuilder<T> {
+    return this._repository.createQueryBuilder(alias);
   }
 
   /**

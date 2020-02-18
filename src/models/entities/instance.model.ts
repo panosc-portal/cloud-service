@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Plan } from './plan.model';
 import { InstanceMember } from './instance-member.model';
 import { InstanceMemberRole } from './instance-member-role.enum';
@@ -36,7 +36,17 @@ export class Instance {
     cascade: true
   })
   members: InstanceMember[];
-  
+
+  @property({
+    type: 'date',
+    required: true
+  })
+  @CreateDateColumn({ name: 'created_at', type: process.env.NODE_ENV === 'test' ? 'date' : 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: process.env.NODE_ENV === 'test' ? 'date' : 'timestamp' })
+  updatedAt: Date;
+
   @Column({ name: 'deleted', nullable: false, default: false })
   deleted: boolean;
 
@@ -57,7 +67,7 @@ export class Instance {
       });
       this.members.push(member);
       return member;
-    
+
     } else {
       return existingMember;
     }

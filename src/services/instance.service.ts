@@ -1,5 +1,5 @@
 import { bind, BindingScope } from '@loopback/core';
-import { Instance } from '../models';
+import { Instance, User } from '../models';
 import { InstanceRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 import { BaseService } from './base.service';
@@ -9,7 +9,7 @@ import { IsNull } from 'typeorm';
 
 @bind({ scope: BindingScope.SINGLETON })
 export class InstanceService extends BaseService<Instance, InstanceRepository> {
-  constructor(@repository(InstanceRepository) repo: InstanceRepository, 
+  constructor(@repository(InstanceRepository) repo: InstanceRepository,
     @inject('services.InstanceMemberService') private _instanceMemberService: InstanceMemberService) {
     super(repo);
   }
@@ -20,5 +20,9 @@ export class InstanceService extends BaseService<Instance, InstanceRepository> {
     await this._instanceMemberService.deleteWhere({instance: IsNull()});
 
     return instance;
+  }
+
+  getAllForUser(user: User): Promise<Instance[]> {
+    return this._repository.findAllForUser(user);
   }
 }

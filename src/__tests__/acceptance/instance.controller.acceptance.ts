@@ -38,6 +38,22 @@ describe('InstanceController', () => {
     expect(instances.length).to.equal(9);
 
     const cloudInstance = instances[0];
+    expect(cloudInstance.id).to.equal(9);
+    expect(cloudInstance.cloudId).to.equal(3);
+    expect(cloudInstance.plan || null).to.not.be.null();
+    expect(cloudInstance.plan.id).to.equal(5);
+    expect(cloudInstance.image || null).to.not.be.null();
+    expect(cloudInstance.image.id).to.equal(1);
+    expect(cloudInstance.flavour || null).to.not.be.null();
+    expect(cloudInstance.flavour.id).to.equal(1);
+  });
+
+  it('invokes GET /api/v1/instances/1', async () => {
+    const res = await client.get('/api/v1/instances/1').expect(200);
+
+    const cloudInstance = res.body as InstanceDto;
+    expect(cloudInstance || null).to.not.be.null();
+
     expect(cloudInstance.id).to.equal(1);
     expect(cloudInstance.cloudId).to.equal(1);
     expect(cloudInstance.plan || null).to.not.be.null();

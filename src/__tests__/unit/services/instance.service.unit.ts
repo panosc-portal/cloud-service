@@ -148,4 +148,18 @@ describe('InstanceService', () => {
     expect(instances.length).to.equal(instanceCount - 1);
   });
 
+  it('gets all instances for a user', async () => {
+    const user = await context.userService.getById(1);
+    expect(user || null).to.not.be.null();
+
+    const instances = await context.instanceService.getAllForUser(user);
+    expect(instances.length).to.equal(3);
+
+    const instance = instances[2];
+    expect(instance.id).to.equal(1);
+    expect(instance.plan || null).to.not.be.null();
+    expect(instance.plan.provider || null).to.not.be.null();
+    expect(instance.members || null).to.not.be.null();
+    expect(instance.members.length).to.equal(3);
+  });
 });

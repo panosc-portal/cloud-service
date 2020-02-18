@@ -1,14 +1,15 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
 import { Instance, CloudInstance, } from '../models';
 import { inject } from '@loopback/context';
-import { InstanceService, CloudFlavourService, CloudInstanceService, CloudInstanceCreatorDto, PlanService, CloudImageService, CloudInstanceUpdatorDto } from '../services';
+import { InstanceService, CloudFlavourService, CloudInstanceService, CloudInstanceCreatorDto, PlanService, CloudImageService, CloudInstanceUpdatorDto, UserService } from '../services';
 import { BaseController } from './base.controller';
 import { InstanceDto, InstanceCreatorDto, PlanDto } from './dto';
 import { InstanceUpdatorDto } from './dto/instance-updator-dto.model';
 
-export class InstanceController extends BaseController {
+export class UserInstanceController extends BaseController {
   constructor(
     @inject('services.InstanceService') private _instanceService: InstanceService,
+    @inject('services.UserService') private _userService: UserService,
     @inject('services.PlanService') private _planService: PlanService,
     @inject('services.CloudInstanceService') private _cloudInstanceService: CloudInstanceService,
     @inject('services.CloudImageService') cloudImageService: CloudImageService,
@@ -16,8 +17,8 @@ export class InstanceController extends BaseController {
     super(cloudImageService, cloudFlavourService);
   }
 
-  @get('/instances', {
-    summary: 'Get a list of all instances',
+  @get('/users/{userId}/instances', {
+    summary: 'Get a list of all instances for a given user',
     responses: {
       '200': {
         description: 'Ok',
@@ -29,9 +30,12 @@ export class InstanceController extends BaseController {
       }
     }
   })
-  async getAll(): Promise<InstanceDto[]> {
+  async getAll(@param.path.number('userId') userId: number): Promise<InstanceDto[]> {
+    const user = await this._userService.getById(userId);
+    this.throwNotFoundIfNull(user, 'User with given id does not exist');
+
     // Get all instances from DB
-    const instances = await this._instanceService.getAll();
+    const instances = await this._instanceService.getAllForUser(user);
 
     // Get all unique plans for the instances
     const plans = instances.map(instance => instance.plan).filter((plan, pos, array) => array.map(mapPlan => mapPlan.id).indexOf(plan.id) === pos);
@@ -67,8 +71,8 @@ export class InstanceController extends BaseController {
     return instanceDtos;
   }
 
-  @get('/instances/{instanceId}', {
-    summary: 'Get a instance by a given identifier',
+  @get('/users/{userId}/instances/{instanceId}', {
+    summary: 'Get a instance by a given identifier for a specific user',
     responses: {
       '200': {
         description: 'Ok',
@@ -88,8 +92,8 @@ export class InstanceController extends BaseController {
     return cloudInstance;
   }
 
-  @post('/instances', {
-    summary: 'Create a instance',
+  @post('/users/{userId}/instances', {
+    summary: 'Create a instance for a specific user',
     responses: {
       '201': {
         description: 'Created',
@@ -129,8 +133,8 @@ export class InstanceController extends BaseController {
     return instanceDto;
   }
 
-  @put('/instances/{instanceId}', {
-    summary: 'Update an instance by a given identifier',
+  @put('/users/{userId}/instances/{instanceId}', {
+    summary: 'Update an instance by a given identifier for a specific user',
     responses: {
       '200': {
         description: 'Ok',
@@ -164,8 +168,8 @@ export class InstanceController extends BaseController {
     return instanceDto;
   }
 
-  @del('/instances/{instanceId}', {
-    summary: 'Delete a instance by a given identifier',
+  @del('/users/{userId}/instances/{instanceId}', {
+    summary: 'Delete a instance by a given identifier for a specific user',
     responses: {
       '200': {
         description: 'Ok'
