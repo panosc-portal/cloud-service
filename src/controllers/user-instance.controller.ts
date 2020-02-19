@@ -1,7 +1,7 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance } from '../models';
+import { Instance, InstanceMemberRole } from '../models';
 import { inject } from '@loopback/context';
-import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService } from '../services';
+import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService } from '../services';
 import { InstanceDto, InstanceCreatorDto } from './dto';
 import { InstanceUpdatorDto } from './dto/instance-updator-dto.model';
 import { BaseInstanceController } from './base-instance.controller';
@@ -13,7 +13,8 @@ export class UserInstanceController extends BaseInstanceController {
     @inject('services.CloudInstanceService') cloudInstanceService: CloudInstanceService,
     @inject('services.CloudImageService') cloudImageService: CloudImageService,
     @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService,
-    @inject('services.UserService') private _userService: UserService) {
+    @inject('services.UserService') private _userService: UserService,
+    @inject('services.InstanceMemberService') private _instanceMemberService: InstanceMemberService) {
     super(instanceService, planService, cloudInstanceService, cloudImageService, cloudFlavourService);
   }
 
@@ -32,7 +33,9 @@ export class UserInstanceController extends BaseInstanceController {
   })
   async getAll(@param.path.number('userId') userId: number): Promise<InstanceDto[]> {
     const user = await this._userService.getById(userId);
-    this.throwNotFoundIfNull(user, 'User with given id does not exist');
+    if (user == null) {
+      return [];
+    }
 
     // Get all instances from DB
     const instances = await this._instanceService.getAllForUser(user);
@@ -107,6 +110,9 @@ export class UserInstanceController extends BaseInstanceController {
     const instance = await this._instanceService.getById(instanceId);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for this given user');
 
+    const member = await this._instanceMemberService.getForUserAndInstance(user, instance);
+    this.throwBadRequestIfNotEqual(member.role, InstanceMemberRole.OWNER);
+
     return this._updateInstance(instance, instanceUpdatorDto);
   }
 
@@ -124,6 +130,9 @@ export class UserInstanceController extends BaseInstanceController {
 
     const instance = await this._instanceService.getByIdForUser(instanceId, user);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for given user');
+
+    const member = await this._instanceMemberService.getForUserAndInstance(user, instance);
+    this.throwBadRequestIfNotEqual(member.role, InstanceMemberRole.OWNER);
 
     return this._deleteInstance(instanceId);
   }

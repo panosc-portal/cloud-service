@@ -90,7 +90,8 @@ export class BaseRepository<T, ID> {
     return result;
   }
 
-  createQueryBuilder(alias: string): SelectQueryBuilder<T> {
+  async createQueryBuilder(alias: string): Promise<SelectQueryBuilder<T>> {
+    await this.init();
     return this._repository.createQueryBuilder(alias);
   }
 

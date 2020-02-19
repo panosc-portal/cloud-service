@@ -15,7 +15,7 @@ export class InstanceRepository extends BaseRepository<Instance, number> {
 
   async findAllForUser(user: User): Promise<Instance[]> {
     // Has to be done in two calls because if we do a single query with a constraint on the userId, we only get one member returned for all instances
-    const queryBuilder = super.createQueryBuilder('instance');
+    const queryBuilder = await super.createQueryBuilder('instance');
 
     // Get all instance Ids
     const instanceIds = (await queryBuilder
@@ -33,7 +33,7 @@ export class InstanceRepository extends BaseRepository<Instance, number> {
 
   async findByIdForUser(id: number, user: User): Promise<Instance> {
     // Has to be done in two calls because if we do a single query with a constraint on the userId, we only get one member returned for all instances
-    const queryBuilder = super.createQueryBuilder('instance');
+    const queryBuilder = await super.createQueryBuilder('instance');
 
     // Get all instance Ids
     const instanceIds = (await queryBuilder
