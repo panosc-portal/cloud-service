@@ -1,6 +1,6 @@
 import { bind, BindingScope } from '@loopback/core';
 import { inject } from '@loopback/context';
-import { CloudInstance, Provider, CloudInstanceState, CloudInstanceCommand } from '../../models';
+import { CloudInstance, Provider, CloudInstanceState, CloudInstanceCommand, CloudInstanceNetwork } from '../../models';
 import { CloudApiClientService } from './cloud-api-client.service';
 import { CloudService } from './cloud.service';
 import { CloudInstanceCreatorDto, CloudInstanceUpdatorDto } from './dto';
@@ -56,6 +56,22 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
 
     } catch (error) {
       logger.error(`Got error getting instance state from ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
+      throw error;
+    }
+  }
+
+  async getNetworkById(cloudInstanceId: number, provider: Provider): Promise<CloudInstanceNetwork> {
+    try {
+      // TODO Update cloud provider API
+      const response = await this._apiClient(provider).get(`${this._baseUrl}/${cloudInstanceId}`);
+      const instance: CloudInstance = response.data;
+      return new CloudInstanceNetwork({
+        hostname: instance.hostname,
+        protocols: instance.protocols
+      });
+
+    } catch (error) {
+      logger.error(`Got error getting instance network from ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
       throw error;
     }
   }

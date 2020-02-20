@@ -30,6 +30,12 @@ export class BaseController {
     }
   }
 
+  throwUnauthorizedIfNotEqual(value1: any, value2: any, message?: string) {
+    if (value1 !== value2) {
+      throw new HttpErrors.Unauthorized(message);
+    }
+  }
+
   protected async _convertPlan(plan: Plan): Promise<PlanDto> {
     // Get image and flavour from the provider
     const [image, flavour] = await Promise.all([

@@ -1,5 +1,5 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance, InstanceMemberRole } from '../models';
+import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService } from '../services';
 import { InstanceDto, InstanceCreatorDto } from './dto';
@@ -111,7 +111,7 @@ export class UserInstanceController extends BaseInstanceController {
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for this given user');
 
     const member = await this._instanceMemberService.getForUserAndInstance(user, instance);
-    this.throwBadRequestIfNotEqual(member.role, InstanceMemberRole.OWNER);
+    this.throwUnauthorizedIfNotEqual(member.role, InstanceMemberRole.OWNER, 'Only the owner can update an instance');
 
     return this._updateInstance(instance, instanceUpdatorDto);
   }
@@ -132,9 +132,115 @@ export class UserInstanceController extends BaseInstanceController {
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for given user');
 
     const member = await this._instanceMemberService.getForUserAndInstance(user, instance);
-    this.throwBadRequestIfNotEqual(member.role, InstanceMemberRole.OWNER);
+    this.throwUnauthorizedIfNotEqual(member.role, InstanceMemberRole.OWNER, 'Only the owner can delete an instance');
 
     return this._deleteInstance(instanceId);
   }
+
+  @get('/users/{userId}/instances/{instanceId}/state', {
+    summary: 'Get the state of an instance by a given identifier for a specific user',
+    responses: {
+      '200': {
+        description: 'Ok',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(CloudInstanceState)
+          }
+        }
+      }
+    }
+  })
+  async getState(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number): Promise<CloudInstanceState> {
+    const user = await this._userService.getById(userId);
+    this.throwNotFoundIfNull(user, 'User with given id does not exist');
+
+    const instance = await this._instanceService.getByIdForUser(instanceId, user);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for this given user');
+
+    // Get state from cloud instance service
+    const state = await this._cloudInstanceService.getStateById(instance.cloudId, instance.plan.provider);
+    return state;
+  }
+
+  @get('/users/{userId}/instances/{instanceId}/network', {
+    summary: 'Get the network of an instance by a given identifier for a specific user',
+    responses: {
+      '200': {
+        description: 'Ok',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(CloudInstanceNetwork)
+          }
+        }
+      }
+    }
+  })
+  async getNetwork(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number): Promise<CloudInstanceNetwork> {
+    const user = await this._userService.getById(userId);
+    this.throwNotFoundIfNull(user, 'User with given id does not exist');
+
+    const instance = await this._instanceService.getByIdForUser(instanceId, user);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for this given user');
+
+    // Get network from cloud instance service
+    const network = await this._cloudInstanceService.getNetworkById(instance.cloudId, instance.plan.provider);
+    return network;
+  }
+
+  @post('/users/{userId}/instances/{instanceId}/actions', {
+    summary: 'Invoke an action for a given instance for a specific user',
+    responses: {
+      '201': {
+        description: 'Created'
+      }
+    }
+  })
+  async executeAction(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number, @requestBody() command: CloudInstanceCommand): Promise<InstanceDto> {
+    const user = await this._userService.getById(userId);
+    this.throwNotFoundIfNull(user, 'User with given id does not exist');
+
+    const instance = await this._instanceService.getByIdForUser(instanceId, user);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for given user');
+
+    const member = await this._instanceMemberService.getForUserAndInstance(user, instance);
+    this.throwUnauthorizedIfNotEqual(member.role, InstanceMemberRole.OWNER, 'Only the owner can execute a command');
+
+    // Send command to the cloud service
+    const [cloudInstance, planDto] = await Promise.all([
+      this._cloudInstanceService.executeActionById(instance.cloudId, command, instance.plan.provider),
+      this._convertPlan(instance.plan)
+    ])
+
+    const instanceDto = this._createInstanceDto(instance, cloudInstance, planDto);
+    return instanceDto;
+  }
+
+  @post('/users/{userId}/instances/{instanceId}/token', {
+    summary: 'Create an authorisation token for a given instance for a specific user',
+    responses: {
+      '201': {
+        description: 'Created',
+        content: {
+          'text/plain': {
+            schema: {
+              token: 'string'
+            }
+          }
+        }
+      }
+    }
+  })
+  async createToken(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number): Promise<string> {
+    const user = await this._userService.getById(userId);
+    this.throwNotFoundIfNull(user, 'User with given id does not exist');
+
+    const instance = await this._instanceService.getByIdForUser(instanceId, user);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for given user');
+
+    // Create token with instance token service
+    // TODO
+    return new Promise<string>((resolve) => {resolve()});
+  }
+
 
 }

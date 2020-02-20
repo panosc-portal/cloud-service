@@ -1,5 +1,5 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance } from '../models';
+import { Instance, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService } from '../services';
 import { InstanceDto, InstanceCreatorDto } from './dto';
@@ -108,5 +108,94 @@ export class InstanceController extends BaseInstanceController {
   })
   async delete(@param.path.number('instanceId') instanceId: number): Promise<boolean> {
     return this._deleteInstance(instanceId);
+  }
+
+  @get('/instances/{instanceId}/state', {
+    summary: 'Get the state of an instance by a given identifier',
+    responses: {
+      '200': {
+        description: 'Ok',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(CloudInstanceState)
+          }
+        }
+      }
+    }
+  })
+  async getState(@param.path.number('instanceId') instanceId: number): Promise<CloudInstanceState> {
+    const instance = await this._instanceService.getById(instanceId);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
+
+    // Get state from cloud instance service
+    const state = await this._cloudInstanceService.getStateById(instance.cloudId, instance.plan.provider);
+    return state;
+  }
+
+  @get('/instances/{instanceId}/network', {
+    summary: 'Get the network of an instance by a given identifier',
+    responses: {
+      '200': {
+        description: 'Ok',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(CloudInstanceNetwork)
+          }
+        }
+      }
+    }
+  })
+  async getNetwork(@param.path.number('instanceId') instanceId: number): Promise<CloudInstanceNetwork> {
+    const instance = await this._instanceService.getById(instanceId);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
+
+    // Get network from cloud instance service
+    const network = await this._cloudInstanceService.getNetworkById(instance.cloudId, instance.plan.provider);
+    return network;
+  }
+
+  @post('/instances/{instanceId}/actions', {
+    summary: 'Invoke an action for a given instance',
+    responses: {
+      '201': {
+        description: 'Created'
+      }
+    }
+  })
+  async executeAction(@param.path.number('instanceId') instanceId: number, @requestBody() command: CloudInstanceCommand): Promise<InstanceDto> {
+    const instance = await this._instanceService.getById(instanceId);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
+
+    // Send command to the cloud service
+    const [cloudInstance, planDto] = await Promise.all([
+      this._cloudInstanceService.executeActionById(instance.cloudId, command, instance.plan.provider),
+      this._convertPlan(instance.plan)
+    ])
+
+    const instanceDto = this._createInstanceDto(instance, cloudInstance, planDto);
+    return instanceDto;
+  }
+
+  @get('/instances/{instanceId}/token/{token}/validate', {
+    summary: 'Validates an authorisation token for a given instance for a specific user',
+    responses: {
+      '200': {
+        description: 'Ok',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(CloudInstanceState)
+          }
+        }
+      }
+    }
+  })
+  async validateToken(@param.path.number('instanceId') instanceId: number, @param.path.number('token') token: string): Promise<string> {
+    const instance = await this._instanceService.getById(instanceId);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
+
+    // Validate token with instance token service
+    // Return instance and associated user
+    // TODO
+    return new Promise<string>((resolve) => {resolve()});
   }
 }

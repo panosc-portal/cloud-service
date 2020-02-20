@@ -37,7 +37,7 @@ export class CloudProviderMockServer {
         image: this.images.find(image => image.id === simplifiedInstance.imageId),
         flavour: this.flavours.find(flavour => flavour.id === simplifiedInstance.flavourId),
         createdAt: simplifiedInstance.createdAt,
-        state: simplifiedInstance.state
+        state: new CloudInstanceState(simplifiedInstance.state)
       }));
 
       const app = express();

@@ -6,7 +6,7 @@ import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
 import { InstanceCreatorDto } from '../../controllers/dto';
-import { CloudInstanceUser, InstanceMemberRole } from '../../models';
+import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType } from '../../models';
 import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
 
 describe('InstanceController', () => {
@@ -159,5 +159,42 @@ describe('InstanceController', () => {
     const finalInstances = finalRes.body as InstanceDto[];
     expect(finalInstances.length).to.equal(initInstances.length - 1);
   });
+
+  it('invokes GET /api/v1/instances/{:id}/state', async () => {
+    const res = await client.get('/api/v1/instances/1/state').expect(200);
+
+    const cloudInstanceState = res.body as CloudInstanceState;
+    expect(cloudInstanceState || null).to.not.be.null();
+    expect(cloudInstanceState.status).to.equal('BUILDING');
+    expect(cloudInstanceState.cpu).to.equal(1);
+    expect(cloudInstanceState.memory).to.equal(1024);
+  });
+
+  it('invokes GET /api/v1/instances/{:id}/network', async () => {
+    const res = await client.get('/api/v1/instances/1/network').expect(200);
+
+    const cloudInstanceNetwork = res.body as CloudInstanceNetwork;
+    expect(cloudInstanceNetwork || null).to.not.be.null();
+    expect(cloudInstanceNetwork.hostname).to.equal('instance1.host.eu');
+    expect(cloudInstanceNetwork.protocols.length).to.equal(2);
+    expect(cloudInstanceNetwork.protocols[0].name).to.equal('RDP');
+    expect(cloudInstanceNetwork.protocols[1].name).to.equal('GUACD');
+  });
+
+  it('invokes POST /api/v1/instances/{:id}/actions', async () => {
+    const command = new CloudInstanceCommand({type: CloudInstanceCommandType.REBOOT});
+    const res = await client.post('/api/v1/users/1/instances/1/actions').send(command).expect(200);
+
+    const instance = res.body as InstanceDto;
+    expect(instance || null).to.not.be.null();
+    expect(instance.id).to.equal(1);
+    expect(instance.state.status).to.equal('REBOOTING');
+  });
+
+  // it('invokes POST /api/v1/instances/{:id}/token', async () => {
+  // });
+
+  // it('invokes GET /instances/{instanceId}/token/{token]/validate', async () => {
+  // });
 
 });

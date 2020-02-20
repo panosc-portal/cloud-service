@@ -140,6 +140,19 @@ describe('CloudInstanceService', () => {
     expect(cloudInstanceState.memory).to.equal(1024);
   });
 
+  it('gets a cloudInstance network', async () => {
+    const provider = await context.providerService.getById(1);
+    expect(provider || null).to.not.be.null();
+
+    const cloudInstanceNetwork = await context.cloudInstanceService.getNetworkById(1, provider);
+
+    expect(cloudInstanceNetwork || null).to.not.be.null();
+    expect(cloudInstanceNetwork.hostname).to.equal('instance1.host.eu');
+    expect(cloudInstanceNetwork.protocols.length).to.equal(2);
+    expect(cloudInstanceNetwork.protocols[0].name).to.equal('RDP');
+    expect(cloudInstanceNetwork.protocols[1].name).to.equal('GUACD');
+  });
+
   it('executes and action', async () => {
     const provider = await context.providerService.getById(1);
     expect(provider || null).to.not.be.null();
