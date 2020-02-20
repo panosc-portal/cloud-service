@@ -9,6 +9,6 @@ export class PlanRepository extends BaseRepository<Plan, number> {
   }
 
   getByProviderIdAndImageId(providerId: number, imageId: number): Promise<Plan[]> {
-    return super.find({ where: {provider: { id: providerId }, imageId: imageId }, order: {id: 'ASC'} });
+    return super.getAll({ where: {provider: { id: providerId }, imageId: imageId }, order: {id: 'ASC'} });
   }
 }

@@ -1,3 +1,4 @@
+export * from './authorisation-token.model';
 export * from './instance.model';
 export * from './instance-member.model';
 export * from './instance-member-role.enum';

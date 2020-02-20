@@ -1,3 +1,4 @@
+export * from './authorisation-token.repository';
 export * from './base.repository';
 export * from './instance.repository';
 export * from './instance-member.repository';

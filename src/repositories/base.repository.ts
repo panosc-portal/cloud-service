@@ -33,14 +33,21 @@ export class BaseRepository<T, ID> {
     return result;
   }
 
-  async find(options?: FindManyOptions<T>): Promise<T[]> {
+  async getAll(options?: FindManyOptions<T>): Promise<T[]> {
     await this.init();
 
     const result = await this._repository.find(options);
     return result;
   }
 
-  async findById(id: ID): Promise<T> {
+  async getOne(options?: FindManyOptions<T>): Promise<T> {
+    await this.init();
+
+    const result = await this._repository.findOne(options);
+    return result;
+  }
+
+  async getById(id: ID): Promise<T> {
     await this.init();
     const result = await this._repository.findOne(id);
     return result;
@@ -64,7 +71,7 @@ export class BaseRepository<T, ID> {
     await this.init();
 
     await this._repository.update(id, data);
-    return this.findById(id);
+    return this.getById(id);
   }
 
   async count(where?: Where): Promise<number> {

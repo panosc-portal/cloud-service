@@ -10,14 +10,14 @@ export class UserRepository extends BaseRepository<User, number> {
   }
 
   getAllLikeLastName(lastName: string, pagination?: Pagination): Promise<User[]> {
-    const options = { 
-      where: { 
+    const options = {
+      where: {
         lastName: Like(`${lastName}%`)
       },
       take: pagination ? pagination.limit : undefined,
       skip: pagination ? pagination.offset : undefined
     }
 
-    return super.find(options);
+    return super.getAll(options);
   }
 }

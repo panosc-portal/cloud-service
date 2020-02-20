@@ -23,11 +23,11 @@ export class InstanceService extends BaseService<Instance, InstanceRepository> {
   }
 
   getAllForUser(user: User): Promise<Instance[]> {
-    return this._repository.findAllForUser(user);
+    return this._repository.getAllForUser(user);
   }
 
   getByIdForUser(id: number, user: User): Promise<Instance> {
-    return this._repository.findByIdForUser(id, user);
+    return this._repository.getByIdForUser(id, user);
   }
 
 }

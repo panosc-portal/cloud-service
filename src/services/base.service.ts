@@ -6,11 +6,11 @@ export class BaseService<T extends { id: number }, R extends BaseRepository<T, n
   constructor(protected _repository: R) {}
 
   getAll(): Promise<T[]> {
-    return this._repository.find();
+    return this._repository.getAll();
   }
 
   getById(id: number): Promise<T> {
-    return this._repository.findById(id);
+    return this._repository.getById(id);
   }
 
   save(object: T): Promise<T> {

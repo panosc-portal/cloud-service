@@ -1,6 +1,7 @@
 import { testDataSource } from '../fixtures/datasources/testdb.datasource';
-import { ProviderRepository, PlanRepository, InstanceRepository, UserRepository, InstanceMemberRepository } from '../../repositories';
+import { ProviderRepository, PlanRepository, InstanceRepository, UserRepository, InstanceMemberRepository, AuthorisationTokenRepository } from '../../repositories';
 import { ProviderService, PlanService, InstanceService, UserService, InstanceMemberService, CloudFlavourService, CloudApiClientService, CloudImageService, CloudInstanceService } from '../../services';
+import { AuthorisationTokenService } from '../../services/authorisation-token.service';
 
 export interface TestApplicationContext {
   providerRepository: ProviderRepository;
@@ -13,6 +14,8 @@ export interface TestApplicationContext {
   userService: UserService;
   instanceMemberRepository: InstanceMemberRepository;
   instanceMemberService: InstanceMemberService;
+  authorisationTokenRepository: AuthorisationTokenRepository;
+  authorisationTokenService: AuthorisationTokenService;
   cloudFlavourService: CloudFlavourService;
   cloudImageService: CloudImageService;
   cloudInstanceService: CloudInstanceService;
@@ -29,6 +32,8 @@ export function createTestApplicationContext(): TestApplicationContext {
   const instanceMemberService = new InstanceMemberService(instanceMemberRepository);
   const instanceRepository = new InstanceRepository(testDataSource);
   const instanceService = new InstanceService(instanceRepository, instanceMemberService);
+  const authorisationTokenRepository = new AuthorisationTokenRepository(testDataSource);
+  const authorisationTokenService = new AuthorisationTokenService(authorisationTokenRepository);
 
   const cloudApiClientService = new CloudApiClientService();
   const cloudFlavourService = new CloudFlavourService(cloudApiClientService);
@@ -46,6 +51,8 @@ export function createTestApplicationContext(): TestApplicationContext {
     userService,
     instanceMemberRepository,
     instanceMemberService,
+    authorisationTokenRepository,
+    authorisationTokenService,
     cloudFlavourService,
     cloudImageService,
     cloudInstanceService
