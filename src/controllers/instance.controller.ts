@@ -1,10 +1,11 @@
-import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand } from '../models';
+import { get, getModelSchemaRef, param, put, requestBody, post, del, HttpErrors } from '@loopback/rest';
+import { Instance, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceAuthorisation } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService } from '../services';
 import { InstanceDto, InstanceCreatorDto } from './dto';
 import { InstanceUpdatorDto } from './dto/instance-updator-dto.model';
 import { BaseInstanceController } from './base-instance.controller';
+import { AuthorisationTokenService } from '../services/authorisation-token.service';
 
 export class InstanceController extends BaseInstanceController {
   constructor(
@@ -12,7 +13,8 @@ export class InstanceController extends BaseInstanceController {
     @inject('services.PlanService') planService: PlanService,
     @inject('services.CloudInstanceService') cloudInstanceService: CloudInstanceService,
     @inject('services.CloudImageService') cloudImageService: CloudImageService,
-    @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService) {
+    @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService,
+    @inject('services.AuthorisationTokenService') private _authorisationTokenService: AuthorisationTokenService) {
     super(instanceService, planService, cloudInstanceService, cloudImageService, cloudFlavourService);
   }
 
@@ -183,19 +185,29 @@ export class InstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(CloudInstanceState)
+            schema: getModelSchemaRef(InstanceAuthorisation)
           }
         }
       }
     }
   })
-  async validateToken(@param.path.number('instanceId') instanceId: number, @param.path.number('token') token: string): Promise<string> {
+  async validateToken(@param.path.number('instanceId') instanceId: number, @param.path.string('token') token: string): Promise<InstanceAuthorisation> {
     const instance = await this._instanceService.getById(instanceId);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
 
     // Validate token with instance token service
-    // Return instance and associated user
-    // TODO
-    return new Promise<string>((resolve) => {resolve()});
+    try {
+      const instanceAuthorisation = await this._authorisationTokenService.validate(instanceId, token);
+
+      return instanceAuthorisation;
+
+    } catch (error) {
+      if (error.isTokenInvalidError) {
+        throw new HttpErrors.Unauthorized(error.message);
+
+      } else {
+        throw new HttpErrors.InternalServerError(error.message);
+      }
+    }
   }
 }

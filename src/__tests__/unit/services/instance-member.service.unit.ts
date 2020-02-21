@@ -28,6 +28,14 @@ describe('InstanceMemberService', () => {
     expect(instanceMember.role).to.equal('OWNER');
   });
 
+  it('gets a instanceMember instance', async () => {
+    const instanceMember = await context.instanceMemberService.getById(1);
+    const instance = await context.instanceMemberService.getInstanceForInstanceMember(instanceMember);
+
+    expect(instance || null).to.not.be.null();
+    expect(instance.id).to.equal(1);
+  });
+
   it('saves a instanceMember', async () => {
     const instanceMembers = await context.instanceMemberService.getAll();
     const instanceMemberCount = instanceMembers.length;

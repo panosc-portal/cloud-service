@@ -33,7 +33,7 @@ export function createTestApplicationContext(): TestApplicationContext {
   const instanceRepository = new InstanceRepository(testDataSource);
   const instanceService = new InstanceService(instanceRepository, instanceMemberService);
   const authorisationTokenRepository = new AuthorisationTokenRepository(testDataSource);
-  const authorisationTokenService = new AuthorisationTokenService(authorisationTokenRepository);
+  const authorisationTokenService = new AuthorisationTokenService(authorisationTokenRepository, instanceMemberService);
 
   const cloudApiClientService = new CloudApiClientService();
   const cloudFlavourService = new CloudFlavourService(cloudApiClientService);

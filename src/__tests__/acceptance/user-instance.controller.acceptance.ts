@@ -5,9 +5,10 @@ import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProvid
 import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
-import { InstanceCreatorDto } from '../../controllers/dto';
+import { InstanceCreatorDto, AuthorisationTokenCreatorDto } from '../../controllers/dto';
 import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType } from '../../models';
 import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
+import { AuthorisationTokenDto } from '../../controllers/dto/authorisation-token-dto.model';
 
 describe('UserInstanceController', () => {
   let app: CloudServiceApplication;
@@ -237,10 +238,21 @@ describe('UserInstanceController', () => {
     await client.post('/api/v1/users/2/instances/1/actions').send(command).expect(401);
   });
 
-  // it('invokes POST /api/v1/users/{:userId}/instances/{:id}/token', async () => {
-  // });
+  it('invokes POST /api/v1/users/{:userId}/instances/{:id}/token', async () => {
+    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
+      username: 'bloggs'
+    });
+    const res = await client.post('/api/v1/users/1/instances/2/token').send(tokenCreatorDto).expect(200);
+    const authorisationToken = res.body as AuthorisationTokenDto;
+    expect(authorisationToken || null).to.not.be.null();
+    expect(authorisationToken.token || null).to.not.be.null();
+  });
 
-  // it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/token if user is not owner', async () => {
-  // });
+  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/token if user is not member', async () => {
+    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
+      username: 'bloggs'
+    });
+    await client.post('/api/v1/users/2/instances/2/token').send(tokenCreatorDto).expect(404);
+  });
 
 });

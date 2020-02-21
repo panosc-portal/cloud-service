@@ -20,6 +20,10 @@ export class ApplicationConfig {
     config: string;
   };
 
+  authorisation: {
+    tokenValidDurationS: number
+  }
+
   constructor(data?: Partial<ApplicationConfig>) {
     Object.assign(this, data);
   }
@@ -50,6 +54,9 @@ export function APPLICATION_CONFIG(): ApplicationConfig {
             ? process.env.CLOUD_SERVICE_SCHEDULER_CONFIG === 'true'
             : true,
         config: process.env.CLOUD_SERVICE_SCHEDULER_CONFIG
+      },
+      authorisation: {
+        tokenValidDurationS: +process.env.CLOUD_SERVICE_TOKEN_VALID_DURATION_S || 10
       }
     };
   }

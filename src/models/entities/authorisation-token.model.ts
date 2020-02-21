@@ -1,6 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
-import { Provider } from './provider.model';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { InstanceMember } from './instance-member.model';
 
 @Entity()
@@ -27,19 +26,27 @@ export class AuthorisationToken {
   @Column({ length: 100, nullable: true })
   username: string;
 
-  @property({ type: Provider })
-  @ManyToOne(type => Provider, { eager: true, nullable: false })
+  @property({ type: InstanceMember })
+  @ManyToOne(type => InstanceMember, { eager: true, nullable: false })
   @JoinColumn({ name: 'instance_member_id' })
   instanceMember: InstanceMember;
 
   @property({
-    type: 'date',
+    type: 'number',
     required: true
   })
-  @CreateDateColumn({ name: 'created_at', type: process.env.NODE_ENV === 'test' ? 'date' : 'timestamp' })
-  createdAt: Date;
+  @Column({ name: 'created_at', type: 'integer' })
+  createdAtMs: number;
 
   constructor(data?: Partial<AuthorisationToken>) {
     Object.assign(this, data);
+  }
+
+  isTimeValid(tokenValidDurationS: number): boolean {
+    const validTimeMs = this.createdAtMs + (1000 * tokenValidDurationS);
+    const currentTimeMs = (new Date()).getTime();
+    const diffMs = currentTimeMs - validTimeMs;
+
+    return diffMs < 0;
   }
 }

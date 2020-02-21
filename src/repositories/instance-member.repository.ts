@@ -13,9 +13,22 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMember = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
+      .innerJoin('instanceMember.instance', 'instance')
       .andWhere('user.id = :userId', {userId: user.id})
+      .andWhere('instance.id = :instanceId', {instanceId: instance.id})
       .getOne();
 
     return instanceMember;
+  }
+
+  async getInstanceForInstanceMember(instanceMember: InstanceMember): Promise<Instance> {
+    const queryBuilder = await super.createQueryBuilder('instanceMember');
+
+    const instanceMemberWithInstance = await queryBuilder
+      .innerJoinAndSelect('instanceMember.instance', 'instance')
+      .andWhere('instanceMember.id = :id', {id: instanceMember.id})
+      .getOne();
+
+    return instanceMemberWithInstance.instance;
   }
 }

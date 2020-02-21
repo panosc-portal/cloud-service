@@ -2,9 +2,11 @@ import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loo
 import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService } from '../services';
-import { InstanceDto, InstanceCreatorDto } from './dto';
+import { InstanceDto, InstanceCreatorDto, AuthorisationTokenCreatorDto } from './dto';
 import { InstanceUpdatorDto } from './dto/instance-updator-dto.model';
 import { BaseInstanceController } from './base-instance.controller';
+import { AuthorisationTokenService } from '../services/authorisation-token.service';
+import { AuthorisationTokenDto } from './dto/authorisation-token-dto.model';
 
 export class UserInstanceController extends BaseInstanceController {
   constructor(
@@ -14,7 +16,8 @@ export class UserInstanceController extends BaseInstanceController {
     @inject('services.CloudImageService') cloudImageService: CloudImageService,
     @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService,
     @inject('services.UserService') private _userService: UserService,
-    @inject('services.InstanceMemberService') private _instanceMemberService: InstanceMemberService) {
+    @inject('services.InstanceMemberService') private _instanceMemberService: InstanceMemberService,
+    @inject('services.AuthorisationTokenService') private _authorisationTokenService: AuthorisationTokenService) {
     super(instanceService, planService, cloudInstanceService, cloudImageService, cloudFlavourService);
   }
 
@@ -221,25 +224,27 @@ export class UserInstanceController extends BaseInstanceController {
       '201': {
         description: 'Created',
         content: {
-          'text/plain': {
-            schema: {
-              token: 'string'
-            }
+          'application/json': {
+            schema: getModelSchemaRef(AuthorisationTokenDto)
           }
         }
       }
     }
   })
-  async createToken(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number): Promise<string> {
+  async createToken(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number, @requestBody() tokenCreatorDto: AuthorisationTokenCreatorDto): Promise<AuthorisationTokenDto> {
     const user = await this._userService.getById(userId);
     this.throwNotFoundIfNull(user, 'User with given id does not exist');
 
     const instance = await this._instanceService.getByIdForUser(instanceId, user);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist for given user');
 
+    const member = await this._instanceMemberService.getForUserAndInstance(user, instance);
+
     // Create token with instance token service
-    // TODO
-    return new Promise<string>((resolve) => {resolve()});
+    const authorisationToken = await this._authorisationTokenService.create(tokenCreatorDto.username, member);
+    const authorisationTokenDto = new AuthorisationTokenDto({ token: authorisationToken.token})
+
+    return authorisationTokenDto;
   }
 
 

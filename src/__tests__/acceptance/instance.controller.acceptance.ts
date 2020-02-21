@@ -5,9 +5,11 @@ import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProvid
 import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
-import { InstanceCreatorDto } from '../../controllers/dto';
-import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType } from '../../models';
+import { InstanceCreatorDto, AuthorisationTokenCreatorDto } from '../../controllers/dto';
+import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType, InstanceAuthorisation } from '../../models';
 import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
+import { AuthorisationTokenDto } from '../../controllers/dto/authorisation-token-dto.model';
+import { APPLICATION_CONFIG } from '../../application-config';
 
 describe('InstanceController', () => {
   let app: CloudServiceApplication;
@@ -191,10 +193,56 @@ describe('InstanceController', () => {
     expect(instance.state.status).to.equal('REBOOTING');
   });
 
-  // it('invokes POST /api/v1/instances/{:id}/token', async () => {
-  // });
+  it('invokes GET /instances/{instanceId}/token/{token}/validate', async () => {
+    // Create token
+    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
+      username: 'bloggs'
+    });
+    const res = await client.post('/api/v1/users/1/instances/1/token').send(tokenCreatorDto).expect(200);
+    const authorisationToken = res.body as AuthorisationTokenDto;
+    expect(authorisationToken || null).to.not.be.null();
 
-  // it('invokes GET /instances/{instanceId}/token/{token]/validate', async () => {
-  // });
+    const res2 = await client.get(`/api/v1/instances/1/token/${authorisationToken.token}/validate`).expect(200);
+    const instanceAuthorisation = res2.body as InstanceAuthorisation;
+    expect(instanceAuthorisation || null).to.not.be.null();
+    expect(instanceAuthorisation.instance || null).to.not.be.null();
+    expect(instanceAuthorisation.instance.id).to.equal(1);
+    expect(instanceAuthorisation.instanceMember || null).to.not.be.null();
+    expect(instanceAuthorisation.instanceMember.user || null).to.not.be.null();
+    expect(instanceAuthorisation.instanceMember.user.id).to.equal(1);
+    expect(instanceAuthorisation.username || null).to.not.be.null();
+    expect(instanceAuthorisation.username).to.equal('bloggs');
+  });
+
+  it('fails to invoke GET /instances/{instanceId}/token/{token}/validate because delay too long', async () => {
+    // Create token
+    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
+      username: 'bloggs'
+    });
+    const res = await client.post('/api/v1/users/1/instances/1/token').send(tokenCreatorDto).expect(200);
+    const authorisationToken = res.body as AuthorisationTokenDto;
+    expect(authorisationToken || null).to.not.be.null();
+
+    const originalDelayS = APPLICATION_CONFIG().authorisation.tokenValidDurationS;
+    APPLICATION_CONFIG().authorisation.tokenValidDurationS = 1;
+    const delay = (delayS: number) => new Promise((resolve) => setTimeout(resolve, delayS * 1000));
+    await delay(APPLICATION_CONFIG().authorisation.tokenValidDurationS);
+
+    await client.get(`/api/v1/instances/1/token/${authorisationToken.token}/validate`).expect(401);
+
+    APPLICATION_CONFIG().authorisation.tokenValidDurationS = originalDelayS;
+  });
+
+  it('fails to invoke GET /instances/{instanceId}/token/{token}/validate because instance is not coherent', async () => {
+    // Create token
+    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
+      username: 'bloggs'
+    });
+    const res = await client.post('/api/v1/users/1/instances/1/token').send(tokenCreatorDto).expect(200);
+    const authorisationToken = res.body as AuthorisationTokenDto;
+    expect(authorisationToken || null).to.not.be.null();
+
+    await client.get(`/api/v1/instances/2/token/${authorisationToken.token}/validate`).expect(401);
+  });
 
 });

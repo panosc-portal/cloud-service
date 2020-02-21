@@ -13,4 +13,8 @@ export class InstanceMemberService extends BaseService<InstanceMember, InstanceM
   getForUserAndInstance(user: User, instance: Instance): Promise<InstanceMember> {
     return this._repository.getForUserAndInstance(user, instance);
   }
+
+  getInstanceForInstanceMember(instanceMember: InstanceMember): Promise<Instance> {
+    return this._repository.getInstanceForInstanceMember(instanceMember);
+  }
 }

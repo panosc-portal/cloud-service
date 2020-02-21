@@ -1,6 +1,7 @@
 import { expect } from '@loopback/testlab';
 import { givenInitialisedTestDatabase, closeTestDatabase } from '../../helpers/database.helper';
 import { createTestApplicationContext, TestApplicationContext } from '../../helpers/context.helper';
+import { APPLICATION_CONFIG } from '../../../application-config';
 
 describe('AuthorisationTokenService', () => {
   let context: TestApplicationContext;
@@ -33,7 +34,7 @@ describe('AuthorisationTokenService', () => {
     expect(authorisationToken.username).to.equal('bloggs');
   });
 
-  it('creates an authorisationTokens', async () => {
+  it('creates an authorisationToken', async () => {
     const authorisationTokens = await context.authorisationTokenService.getAll();
     const initialCount = authorisationTokens.length;
 
@@ -42,9 +43,50 @@ describe('AuthorisationTokenService', () => {
 
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.id || null).to.not.be.null();
-    expect(authorisationToken.createdAt || null).to.not.be.null();
+    expect(authorisationToken.createdAtMs || null).to.not.be.null();
 
     const authorisationTokens2 = await context.authorisationTokenService.getAll();
     expect(authorisationTokens2.length).to.equal(initialCount + 1);
+  });
+
+  it('validates a good authorisationToken', async () => {
+    const instanceMember = await context.instanceMemberService.getById(3);
+    const authorisationToken = await context.authorisationTokenService.create('tote', instanceMember);
+
+    expect(authorisationToken || null).to.not.be.null();
+    expect(authorisationToken.id || null).to.not.be.null();
+    expect(authorisationToken.createdAtMs || null).to.not.be.null();
+
+    const instanceAuthorisation = await context.authorisationTokenService.validate(1, authorisationToken.token);
+    expect(instanceAuthorisation || null).to.not.be.null();
+    expect(instanceAuthorisation.instance || null).to.not.be.null();
+    expect(instanceAuthorisation.instanceMember || null).to.not.be.null();
+    expect(instanceAuthorisation.username || null).to.not.be.null();
+  });
+
+  it('invalidates a bad authorisationToken by time', async () => {
+    const instanceMember = await context.instanceMemberService.getById(3);
+    const authorisationToken = await context.authorisationTokenService.create('tote', instanceMember);
+
+    expect(authorisationToken || null).to.not.be.null();
+    expect(authorisationToken.id || null).to.not.be.null();
+    expect(authorisationToken.createdAtMs || null).to.not.be.null();
+
+    const originalDelayS = APPLICATION_CONFIG().authorisation.tokenValidDurationS;
+    APPLICATION_CONFIG().authorisation.tokenValidDurationS = 1;
+    const delay = (delayS: number) => new Promise((resolve) => setTimeout(resolve, delayS * 1000));
+    await delay(APPLICATION_CONFIG().authorisation.tokenValidDurationS);
+
+    let error = null;
+    try {
+      await context.authorisationTokenService.validate(1, authorisationToken.token);
+    } catch (err) {
+      error = err;
+    }
+    expect(error || null).to.not.be.null();
+    expect(error.isTokenInvalidError || null).to.not.be.null();
+    expect(error.isTokenInvalidError).to.be.true();
+
+    APPLICATION_CONFIG().authorisation.tokenValidDurationS = originalDelayS;
   });
 });

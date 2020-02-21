@@ -69,6 +69,6 @@ insert INTO instance_member (id, user_id, instance_id, role, created_at)
 values (5, 1, 3, 'OWNER', '2020-01-01');
 
 insert into authorisation_token (id, token, username, instance_member_id, created_at)
-values (1, '24e7437a-eae5-48c4-923e-778c42a6acf8', 'bloggs', 1, '2020-01-01');
+values (1, '24e7437a-eae5-48c4-923e-778c42a6acf8', 'bloggs', 1, 1577836800000);
 insert into authorisation_token (id, token, username, instance_member_id, created_at)
-values (2, '24e7437b-eae5-48c4-923e-778c42a6acf8', 'clayton', 2, '2020-01-01');
+values (2, '24e7437b-eae5-48c4-923e-778c42a6acf8', 'clayton', 2, 1577836800000);
