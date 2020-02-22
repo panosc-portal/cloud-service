@@ -1,4 +1,5 @@
 export * from './authorisation-token.model';
+export * from './health.enum';
 export * from './instance.model';
 export * from './instance-authorisation.model';
 export * from './instance-member.model';

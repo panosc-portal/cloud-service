@@ -43,7 +43,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/dist/__tests__/acceptance/instance.controller.acceptance.js"
+                "${workspaceFolder}/dist/__tests__/acceptance/health.controller.acceptance.js"
                 // "${workspaceFolder}/dist/__tests__/unit/services/instance.service.unit.js"
             ],
             "env": {
