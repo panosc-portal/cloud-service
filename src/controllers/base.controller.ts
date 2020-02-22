@@ -30,6 +30,18 @@ export class BaseController {
     }
   }
 
+  throwBadRequestIfEqual(value1: any, value2: any, message?: string) {
+    if (value1 === value2) {
+      throw new HttpErrors.BadRequest(message);
+    }
+  }
+
+  throwUnauthorizedIfNull(value: any, message?: string) {
+    if (value == null) {
+      throw new HttpErrors.Unauthorized(message);
+    }
+  }
+
   throwUnauthorizedIfNotEqual(value1: any, value2: any, message?: string) {
     if (value1 !== value2) {
       throw new HttpErrors.Unauthorized(message);

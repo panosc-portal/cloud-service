@@ -20,7 +20,7 @@ export class InstanceMember {
     type: User,
     required: true
   })
-  @ManyToOne(type => User, { eager: true, nullable: false, cascade: true })
+  @ManyToOne(type => User, { eager: true, nullable: false, cascade: true, })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

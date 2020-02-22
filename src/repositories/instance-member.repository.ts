@@ -1,4 +1,4 @@
-import { InstanceMember, User, Instance } from '../models';
+import { InstanceMember, Instance } from '../models';
 import { inject } from '@loopback/core';
 import { BaseRepository } from './base.repository';
 import { TypeORMDataSource } from '../datasources';
@@ -8,14 +8,26 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
     super(dataSource, InstanceMember);
   }
 
-  async getForUserAndInstance(user: User, instance: Instance): Promise<InstanceMember> {
+  async getForInstanceId(instanceId: number): Promise<InstanceMember[]> {
+    const queryBuilder = await super.createQueryBuilder('instanceMember');
+
+    const instanceMembers = await queryBuilder
+      .innerJoinAndSelect('instanceMember.user', 'user')
+      .innerJoin('instanceMember.instance', 'instance')
+      .andWhere('instance.id = :instanceId', {instanceId: instanceId})
+      .getMany();
+
+    return instanceMembers;
+  }
+
+  async getForUserIdAndInstanceId(userId: number, instanceId: number): Promise<InstanceMember> {
     const queryBuilder = await super.createQueryBuilder('instanceMember');
 
     const instanceMember = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
       .innerJoin('instanceMember.instance', 'instance')
-      .andWhere('user.id = :userId', {userId: user.id})
-      .andWhere('instance.id = :instanceId', {instanceId: instance.id})
+      .andWhere('user.id = :userId', {userId: userId})
+      .andWhere('instance.id = :instanceId', {instanceId: instanceId})
       .getOne();
 
     return instanceMember;

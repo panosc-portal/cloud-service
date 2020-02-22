@@ -2,8 +2,7 @@ import { Instance, CloudInstance, InstanceMemberRole, User, } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, CloudInstanceCreatorDto, PlanService, CloudImageService, CloudInstanceUpdatorDto } from '../services';
 import { BaseController } from './base.controller';
-import { InstanceDto, InstanceCreatorDto, PlanDto } from './dto';
-import { InstanceUpdatorDto } from './dto/instance-updator-dto.model';
+import { InstanceDto, InstanceCreatorDto, PlanDto, InstanceUpdatorDto } from './dto';
 
 export class BaseInstanceController extends BaseController {
   constructor(

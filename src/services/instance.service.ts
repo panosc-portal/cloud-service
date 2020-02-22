@@ -26,8 +26,8 @@ export class InstanceService extends BaseService<Instance, InstanceRepository> {
     return this._repository.getAllForUser(user);
   }
 
-  getByIdForUser(id: number, user: User): Promise<Instance> {
-    return this._repository.getByIdForUser(id, user);
+  getByIdForUserId(id: number, userId: number): Promise<Instance> {
+    return this._repository.getByIdForUserId(id, userId);
   }
 
 }

@@ -15,9 +15,9 @@ export class User {
   @property({
     type: 'string',
   })
-  @Column({ name: 'first_name',  length: 100, nullable: true })
+  @Column({ name: 'first_name', length: 100, nullable: true })
   firstName: string;
-  
+
   @property({
     type: 'string',
   })

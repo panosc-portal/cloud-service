@@ -1,5 +1,5 @@
 import { bind, BindingScope } from '@loopback/core';
-import { InstanceMember, User, Instance } from '../models';
+import { InstanceMember, Instance } from '../models';
 import { InstanceMemberRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 import { BaseService } from './base.service';
@@ -10,8 +10,12 @@ export class InstanceMemberService extends BaseService<InstanceMember, InstanceM
     super(repo);
   }
 
-  getForUserAndInstance(user: User, instance: Instance): Promise<InstanceMember> {
-    return this._repository.getForUserAndInstance(user, instance);
+  getForInstanceId(instanceId: number): Promise<InstanceMember[]> {
+    return this._repository.getForInstanceId(instanceId);
+  }
+
+  getForUserIdAndInstanceId(userId: number, instanceId: number): Promise<InstanceMember> {
+    return this._repository.getForUserIdAndInstanceId(userId, instanceId);
   }
 
   getInstanceForInstanceMember(instanceMember: InstanceMember): Promise<Instance> {

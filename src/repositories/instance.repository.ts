@@ -31,7 +31,7 @@ export class InstanceRepository extends BaseRepository<Instance, number> {
     return super.getAll({where: {id: In(instanceIds)}, order: { id: 'DESC' }});
   }
 
-  async getByIdForUser(id: number, user: User): Promise<Instance> {
+  async getByIdForUserId(id: number, userId: number): Promise<Instance> {
     // Has to be done in two calls because if we do a single query with a constraint on the userId, we only get one member returned for all instances
     const queryBuilder = await super.createQueryBuilder('instance');
 
@@ -41,7 +41,7 @@ export class InstanceRepository extends BaseRepository<Instance, number> {
       .innerJoin('instance.members', 'member')
       .leftJoin('member.user', 'user')
       .where({deleted: false})
-      .andWhere('user.id = :userId', {userId: user.id})
+      .andWhere('user.id = :userId', {userId: userId})
       .getMany())
       .map(data => data.id);
 
