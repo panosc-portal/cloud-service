@@ -2,7 +2,7 @@ import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loo
 import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceMember } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService } from '../services';
-import { InstanceDto, InstanceCreatorDto, AuthorisationTokenCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from './dto';
+import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from './dto';
 import { BaseInstanceController } from './base-instance.controller';
 import { AuthorisationTokenService } from '../services/authorisation-token.service';
 import { AuthorisationTokenDto } from './dto/authorisation-token-dto.model';
@@ -235,7 +235,7 @@ export class UserInstanceController extends BaseInstanceController {
       }
     }
   })
-  async createToken(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number, @requestBody() tokenCreatorDto: AuthorisationTokenCreatorDto): Promise<AuthorisationTokenDto> {
+  async createToken(@param.path.number('userId') userId: number, @param.path.number('instanceId') instanceId: number): Promise<AuthorisationTokenDto> {
     const [user, instance, connectedMember] = await Promise.all([
       this._userService.getById(userId),
       this._instanceService.getByIdForUserId(instanceId, userId),
@@ -246,7 +246,7 @@ export class UserInstanceController extends BaseInstanceController {
     this.throwUnauthorizedIfNull(connectedMember, 'User with given id is not a member of the given instance');
 
     // Create token with instance token service for connected member
-    const authorisationToken = await this._authorisationTokenService.create(tokenCreatorDto.username, connectedMember);
+    const authorisationToken = await this._authorisationTokenService.create(connectedMember);
     const authorisationTokenDto = new AuthorisationTokenDto({ token: authorisationToken.token})
 
     return authorisationTokenDto;

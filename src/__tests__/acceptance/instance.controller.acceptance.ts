@@ -5,11 +5,12 @@ import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProvid
 import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
-import { InstanceCreatorDto, AuthorisationTokenCreatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from '../../controllers/dto';
-import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType, InstanceAuthorisation, InstanceMember, User } from '../../models';
+import { InstanceCreatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from '../../controllers/dto';
+import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType, InstanceMember, User } from '../../models';
 import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
 import { AuthorisationTokenDto } from '../../controllers/dto/authorisation-token-dto.model';
 import { APPLICATION_CONFIG } from '../../application-config';
+import { InstanceAuthorisationDto } from '../../controllers/dto/instance-authorisation-dto.model';
 
 describe('InstanceController', () => {
   let app: CloudServiceApplication;
@@ -85,7 +86,8 @@ describe('InstanceController', () => {
         homePath: '/home/jojuja',
         uid: 1,
         gid: 2,
-        username: 'jojuja'
+        username: 'jojuja',
+        email: 'jojuja@test.com'
       }),
     });
 
@@ -195,31 +197,26 @@ describe('InstanceController', () => {
 
   it('invokes GET /instances/{instanceId}/token/{token}/validate', async () => {
     // Create token
-    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
-      username: 'bloggs'
-    });
-    const res = await client.post('/api/v1/users/1/instances/1/token').send(tokenCreatorDto).expect(200);
+    const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
 
     const res2 = await client.get(`/api/v1/instances/1/token/${authorisationToken.token}/validate`).expect(200);
-    const instanceAuthorisation = res2.body as InstanceAuthorisation;
+    const instanceAuthorisation = res2.body as InstanceAuthorisationDto;
     expect(instanceAuthorisation || null).to.not.be.null();
-    expect(instanceAuthorisation.instance || null).to.not.be.null();
-    expect(instanceAuthorisation.instance.id).to.equal(1);
-    expect(instanceAuthorisation.instanceMember || null).to.not.be.null();
-    expect(instanceAuthorisation.instanceMember.user || null).to.not.be.null();
-    expect(instanceAuthorisation.instanceMember.user.id).to.equal(1);
-    expect(instanceAuthorisation.username || null).to.not.be.null();
-    expect(instanceAuthorisation.username).to.equal('bloggs');
+    expect(instanceAuthorisation.network || null).to.not.be.null();
+    expect(instanceAuthorisation.network.hostname).to.equal('instance1.host.eu');
+    expect(instanceAuthorisation.member || null).to.not.be.null();
+    expect(instanceAuthorisation.member.user || null).to.not.be.null();
+    expect(instanceAuthorisation.member.user.id).to.equal(1);
+    expect(instanceAuthorisation.account || null).to.not.be.null();
+    expect(instanceAuthorisation.account.accountId).to.equal(1);
+    expect(instanceAuthorisation.account.username).to.equal('bloggs');
   });
 
   it('fails to invoke GET /instances/{instanceId}/token/{token}/validate because delay too long', async () => {
     // Create token
-    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
-      username: 'bloggs'
-    });
-    const res = await client.post('/api/v1/users/1/instances/1/token').send(tokenCreatorDto).expect(200);
+    const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
 
@@ -235,10 +232,7 @@ describe('InstanceController', () => {
 
   it('fails to invoke GET /instances/{instanceId}/token/{token}/validate because instance is not coherent', async () => {
     // Create token
-    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
-      username: 'bloggs'
-    });
-    const res = await client.post('/api/v1/users/1/instances/1/token').send(tokenCreatorDto).expect(200);
+    const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
 

@@ -21,10 +21,9 @@ export class AuthorisationTokenService extends BaseService<AuthorisationToken, A
     return this._repository.getByToken(token);
   }
 
-  create(username: string, instanceMember: InstanceMember): Promise<AuthorisationToken> {
+  create(instanceMember: InstanceMember): Promise<AuthorisationToken> {
     const token = new AuthorisationToken({
       token: uuid(),
-      username: username,
       instanceMember: instanceMember,
       createdAtMs: (new Date).getTime()
     });
@@ -34,13 +33,11 @@ export class AuthorisationTokenService extends BaseService<AuthorisationToken, A
 
   async validate(instanceId: number, token: string): Promise<InstanceAuthorisation> {
     const authorisationToken = await this.getByToken(token);
+    const instance = await this._instanceMemberService.getInstanceForInstanceMember(authorisationToken.instanceMember);
 
     if (authorisationToken == null) {
       return null;
     }
-
-    // Get instance of instance member associated to token
-    const instance = await this._instanceMemberService.getInstanceForInstanceMember(authorisationToken.instanceMember);
 
     if (instance.id !== instanceId) {
       throw new TokenInvalidError(`Token ${token} is not valid for the given instance`);
@@ -51,9 +48,7 @@ export class AuthorisationTokenService extends BaseService<AuthorisationToken, A
     } else {
 
       return new InstanceAuthorisation({
-        instance: instance,
         instanceMember: authorisationToken.instanceMember,
-        username: authorisationToken.username
       });
     }
   }

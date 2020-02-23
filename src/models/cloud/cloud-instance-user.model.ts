@@ -37,6 +37,11 @@ export class CloudInstanceUser {
   })
   homePath: string;
 
+  @property({
+    type: 'string'
+  })
+  email: string;
+
   constructor(data?: Partial<CloudInstanceUser>) {
     Object.assign(this, data);
   }

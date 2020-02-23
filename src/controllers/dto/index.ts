@@ -1,4 +1,3 @@
-export * from './authorisation-token-creator-dto.model';
 export * from './authorisation-token-dto.model';
 export * from './instance-creator-dto.model';
 export * from './instance-dto.model';

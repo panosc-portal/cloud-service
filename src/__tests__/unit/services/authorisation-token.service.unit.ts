@@ -31,7 +31,8 @@ describe('AuthorisationTokenService', () => {
 
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.id).to.equal(1);
-    expect(authorisationToken.username).to.equal('bloggs');
+    expect(authorisationToken.instanceMember || null).to.not.be.null();
+    expect(authorisationToken.instanceMember.user.id).to.equal(1);
   });
 
   it('creates an authorisationToken', async () => {
@@ -39,7 +40,7 @@ describe('AuthorisationTokenService', () => {
     const initialCount = authorisationTokens.length;
 
     const instanceMember = await context.instanceMemberService.getById(3);
-    const authorisationToken = await context.authorisationTokenService.create('tote', instanceMember);
+    const authorisationToken = await context.authorisationTokenService.create(instanceMember);
 
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.id || null).to.not.be.null();
@@ -51,7 +52,7 @@ describe('AuthorisationTokenService', () => {
 
   it('validates a good authorisationToken', async () => {
     const instanceMember = await context.instanceMemberService.getById(3);
-    const authorisationToken = await context.authorisationTokenService.create('tote', instanceMember);
+    const authorisationToken = await context.authorisationTokenService.create(instanceMember);
 
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.id || null).to.not.be.null();
@@ -59,14 +60,12 @@ describe('AuthorisationTokenService', () => {
 
     const instanceAuthorisation = await context.authorisationTokenService.validate(1, authorisationToken.token);
     expect(instanceAuthorisation || null).to.not.be.null();
-    expect(instanceAuthorisation.instance || null).to.not.be.null();
     expect(instanceAuthorisation.instanceMember || null).to.not.be.null();
-    expect(instanceAuthorisation.username || null).to.not.be.null();
   });
 
   it('invalidates a bad authorisationToken by time', async () => {
     const instanceMember = await context.instanceMemberService.getById(3);
-    const authorisationToken = await context.authorisationTokenService.create('tote', instanceMember);
+    const authorisationToken = await context.authorisationTokenService.create(instanceMember);
 
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.id || null).to.not.be.null();

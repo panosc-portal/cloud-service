@@ -20,12 +20,6 @@ export class AuthorisationToken {
   @Column({ length: 250, unique: true })
   token: string;
 
-  @property({
-    type: 'string'
-  })
-  @Column({ length: 100, nullable: true })
-  username: string;
-
   @property({ type: InstanceMember })
   @ManyToOne(type => InstanceMember, { eager: true, nullable: false })
   @JoinColumn({ name: 'instance_member_id' })

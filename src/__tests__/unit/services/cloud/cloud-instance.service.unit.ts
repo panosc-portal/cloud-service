@@ -67,7 +67,8 @@ describe('CloudInstanceService', () => {
         uid: 1001,
         gid: 1002,
         homePath: '/home/doe',
-        username: 'janedoe'
+        username: 'janedoe',
+        email: 'janedoe@test.com'
       })
     });
 

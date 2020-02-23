@@ -5,7 +5,7 @@ import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProvid
 import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
-import { InstanceCreatorDto, AuthorisationTokenCreatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from '../../controllers/dto';
+import { InstanceCreatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from '../../controllers/dto';
 import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType, InstanceMember, User } from '../../models';
 import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
 import { AuthorisationTokenDto } from '../../controllers/dto/authorisation-token-dto.model';
@@ -88,7 +88,8 @@ describe('UserInstanceController', () => {
         homePath: '/home/jojuja',
         uid: 1,
         gid: 2,
-        username: 'jojuja'
+        username: 'jojuja',
+        email: 'jojuja@test.com'
       }),
     });
 
@@ -135,7 +136,8 @@ describe('UserInstanceController', () => {
         homePath: '/home/jojuja',
         uid: 1,
         gid: 2,
-        username: 'jojuja'
+        username: 'jojuja',
+        email: 'jojuja@test.com'
       }),
     });
 
@@ -272,20 +274,14 @@ describe('UserInstanceController', () => {
   });
 
   it('invokes POST /api/v1/users/{:userId}/instances/{:id}/token', async () => {
-    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
-      username: 'bloggs'
-    });
-    const res = await client.post('/api/v1/users/1/instances/2/token').send(tokenCreatorDto).expect(200);
+    const res = await client.post('/api/v1/users/1/instances/2/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.token || null).to.not.be.null();
   });
 
   it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/token if user is not member', async () => {
-    const tokenCreatorDto = new AuthorisationTokenCreatorDto({
-      username: 'bloggs'
-    });
-    await client.post('/api/v1/users/2/instances/2/token').send(tokenCreatorDto).expect(404);
+    await client.post('/api/v1/users/2/instances/2/token').expect(404);
   });
 
   it('invokes GET /api/v1/users/{:userId}/instances/{:id}/members', async () => {

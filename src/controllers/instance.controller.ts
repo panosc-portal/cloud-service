@@ -5,6 +5,7 @@ import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService
 import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from './dto';
 import { BaseInstanceController } from './base-instance.controller';
 import { AuthorisationTokenService } from '../services/authorisation-token.service';
+import { InstanceAuthorisationDto } from './dto/instance-authorisation-dto.model';
 
 export class InstanceController extends BaseInstanceController {
   constructor(
@@ -191,15 +192,23 @@ export class InstanceController extends BaseInstanceController {
       }
     }
   })
-  async validateToken(@param.path.number('instanceId') instanceId: number, @param.path.string('token') token: string): Promise<InstanceAuthorisation> {
+  async validateToken(@param.path.number('instanceId') instanceId: number, @param.path.string('token') token: string): Promise<InstanceAuthorisationDto> {
     const instance = await this._instanceService.getById(instanceId);
     this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
 
     // Validate token with instance token service
     try {
       const instanceAuthorisation = await this._authorisationTokenService.validate(instanceId, token);
+      const cloudInstance = await this._cloudInstanceService.getById(instance.cloudId, instance.plan.provider);
 
-      return instanceAuthorisation;
+      return new InstanceAuthorisationDto({
+        member: instanceAuthorisation.instanceMember,
+        account: cloudInstance.user,
+        network: new CloudInstanceNetwork({
+          hostname: cloudInstance.hostname,
+          protocols: cloudInstance.protocols
+        })
+      });
 
     } catch (error) {
       if (error.isTokenInvalidError) {
