@@ -1,11 +1,9 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
 import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceMember } from '../models';
 import { inject } from '@loopback/context';
-import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService } from '../services';
-import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from './dto';
+import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService, AuthorisationTokenService } from '../services';
+import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto, AuthorisationTokenDto } from './dto';
 import { BaseInstanceController } from './base-instance.controller';
-import { AuthorisationTokenService } from '../services/authorisation-token.service';
-import { AuthorisationTokenDto } from './dto/authorisation-token-dto.model';
 
 export class UserInstanceController extends BaseInstanceController {
   constructor(
@@ -84,7 +82,7 @@ export class UserInstanceController extends BaseInstanceController {
     }
   })
   async create(@param.path.number('userId') userId: number, @requestBody() instanceCreator: InstanceCreatorDto): Promise<InstanceDto> {
-    this.throwBadRequestIfNotEqual(userId, instanceCreator.user.accountId, 'The user can only create an instance where they are the owner');
+    this.throwBadRequestIfNotEqual(userId, instanceCreator.account.userId, 'The user can only create an instance where they are the owner');
 
     return this._createInstance(instanceCreator);
   }

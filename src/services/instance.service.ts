@@ -1,5 +1,5 @@
 import { bind, BindingScope } from '@loopback/core';
-import { Instance, User } from '../models';
+import { Instance, User, InstanceMember } from '../models';
 import { InstanceRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 import { BaseService } from './base.service';
@@ -28,6 +28,18 @@ export class InstanceService extends BaseService<Instance, InstanceRepository> {
 
   getByIdForUserId(id: number, userId: number): Promise<Instance> {
     return this._repository.getByIdForUserId(id, userId);
+  }
+
+  async removeInstanceMember(instance: Instance, instanceMember: InstanceMember): Promise<Instance> {
+    if (instance.members == null) {
+      return;
+    }
+
+    instance.members = instance.members.filter(member => member.user.id !== instanceMember.user.id || member.role !== instanceMember.role);
+
+    await this._instanceMemberService.delete(instanceMember);
+
+    return this.save(instance);
   }
 
 }

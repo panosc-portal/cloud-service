@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { CloudInstanceUser } from '../../models';
+import { CloudInstanceAccount } from '../../models';
 
 @model()
 export class InstanceCreatorDto {
@@ -12,8 +12,8 @@ export class InstanceCreatorDto {
   @property({ type: 'number' })
   planId: number;
 
-  @property({ type: CloudInstanceUser })
-  user: CloudInstanceUser;
+  @property({ type: CloudInstanceAccount })
+  account: CloudInstanceAccount;
 
   constructor(data?: Partial<InstanceCreatorDto>) {
     Object.assign(this, data);

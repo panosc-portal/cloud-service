@@ -13,8 +13,7 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMembers = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
-      .innerJoin('instanceMember.instance', 'instance')
-      .andWhere('instance.id = :instanceId', {instanceId: instanceId})
+      .andWhere('instance_id = :instanceId', {instanceId: instanceId})
       .getMany();
 
     return instanceMembers;
@@ -25,9 +24,8 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMember = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
-      .innerJoin('instanceMember.instance', 'instance')
       .andWhere('user.id = :userId', {userId: userId})
-      .andWhere('instance.id = :instanceId', {instanceId: instanceId})
+      .andWhere('instance_id = :instanceId', {instanceId: instanceId})
       .getOne();
 
     return instanceMember;

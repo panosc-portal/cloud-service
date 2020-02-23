@@ -60,7 +60,7 @@ export class BaseInstanceController extends BaseController {
       description: instanceCreator.description,
       imageId: plan.imageId,
       flavourId: plan.flavourId,
-      user: instanceCreator.user
+      account: instanceCreator.account
     })
 
     const [cloudInstance, planDto] = await Promise.all([
@@ -73,10 +73,10 @@ export class BaseInstanceController extends BaseController {
       plan: plan
     });
     const user = new User({
-      id: instanceCreator.user.accountId,
-      firstName: instanceCreator.user.firstName,
-      lastName: instanceCreator.user.lastName,
-      email: ''
+      id: instanceCreator.account.userId,
+      firstName: instanceCreator.account.firstName,
+      lastName: instanceCreator.account.lastName,
+      email: instanceCreator.account.email
     })
     instance.addMember(user, InstanceMemberRole.OWNER);
 

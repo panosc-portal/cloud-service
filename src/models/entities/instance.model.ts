@@ -72,12 +72,4 @@ export class Instance {
       return existingMember;
     }
   }
-
-  removeMember(instanceMember: InstanceMember): void {
-    if (this.members == null) {
-      return;
-    }
-
-    this.members = this.members.filter(member => member.user.id !== instanceMember.user.id || member.role !== instanceMember.role);
-  }
 }

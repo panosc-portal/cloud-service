@@ -3,7 +3,7 @@ import { CloudInstanceState } from './cloud-instance-state.model';
 import { CloudProtocol } from './cloud-protocol.model';
 import { CloudFlavour } from './cloud-flavour.model';
 import { CloudImage } from './cloud-image.model';
-import { CloudInstanceUser } from './cloud-instance-user.model';
+import { CloudInstanceAccount } from './cloud-instance-account.model';
 
 @model()
 export class CloudInstance {
@@ -50,9 +50,9 @@ export class CloudInstance {
   image: CloudImage;
 
   @property({
-    type: CloudInstanceUser
+    type: CloudInstanceAccount
   })
-  user?: CloudInstanceUser;
+  account: CloudInstanceAccount;
 
   @property({
     type: CloudInstanceState

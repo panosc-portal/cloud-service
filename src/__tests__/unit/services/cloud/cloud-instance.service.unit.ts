@@ -3,7 +3,7 @@ import { givenInitialisedTestDatabase, closeTestDatabase } from '../../../helper
 import { createTestApplicationContext, TestApplicationContext } from '../../../helpers/context.helper';
 import { CloudProviderMockServer, cloudProviderMockServers, startCloudProviderMockServers, stopCloudProviderMockServers } from '../../../mock/cloud-provider-mock.server';
 import { CloudInstanceCreatorDto, CloudInstanceUpdatorDto } from '../../../../services';
-import { CloudInstanceUser, CloudInstanceCommand, CloudInstanceCommandType } from '../../../../models';
+import { CloudInstanceAccount, CloudInstanceCommand, CloudInstanceCommandType } from '../../../../models';
 
 describe('CloudInstanceService', () => {
   let context: TestApplicationContext;
@@ -60,8 +60,8 @@ describe('CloudInstanceService', () => {
       description: 'a test instance',
       imageId: 1,
       flavourId: 1,
-      user: new CloudInstanceUser({
-        accountId: 1000,
+      account: new CloudInstanceAccount({
+        userId: 1000,
         firstName: 'jane',
         lastName: 'doe',
         uid: 1001,

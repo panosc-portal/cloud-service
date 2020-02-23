@@ -25,6 +25,8 @@ describe('InstanceMemberService', () => {
     expect(instanceMember || null).to.not.be.null();
     expect(instanceMember.user.id).to.equal(1);
     expect(instanceMember.instance || null).to.be.null();
+    expect(instanceMember.instanceId || null).to.not.be.null();
+    expect(instanceMember.instanceId || null).to.equal(1);
     expect(instanceMember.role).to.equal('OWNER');
   });
 

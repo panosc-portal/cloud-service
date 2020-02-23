@@ -1,10 +1,10 @@
 import { model, property } from '@loopback/repository';
-import { InstanceMember, CloudInstanceNetwork, CloudInstanceUser } from '../../models';
+import { InstanceMember, CloudInstanceNetwork, CloudInstanceAccount } from '../../models';
 
 @model()
 export class InstanceAuthorisationDto {
-  @property({ type: CloudInstanceUser })
-  account: CloudInstanceUser;
+  @property({ type: CloudInstanceAccount })
+  account: CloudInstanceAccount;
 
   @property({ type: InstanceMember })
   member: InstanceMember;

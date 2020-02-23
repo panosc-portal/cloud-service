@@ -38,7 +38,7 @@ export class CloudProviderMockServer {
         flavour: this.flavours.find(flavour => flavour.id === simplifiedInstance.flavourId),
         createdAt: simplifiedInstance.createdAt,
         state: new CloudInstanceState(simplifiedInstance.state),
-        user: simplifiedInstance.user
+        account: simplifiedInstance.account
       }));
 
       const app = express();
@@ -116,7 +116,7 @@ export class CloudProviderMockServer {
             flavour: flavour,
             createdAt: new Date(),
             hostname: `instance${this.instances.length + 1}.host.eu`,
-            user: instanceCreatorDto.user,
+            account: instanceCreatorDto.account,
             state: new CloudInstanceState({
               cpu: flavour.cpu,
               memory: flavour.memory,

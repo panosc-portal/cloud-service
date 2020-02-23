@@ -162,8 +162,7 @@ describe('InstanceService', () => {
     expect(instance.members.length).to.equal(3);
     const member = instance.members[2];
 
-    instance.removeMember(member);
-
+    await context.instanceService.removeInstanceMember(instance, member);
     await context.instanceService.save(instance);
 
     const instance2 = await context.instanceService.getById(1);

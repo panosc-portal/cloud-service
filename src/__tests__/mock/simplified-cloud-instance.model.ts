@@ -1,5 +1,4 @@
-import { CloudProtocol, CloudInstanceState } from '../../models';
-import { CloudInstanceUser } from '../../models/cloud/cloud-instance-user.model';
+import { CloudProtocol, CloudInstanceState, CloudInstanceAccount } from '../../models';
 
 export class SimplifiedCloudInstance {
   id: number;
@@ -10,7 +9,7 @@ export class SimplifiedCloudInstance {
   protocols: CloudProtocol[];
   flavourId: number;
   imageId: number;
-  user?: CloudInstanceUser;
+  account: CloudInstanceAccount;
   state: CloudInstanceState;
 
   constructor(data?: Partial<SimplifiedCloudInstance>) {

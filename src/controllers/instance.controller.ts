@@ -203,7 +203,7 @@ export class InstanceController extends BaseInstanceController {
 
       return new InstanceAuthorisationDto({
         member: instanceAuthorisation.instanceMember,
-        account: cloudInstance.user,
+        account: cloudInstance.account,
         network: new CloudInstanceNetwork({
           hostname: cloudInstance.hostname,
           protocols: cloudInstance.protocols

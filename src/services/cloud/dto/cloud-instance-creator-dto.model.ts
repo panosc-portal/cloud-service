@@ -1,11 +1,11 @@
-import { CloudInstanceUser } from "../../../models";
+import { CloudInstanceAccount } from "../../../models";
 
 export class CloudInstanceCreatorDto {
   name: string;
   description: string;
   imageId: number;
   flavourId: number;
-  user: CloudInstanceUser;
+  account: CloudInstanceAccount;
 
   constructor(data?: Partial<CloudInstanceCreatorDto>) {
     Object.assign(this, data);

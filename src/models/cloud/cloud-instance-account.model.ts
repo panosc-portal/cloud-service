@@ -1,11 +1,11 @@
 import { model, property } from '@loopback/repository';
 
 @model()
-export class CloudInstanceUser {
+export class CloudInstanceAccount {
   @property({
     type: 'number'
   })
-  accountId: number;
+  userId: number;
 
   @property({
     type: 'string'
@@ -42,7 +42,7 @@ export class CloudInstanceUser {
   })
   email: string;
 
-  constructor(data?: Partial<CloudInstanceUser>) {
+  constructor(data?: Partial<CloudInstanceAccount>) {
     Object.assign(this, data);
   }
 

@@ -24,6 +24,13 @@ export class InstanceMember {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @property({
+    type: 'number',
+    required: false
+  })
+  @Column({ name: 'instance_id', nullable: true })
+  instanceId: number;
+
   @ManyToOne(type => Instance, instance => instance.members, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'instance_id', referencedColumnName: 'id' })
   instance: Instance;

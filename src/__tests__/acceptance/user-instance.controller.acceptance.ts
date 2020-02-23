@@ -6,7 +6,7 @@ import { InstanceDto } from '../../controllers/dto/instance-dto.model';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
 import { InstanceCreatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from '../../controllers/dto';
-import { CloudInstanceUser, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType, InstanceMember, User } from '../../models';
+import { CloudInstanceAccount, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, CloudInstanceCommandType, InstanceMember, User } from '../../models';
 import { InstanceUpdatorDto } from '../../controllers/dto/instance-updator-dto.model';
 import { AuthorisationTokenDto } from '../../controllers/dto/authorisation-token-dto.model';
 
@@ -81,8 +81,8 @@ describe('UserInstanceController', () => {
       name: 'new instance',
       description: 'A new instance',
       planId: 6,
-      user: new CloudInstanceUser({
-        accountId: 1000,
+      account: new CloudInstanceAccount({
+        userId: 1000,
         firstName: 'jo',
         lastName: 'juja',
         homePath: '/home/jojuja',
@@ -120,7 +120,7 @@ describe('UserInstanceController', () => {
     expect(instance2.state || null).to.not.be.null();
     expect(instance2.members || null).to.not.be.null();
     expect(instance2.members.length).to.equal(1);
-    expect(instance2.members[0].user.id).to.equal(instanceData.user.accountId);
+    expect(instance2.members[0].user.id).to.equal(instanceData.account.userId);
     expect(instance2.members[0].role).to.equal(InstanceMemberRole.OWNER);
   });
 
@@ -129,8 +129,8 @@ describe('UserInstanceController', () => {
       name: 'new instance',
       description: 'A new instance',
       planId: 6,
-      user: new CloudInstanceUser({
-        accountId: 1000,
+      account: new CloudInstanceAccount({
+        userId: 1000,
         firstName: 'jo',
         lastName: 'juja',
         homePath: '/home/jojuja',
