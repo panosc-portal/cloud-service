@@ -1,4 +1,5 @@
 export * from './cloud';
+export * from './jobs';
 export * from './authorisation-token.service';
 export * from './health.service';
 export * from './instance.service';

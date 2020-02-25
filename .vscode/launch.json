@@ -69,6 +69,7 @@
             "program": "${workspaceFolder}/index.js",
             "env": {
                 "NODE_ENV": "dev",
+                "PORT": "3001",
                 "CLOUD_SERVICE_DATABASE_TYPE": "postgres",
                 "CLOUD_SERVICE_DATABASE_PORT": "5432",
                 "CLOUD_SERVICE_DATABASE_HOST": "localhost",
