@@ -17,6 +17,11 @@ export class CloudImage {
   @property({
     type: 'string'
   })
+  environmentType: string;
+
+  @property({
+    type: 'string'
+  })
   description?: string;
 
   @property({

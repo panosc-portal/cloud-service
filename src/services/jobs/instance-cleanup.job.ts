@@ -51,6 +51,5 @@ export class InstanceCleanupJob extends Job {
     if (defunctInstances.length > 0) {
       logger.info(`Instance Cleanup: deleted ${defunctInstances.length} instances`);
     }
-    logger.info('done');
   }
 }

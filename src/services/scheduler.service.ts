@@ -74,6 +74,8 @@ export class SchedulerService {
                 }
               }
 
+              logger.info('Scheduler running');
+
             } else {
               logger.error(`Job class '${jobConfig.jobClass}' specified in scheduler config does not exist`);
             }
