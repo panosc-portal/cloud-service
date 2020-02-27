@@ -1,5 +1,5 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceMember } from '../models';
+import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceMember, Pagination } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService, AuthorisationTokenService } from '../services';
 import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto, AuthorisationTokenDto } from './dto';
@@ -31,14 +31,18 @@ export class UserInstanceController extends BaseInstanceController {
       }
     }
   })
-  async getAll(@param.path.number('userId') userId: number): Promise<InstanceDto[]> {
+  async getAll(@param.path.number('userId') userId: number, @param.query.number('page') page: number, @param.query.number('limit') limit: number): Promise<InstanceDto[]> {
     const user = await this._userService.getById(userId);
     if (user == null) {
       return [];
     }
 
+    page = page || 1;
+    limit = limit || 25;
+    const offset = (page - 1) * limit;
+
     // Get all instances from DB
-    const instances = await this._instanceService.getAllForUser(user);
+    const instances = await this._instanceService.getAllForUser(user, new Pagination({offset: offset, limit: limit}));
 
     return this._convertInstances(instances);
   }

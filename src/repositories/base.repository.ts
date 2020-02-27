@@ -1,6 +1,7 @@
 import { TypeORMDataSource } from '../datasources';
 import { Repository, ObjectType, FindManyOptions, FindConditions, SelectQueryBuilder } from 'typeorm';
 import { Where, Command, NamedParameters, PositionalParameters, AnyObject } from '@loopback/repository';
+import { Pagination } from '../models';
 
 interface ParamterizedClause {
   clause: string;
@@ -33,8 +34,12 @@ export class BaseRepository<T, ID> {
     return result;
   }
 
-  async getAll(options?: FindManyOptions<T>): Promise<T[]> {
+  async getAll(options?: FindManyOptions<T>, pagination?: Pagination): Promise<T[]> {
     await this.init();
+
+    options = options || {};
+    options.take = pagination ? pagination.limit : undefined;
+    options.skip = pagination ? pagination.offset : undefined;
 
     const result = await this._repository.find(options);
     return result;

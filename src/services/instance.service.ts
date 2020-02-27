@@ -1,5 +1,5 @@
 import { bind, BindingScope } from '@loopback/core';
-import { Instance, User, InstanceMember } from '../models';
+import { Instance, User, InstanceMember, Pagination } from '../models';
 import { InstanceRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 import { BaseService } from './base.service';
@@ -28,8 +28,12 @@ export class InstanceService extends BaseService<Instance, InstanceRepository> {
     return true;
   }
 
-  getAllForUser(user: User): Promise<Instance[]> {
-    return this._repository.getAllForUser(user);
+  getAll(pagination?: Pagination): Promise<Instance[]> {
+    return this._repository.getAll(null, pagination);
+  }
+
+  getAllForUser(user: User, pagination?: Pagination): Promise<Instance[]> {
+    return this._repository.getAllForUser(user, pagination);
   }
 
   getByIdForUserId(id: number, userId: number): Promise<Instance> {

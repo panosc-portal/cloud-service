@@ -1,5 +1,5 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del, HttpErrors } from '@loopback/rest';
-import { Instance, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceAuthorisation, InstanceMember, InstanceMemberRole } from '../models';
+import { Instance, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceAuthorisation, InstanceMember, InstanceMemberRole, Pagination } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, InstanceMemberService } from '../services';
 import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from './dto';
@@ -32,9 +32,14 @@ export class InstanceController extends BaseInstanceController {
       }
     }
   })
-  async getAll(): Promise<InstanceDto[]> {
+  async getAll(@param.query.number('page') page: number, @param.query.number('limit') limit: number): Promise<InstanceDto[]> {
+
+    page = page || 1;
+    limit = limit || 25;
+    const offset = (page - 1) * limit;
+
     // Get all instances from DB
-    const instances = await this._instanceService.getAll();
+    const instances = await this._instanceService.getAll(new Pagination({offset: offset, limit: limit}));
 
     return this._convertInstances(instances);
   }
