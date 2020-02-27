@@ -42,9 +42,14 @@ export class BaseInstanceController extends BaseController {
     const instanceDtos = instances.map(instance => {
       const cloudInstance = providerInstances.get(instance.plan.provider.id).find(aCloudInstance => aCloudInstance.id === instance.cloudId);
       const planDto = planDtos.find(aPlanDto => aPlanDto.id === instance.plan.id);
+      if (cloudInstance != null) {
+        return this._createInstanceDto(instance, cloudInstance, planDto);
+        
+      } else {
+        return null;
+      }
 
-      return this._createInstanceDto(instance, cloudInstance, planDto);
-    })
+    }).filter(instance => instance != null);
 
     return instanceDtos;
   }
@@ -111,10 +116,8 @@ export class BaseInstanceController extends BaseController {
 
     if (cloudInstanceDeleted) {
       // (Soft) delete in local DB
-      instance.deleted = cloudInstanceDeleted;
-
-      const persistedInstance = await this._instanceService.save(instance);
-      return persistedInstance.deleted;
+      const deleted = await this._instanceService.delete(instance);
+      return deleted;
 
     } else {
       return false;

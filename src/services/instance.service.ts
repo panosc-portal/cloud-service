@@ -22,6 +22,12 @@ export class InstanceService extends BaseService<Instance, InstanceRepository> {
     return instance;
   }
 
+  async delete(instance: Instance): Promise<boolean> {
+    instance.deleted = true;
+    await this.save(instance);
+    return true;
+  }
+
   getAllForUser(user: User): Promise<Instance[]> {
     return this._repository.getAllForUser(user);
   }
