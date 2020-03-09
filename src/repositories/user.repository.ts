@@ -13,11 +13,9 @@ export class UserRepository extends BaseRepository<User, number> {
     const options = {
       where: {
         lastName: Like(`${lastName}%`)
-      },
-      take: pagination ? pagination.limit : undefined,
-      skip: pagination ? pagination.offset : undefined
+      }
     }
 
-    return super.getAll(options);
+    return super.getAll(options, pagination);
   }
 }
