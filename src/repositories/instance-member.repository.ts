@@ -1,4 +1,4 @@
-import { InstanceMember, Instance } from '../models';
+import { InstanceMember, Instance, InstanceMemberRole } from '../models';
 import { inject } from '@loopback/core';
 import { BaseRepository } from './base.repository';
 import { TypeORMDataSource } from '../datasources';
@@ -25,6 +25,18 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
     const instanceMember = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
       .andWhere('user.id = :userId', {userId: userId})
+      .andWhere('instance_id = :instanceId', {instanceId: instanceId})
+      .getOne();
+
+    return instanceMember;
+  }
+
+  async getForOwnerOfInstanceId(instanceId: number): Promise<InstanceMember> {
+    const queryBuilder = await super.createQueryBuilder('instanceMember');
+
+    const instanceMember = await queryBuilder
+      .innerJoinAndSelect('instanceMember.user', 'user')
+      .andWhere('instanceMember.role = :role', {role: InstanceMemberRole.OWNER})
       .andWhere('instance_id = :instanceId', {instanceId: instanceId})
       .getOne();
 

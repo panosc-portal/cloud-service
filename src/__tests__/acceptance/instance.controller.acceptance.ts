@@ -195,6 +195,14 @@ describe('InstanceController', () => {
     expect(instance.state.status).to.equal('REBOOTING');
   });
 
+
+  it('invokes POST /api/v1/instances/{:id}/token', async () => {
+    const res = await client.post('/api/v1/instances/3/token').expect(200);
+    const authorisationToken = res.body as AuthorisationTokenDto;
+    expect(authorisationToken || null).to.not.be.null();
+    expect(authorisationToken.token || null).to.not.be.null();
+  });
+
   it('invokes GET /instances/{instanceId}/token/{token}/validate', async () => {
     // Create token
     const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);

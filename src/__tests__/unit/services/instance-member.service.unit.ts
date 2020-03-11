@@ -30,6 +30,18 @@ describe('InstanceMemberService', () => {
     expect(instanceMember.role).to.equal('OWNER');
   });
 
+  it('gets a instanceMember for the owner of an instance', async () => {
+    const instanceMember = await context.instanceMemberService.getForOwnerOfInstanceId(3);
+
+    expect(instanceMember || null).to.not.be.null();
+    expect(instanceMember.id).to.equal(5);
+    expect(instanceMember.user.id).to.equal(1);
+    expect(instanceMember.instance || null).to.be.null();
+    expect(instanceMember.instanceId || null).to.not.be.null();
+    expect(instanceMember.instanceId || null).to.equal(3);
+    expect(instanceMember.role).to.equal('OWNER');
+  });
+
   it('gets a instanceMember instance', async () => {
     const instanceMember = await context.instanceMemberService.getById(1);
     const instance = await context.instanceMemberService.getInstanceForInstanceMember(instanceMember);

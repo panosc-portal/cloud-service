@@ -2,7 +2,7 @@ import { get, getModelSchemaRef, param, put, requestBody, post, del, HttpErrors 
 import { Instance, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceAuthorisation, InstanceMember, InstanceMemberRole, Pagination } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, InstanceMemberService } from '../services';
-import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto } from './dto';
+import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto, AuthorisationTokenDto } from './dto';
 import { BaseInstanceController } from './base-instance.controller';
 import { AuthorisationTokenService } from '../services/authorisation-token.service';
 import { InstanceAuthorisationDto } from './dto/instance-authorisation-dto.model';
@@ -26,7 +26,7 @@ export class InstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(Instance) }
+            schema: { type: 'array', items: getModelSchemaRef(InstanceDto) }
           }
         }
       }
@@ -51,7 +51,7 @@ export class InstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Instance)
+            schema: getModelSchemaRef(InstanceDto)
           }
         }
       }
@@ -72,7 +72,7 @@ export class InstanceController extends BaseInstanceController {
         description: 'Created',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Instance)
+            schema: getModelSchemaRef(InstanceDto)
           }
         }
       }
@@ -89,7 +89,7 @@ export class InstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Instance)
+            schema: getModelSchemaRef(InstanceDto)
           }
         }
       }
@@ -166,7 +166,12 @@ export class InstanceController extends BaseInstanceController {
     summary: 'Invoke an action for a given instance',
     responses: {
       '201': {
-        description: 'Created'
+        description: 'Created',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(InstanceDto)
+          }
+        }
       }
     }
   })
@@ -184,6 +189,33 @@ export class InstanceController extends BaseInstanceController {
     return instanceDto;
   }
 
+  @post('/instances/{instanceId}/token', {
+    summary: 'Create an authorisation token for a given instance for the owner',
+    responses: {
+      '201': {
+        description: 'Created',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(AuthorisationTokenDto)
+          }
+        }
+      }
+    }
+  })
+  async createToken(@param.path.number('instanceId') instanceId: number): Promise<AuthorisationTokenDto> {
+    const [instance, owner] = await Promise.all([
+      this._instanceService.getById(instanceId),
+      this._instanceMemberService.getForOwnerOfInstanceId(instanceId)
+    ]);
+    this.throwNotFoundIfNull(instance, 'Instance with given id does not exist');
+
+    // Create token with instance token service for connected member
+    const authorisationToken = await this._authorisationTokenService.create(owner);
+    const authorisationTokenDto = new AuthorisationTokenDto({ token: authorisationToken.token})
+
+    return authorisationTokenDto;
+  }
+
   @get('/instances/{instanceId}/token/{token}/validate', {
     summary: 'Validates an authorisation token for a given instance',
     responses: {
@@ -191,7 +223,7 @@ export class InstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(InstanceAuthorisation)
+            schema: getModelSchemaRef(InstanceAuthorisationDto)
           }
         }
       }

@@ -25,7 +25,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(Instance) }
+            schema: { type: 'array', items: getModelSchemaRef(InstanceDto) }
           }
         }
       }
@@ -54,7 +54,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Instance)
+            schema: getModelSchemaRef(InstanceDto)
           }
         }
       }
@@ -79,7 +79,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Created',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Instance)
+            schema: getModelSchemaRef(InstanceDto)
           }
         }
       }
@@ -98,7 +98,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Instance)
+            schema: getModelSchemaRef(InstanceDto)
           }
         }
       }
@@ -199,7 +199,12 @@ export class UserInstanceController extends BaseInstanceController {
     summary: 'Invoke an action for a given instance for a specific user',
     responses: {
       '201': {
-        description: 'Created'
+        description: 'Created',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(InstanceDto)
+          }
+        }
       }
     }
   })
