@@ -29,7 +29,7 @@ export class AuthorisationToken {
     type: 'number',
     required: true
   })
-  @Column({ name: 'created_at', type: 'integer' })
+  @Column({ name: 'created_at', type: 'bigint' })
   createdAtMs: number;
 
   constructor(data?: Partial<AuthorisationToken>) {
