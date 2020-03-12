@@ -40,7 +40,7 @@ export class AuthorisationTokenService extends BaseService<AuthorisationToken, A
     }
 
     if (instance.id !== instanceId) {
-      throw new TokenInvalidError(`Token ${token} is not valid for the given instance`);
+      throw new TokenInvalidError(`Token ${token} is not valid for the instance ${instanceId}`);
 
     } else if (!authorisationToken.isTimeValid(APPLICATION_CONFIG().authorisation.tokenValidDurationS)) {
       throw new TokenInvalidError(`Token ${token} is not longer valid`);

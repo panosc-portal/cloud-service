@@ -37,6 +37,10 @@ export class AuthorisationToken {
   }
 
   isTimeValid(tokenValidDurationS: number): boolean {
+    if (tokenValidDurationS <= 0) {
+      return true;
+    }
+
     const validTimeMs = this.createdAtMs + (1000 * tokenValidDurationS);
     const currentTimeMs = (new Date()).getTime();
     const diffMs = currentTimeMs - validTimeMs;

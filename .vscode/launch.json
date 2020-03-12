@@ -80,7 +80,7 @@
                 "CLOUD_SERVICE_DATABASE_SYNCHRONIZE": "true",
                 "CLOUD_SERVICE_DATABASE_LOGGING": "false",
                 "CLOUD_SERVICE_LOG_LEVEL": "debug",
-                "CLOUD_SERVICE_TOKEN_VALID_DURATION_S": "10"
+                "CLOUD_SERVICE_TOKEN_VALID_DURATION_S": "0"
             },
             "preLaunchTask": "npm: build",
             "console": "integratedTerminal",
