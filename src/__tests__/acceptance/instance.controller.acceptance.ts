@@ -81,8 +81,6 @@ describe('InstanceController', () => {
       planId: 6,
       account: new CloudInstanceAccount({
         userId: 1000,
-        firstName: 'jo',
-        lastName: 'juja',
         homePath: '/home/jojuja',
         uid: 1,
         gid: 2,
@@ -266,8 +264,6 @@ describe('InstanceController', () => {
       role: InstanceMemberRole.USER,
       user: new User({
         id: 9999,
-        firstName: 'Ben',
-        lastName: 'Big',
         email: 'big.ben@london.eu'
       })
     })
@@ -288,8 +284,6 @@ describe('InstanceController', () => {
       role: InstanceMemberRole.OWNER,
       user: new User({
         id: 9999,
-        firstName: 'Ben',
-        lastName: 'Big',
         email: 'big.ben@london.eu'
       })
     })

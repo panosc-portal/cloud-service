@@ -23,8 +23,7 @@ describe('UserService', () => {
     const user = await context.userService.getById(1);
 
     expect(user || null).to.not.be.null();
-    expect(user.firstName).to.equal('Joe');
-    expect(user.lastName).to.equal('Bloggs');
+    expect(user.email).to.equal('bloggs@example.com');
   });
 
   it('saves a user', async () => {
@@ -33,8 +32,6 @@ describe('UserService', () => {
 
     const user = new User({
       id: 1000,
-      firstName: 'Simon',
-      lastName: 'Says',
       email: 'simon@says.me',
     });
     await context.userService.save(user);
@@ -63,26 +60,14 @@ describe('UserService', () => {
     const users = await context.userService.getAll();
 
     const user = users[0];
-    user.firstName = 'A new name';
+    user.email = 'someone@here.io';
 
     const persistedUser = await context.userService.save(user);
     expect(persistedUser || null).to.not.be.null();
     expect(persistedUser.id).to.equal(user.id);
-    expect(persistedUser.firstName).to.equal(user.firstName);
+    expect(persistedUser.email).to.equal(user.email);
 
     const usersAfterUpdate = await context.userService.getAll();
     expect(usersAfterUpdate.length).to.equal(users.length);
   });
-
-  it('gets user with lastName like', async () => {
-    const users = await context.userService.getAllLikeLastName('cla');
-    expect(users.length).to.equal(2);
-  });
-
-  it('gets user with lastName like with pagination', async () => {
-    const pagination = new Pagination({limit: 1, offset: 1});
-    const users = await context.userService.getAllLikeLastName('cla', pagination);
-    expect(users.length).to.equal(1);
-  });
-
 });

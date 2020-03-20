@@ -8,14 +8,4 @@ export class UserRepository extends BaseRepository<User, number> {
   constructor(@inject('datasources.typeorm') dataSource: TypeORMDataSource) {
     super(dataSource, User);
   }
-
-  getAllLikeLastName(lastName: string, pagination?: Pagination): Promise<User[]> {
-    const options = {
-      where: {
-        lastName: Like(`${lastName}%`)
-      }
-    }
-
-    return super.getAll(options, pagination);
-  }
 }

@@ -62,8 +62,6 @@ describe('CloudInstanceService', () => {
       flavourId: 1,
       account: new CloudInstanceAccount({
         userId: 1000,
-        firstName: 'jane',
-        lastName: 'doe',
         uid: 1001,
         gid: 1002,
         homePath: '/home/doe',

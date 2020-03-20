@@ -44,7 +44,7 @@ export class BaseInstanceController extends BaseController {
       const planDto = planDtos.find(aPlanDto => aPlanDto.id === instance.plan.id);
       if (cloudInstance != null) {
         return this._createInstanceDto(instance, cloudInstance, planDto);
-        
+
       } else {
         return null;
       }
@@ -79,8 +79,6 @@ export class BaseInstanceController extends BaseController {
     });
     const user = new User({
       id: instanceCreator.account.userId,
-      firstName: instanceCreator.account.firstName,
-      lastName: instanceCreator.account.lastName,
       email: instanceCreator.account.email
     })
     instance.addMember(user, InstanceMemberRole.OWNER);

@@ -1,7 +1,7 @@
 insert into provider (id, name, description, url)
-values (1, 'provider 1', 'Cloud Provider 1', 'http://localhost:4000/api/v1');
+values (1, 'provider 1', 'Cloud Provider 1', 'http://localhost:5000/api/v1');
 insert into provider (id, name, description, url)
-values (2, 'provider 2', 'Cloud Provider 2', 'http://localhost:4001/api/v1');
+values (2, 'provider 2', 'Cloud Provider 2', 'http://localhost:5001/api/v1');
 insert into provider (id, name, description, url)
 values (3, 'provider 3', 'Cloud Provider 3 (unused)', 'http://localhost:4002/api/v1');
 
@@ -44,18 +44,18 @@ values (10, 1, 1, '2020-01-01', '2020-01-01', true);
 insert into instance (id, cloud_id, plan_id, created_at, updated_at, deleted)
 values (11, 1, 5, '2020-01-01', '2020-01-01', true);
 
-insert into users (id, email, first_name, last_name)
-values (1, 'bloggs@example.com', 'Joe', 'Bloggs');
-insert into users (id, email, first_name, last_name)
-values (2, 'clayton@example.com', 'Kim', 'Clayton');
-insert into users (id, email, first_name, last_name)
-values (3, 'tote@example.com', 'Jamie', 'Hall');
-insert into users (id, email, first_name, last_name)
-values (4, 'zimmerman@example.com', 'Zimmerman', 'Mcfarland');
-insert into users (id, email, first_name, last_name)
-values (5, 'wilkinson@example.com', 'Mark', 'Wilkinson');
-insert into users (id, email, first_name, last_name)
-values (6, 'clarkson@example.com', 'Tim', 'Clarkson');
+insert into users (id, email)
+values (1, 'bloggs@example.com');
+insert into users (id, email)
+values (2, 'clayton@example.com');
+insert into users (id, email)
+values (3, 'tote@example.com');
+insert into users (id, email)
+values (4, 'zimmerman@example.com');
+insert into users (id, email)
+values (5, 'wilkinson@example.com');
+insert into users (id, email)
+values (6, 'clarkson@example.com');
 
 insert INTO instance_member (id, user_id, instance_id, role, created_at)
 values (1, 1, 1, 'OWNER', '2020-01-01');

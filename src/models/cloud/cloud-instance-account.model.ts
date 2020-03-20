@@ -13,16 +13,6 @@ export class CloudInstanceAccount {
   username: string;
 
   @property({
-    type: 'string'
-  })
-  firstName: string;
-
-  @property({
-    type: 'string'
-  })
-  lastName: string;
-
-  @property({
     type: 'number'
   })
   gid: number;

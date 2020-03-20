@@ -94,8 +94,6 @@ describe('InstanceService', () => {
 
     const user = new User({
       id: 1000,
-      firstName: 'bing',
-      lastName: 'Bangbong',
       email: 'bing@bangbong.me'
     });
 

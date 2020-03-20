@@ -40,7 +40,7 @@ describe('ProviderController', () => {
     expect(providers.length).to.equal(3);
     expect(providers[0].id).to.equal(1);
     expect(providers[0].name).to.equal('provider 1');
-    expect(providers[0].url).to.equal('http://localhost:4000/api/v1');
+    expect(providers[0].url).to.equal('http://localhost:5000/api/v1');
   });
 
   it('invokes GET /api/v1/providers/{:id}', async () => {
@@ -50,7 +50,7 @@ describe('ProviderController', () => {
     expect(provider || null).to.not.be.null();
     expect(provider.id).to.equal(1);
     expect(provider.name).to.equal('provider 1');
-    expect(provider.url).to.equal('http://localhost:4000/api/v1');
+    expect(provider.url).to.equal('http://localhost:5000/api/v1');
   });
 
   it('invokes POST /api/v1/providers', async () => {
