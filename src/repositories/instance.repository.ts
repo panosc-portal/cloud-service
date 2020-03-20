@@ -27,8 +27,14 @@ export class InstanceRepository extends BaseRepository<Instance, number> {
       .getMany())
       .map(data => data.id);
 
-    // Get full instances
-    return super.getAll({where: {id: In(instanceIds)}, order: { id: 'DESC' }}, pagination);
+
+    if (instanceIds.length > 0) {
+      // Get full instances
+      return super.getAll({where: {id: In(instanceIds)}, order: { id: 'DESC' }}, pagination);
+
+    } else {
+      return [];
+    }
   }
 
   async getByIdForUserId(id: number, userId: number): Promise<Instance> {
