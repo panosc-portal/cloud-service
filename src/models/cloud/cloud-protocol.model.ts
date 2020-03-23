@@ -12,6 +12,11 @@ export class CloudProtocol {
   })
   port: number;
 
+  @property({
+    type: 'number'
+  })
+  internalPort: number;
+
   constructor(data?: Partial<CloudProtocol>) {
     Object.assign(this, data);
   }
