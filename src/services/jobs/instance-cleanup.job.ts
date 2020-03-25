@@ -44,8 +44,7 @@ export class InstanceCleanupJob extends Job {
       });
 
       // Cleanup defunct instances
-      for (let i = 0; i < defunctInstances.length; i++) {
-        const defunctInstance = defunctInstances[i];
+      for (const defunctInstance of defunctInstances) {
         await this._instanceService.delete(defunctInstance);
       }
 
@@ -54,6 +53,7 @@ export class InstanceCleanupJob extends Job {
       }
 
     } catch (error) {
+      logger.error(`Error during instance cleanup: ${error.message}`);
       throw error;
     }
   }

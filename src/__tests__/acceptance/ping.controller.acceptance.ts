@@ -1,7 +1,6 @@
 import { Client, expect } from '@loopback/testlab';
 import { CloudServiceApplication } from '../..';
 import { setupApplication } from '../helpers/application.helper';
-import { CloudProviderMockServer, stopCloudProviderMockServers, startCloudProviderMockServers } from '../mock/cloud-provider-mock.server';
 import { givenInitialisedDatabase } from '../helpers/database.helper';
 import { TypeORMDataSource } from '../../datasources';
 

@@ -46,7 +46,7 @@ export class SchedulerService {
         const jobConfigs = await this.readConfig();
 
         if (jobConfigs) {
-          jobConfigs.forEach(async (jobConfig) => {
+          for (const jobConfig of jobConfigs) {
             if (jobConfig.enabled) {
               // Instantiate job runner
               const jobClass = JOB_PROVIDER.get(jobConfig.jobClass);
@@ -74,16 +74,17 @@ export class SchedulerService {
                 }
               }
 
-              logger.info('Scheduler running');
-
             } else {
               logger.error(`Job class '${jobConfig.jobClass}' specified in scheduler config does not exist`);
             }
-          });
+          }
+
+          logger.info('Scheduler running');
         }
       }
 
     } catch (error) {
+      logger.error(`Error initialising Scheduler: ${error.message}`);
       throw error;
     }
   }
@@ -91,7 +92,7 @@ export class SchedulerService {
   readConfig(): Promise<JobConfig[]> {
     return new Promise((resolve, reject) => {
       const configFile = APPLICATION_CONFIG().scheduler.config || 'resources/scheduler.config.json';
-      if (fs.existsSync(configFile)) {
+        if (fs.existsSync(configFile)) {
         fs.readFile(configFile, (err, data) => {
           if (err) {
             logger.error(`Unable to read scheduler config file '${configFile}': ${err.message}`);

@@ -1,5 +1,5 @@
 import { bind, BindingScope } from '@loopback/core';
-import { User, Pagination } from '../models';
+import { User } from '../models';
 import { UserRepository } from '../repositories';
 import { repository } from '@loopback/repository';
 import { BaseService } from './base.service';

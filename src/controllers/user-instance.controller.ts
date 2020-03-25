@@ -1,5 +1,5 @@
 import { get, getModelSchemaRef, param, put, requestBody, post, del } from '@loopback/rest';
-import { Instance, InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceMember, Pagination } from '../models';
+import { InstanceMemberRole, CloudInstanceState, CloudInstanceNetwork, CloudInstanceCommand, InstanceMember, Pagination } from '../models';
 import { inject } from '@loopback/context';
 import { InstanceService, CloudFlavourService, CloudInstanceService, PlanService, CloudImageService, UserService, InstanceMemberService, AuthorisationTokenService } from '../services';
 import { InstanceDto, InstanceCreatorDto, InstanceUpdatorDto, InstanceMemberCreatorDto, InstanceMemberUpdatorDto, AuthorisationTokenDto } from './dto';

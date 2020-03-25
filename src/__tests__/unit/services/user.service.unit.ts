@@ -1,7 +1,7 @@
 import { expect } from '@loopback/testlab';
 import { givenInitialisedTestDatabase, closeTestDatabase } from '../../helpers/database.helper';
 import { createTestApplicationContext, TestApplicationContext } from '../../helpers/context.helper';
-import { User, Pagination } from '../../../models';
+import { User } from '../../../models';
 
 describe('UserService', () => {
   let context: TestApplicationContext;
