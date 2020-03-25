@@ -21,6 +21,9 @@ export class InstanceController extends BaseInstanceController {
 
   @get('/instances', {
     summary: 'Get a list of all instances',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -46,6 +49,9 @@ export class InstanceController extends BaseInstanceController {
 
   @get('/instances/{instanceId}', {
     summary: 'Get a instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -67,6 +73,9 @@ export class InstanceController extends BaseInstanceController {
 
   @post('/instances', {
     summary: 'Create a instance',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -84,6 +93,9 @@ export class InstanceController extends BaseInstanceController {
 
   @put('/instances/{instanceId}', {
     summary: 'Update an instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -108,6 +120,9 @@ export class InstanceController extends BaseInstanceController {
 
   @del('/instances/{instanceId}', {
     summary: 'Delete a instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok'
@@ -120,6 +135,9 @@ export class InstanceController extends BaseInstanceController {
 
   @get('/instances/{instanceId}/state', {
     summary: 'Get the state of an instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -142,6 +160,9 @@ export class InstanceController extends BaseInstanceController {
 
   @get('/instances/{instanceId}/network', {
     summary: 'Get the network of an instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -164,6 +185,9 @@ export class InstanceController extends BaseInstanceController {
 
   @post('/instances/{instanceId}/actions', {
     summary: 'Invoke an action for a given instance',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -191,6 +215,9 @@ export class InstanceController extends BaseInstanceController {
 
   @post('/instances/{instanceId}/token', {
     summary: 'Create an authorisation token for a given instance for the owner',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -218,6 +245,9 @@ export class InstanceController extends BaseInstanceController {
 
   @get('/instances/{instanceId}/token/{token}/validate', {
     summary: 'Validates an authorisation token for a given instance',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -259,6 +289,9 @@ export class InstanceController extends BaseInstanceController {
 
   @get('/instances/{instanceId}/members', {
     summary: 'Get a list of all members for an instance',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -279,6 +312,9 @@ export class InstanceController extends BaseInstanceController {
 
   @post('/instances/{instanceId}/members', {
     summary: 'Create a member for an instance',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -309,6 +345,9 @@ export class InstanceController extends BaseInstanceController {
 
   @put('/instances/{instanceId}/members/{memberId}', {
     summary: 'Update a member of an instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -339,6 +378,9 @@ export class InstanceController extends BaseInstanceController {
 
   @del('/instances/{instanceId}/members/{memberId}', {
     summary: 'Delete an instance member of an instance by a given identifier',
+    "tags": [
+      "Instance"
+    ],
     responses: {
       '200': {
         description: 'Ok'
@@ -356,7 +398,4 @@ export class InstanceController extends BaseInstanceController {
 
     return this._instanceMemberService.delete(originalInstanceMember);
   }
-
-
-
 }

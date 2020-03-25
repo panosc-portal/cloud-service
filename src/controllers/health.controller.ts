@@ -7,6 +7,9 @@ export class HealthController {
   constructor(@inject('services.HealthService') private _healthservice: HealthService) {}
 
   @get('/health', {
+    "tags": [
+      "Health"
+    ],
     responses: {
       '200': {
         summary: 'Check if the provider is healthy',

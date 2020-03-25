@@ -16,6 +16,9 @@ export class ProviderController extends BaseController {
 
   @get('/providers', {
     summary: 'Get a list of all providers',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -33,6 +36,9 @@ export class ProviderController extends BaseController {
 
   @get('/providers/{providerId}', {
     summary: 'Get a provider by a given identifier',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -54,6 +60,9 @@ export class ProviderController extends BaseController {
 
   @post('/providers', {
     summary: 'Add a provider',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -79,6 +88,9 @@ export class ProviderController extends BaseController {
 
   @put('/providers/{providerId}', {
     summary: 'Update an provider by a given identifier',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -106,6 +118,9 @@ export class ProviderController extends BaseController {
 
   @del('/providers/{providerId}', {
     summary: 'Delete a provider by a given identifier',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok'
@@ -121,6 +136,9 @@ export class ProviderController extends BaseController {
 
   @get('/providers/{providerId}/images', {
     summary: 'Get the images of a provider having a specific identifier',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -142,6 +160,9 @@ export class ProviderController extends BaseController {
 
   @get('/providers/{providerId}/images/{imageId}/plans', {
     summary: 'Get the flavours of a provider having a specific identifier',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -184,6 +205,9 @@ export class ProviderController extends BaseController {
 
   @get('/providers/{providerId}/flavours', {
     summary: 'Get the flavours of a provider having a specific identifier',
+    "tags": [
+      "Provider"
+    ],
     responses: {
       '200': {
         description: 'Ok',

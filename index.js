@@ -10,7 +10,7 @@ if (require.main === module) {
       host: process.env.HOST,
       openApiSpec: {
         // useful when used with OpenAPI-to-GraphQL to locate your application
-        setServersFromRequest: true
+        setServersFromRequest: false
       }
     }
   };

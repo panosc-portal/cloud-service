@@ -1,0 +1,2039 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LoopBack Application",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "x-controller-name": "HealthController",
+        "x-operation-name": "getHealth",
+        "tags": [
+          "HealthController"
+        ],
+        "responses": {
+          "200": {
+            "summary": "Check if the provider is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "HealthController.getHealth"
+      }
+    },
+    "/instances/{instanceId}/actions": {
+      "post": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "executeAction",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Invoke an action for a given instance",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloudInstanceCommand"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "InstanceController.executeAction"
+      }
+    },
+    "/instances/{instanceId}/members/{memberId}": {
+      "put": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "updateInstanceMember",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Update a member of an instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceMember"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "memberId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceMemberUpdatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 2
+        },
+        "operationId": "InstanceController.updateInstanceMember"
+      },
+      "delete": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "deleteInstanceMember",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Delete an instance member of an instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "memberId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.deleteInstanceMember"
+      }
+    },
+    "/instances/{instanceId}/members": {
+      "post": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "createInstanceMember",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Create a member for an instance",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceMember"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceMemberCreatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "InstanceController.createInstanceMember"
+      },
+      "get": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "getAllInstanceMembers",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Get a list of all members for an instance",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstanceMember"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.getAllInstanceMembers"
+      }
+    },
+    "/instances/{instanceId}/network": {
+      "get": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "getNetwork",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Get the network of an instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudInstanceNetwork"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.getNetwork"
+      }
+    },
+    "/instances/{instanceId}/state": {
+      "get": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "getState",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Get the state of an instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudInstanceState"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.getState"
+      }
+    },
+    "/instances/{instanceId}/token/{token}/validate": {
+      "get": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "validateToken",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Validates an authorisation token for a given instance",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceAuthorisationDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "token",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.validateToken"
+      }
+    },
+    "/instances/{instanceId}/token": {
+      "post": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "createToken",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Create an authorisation token for a given instance for the owner",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorisationTokenDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.createToken"
+      }
+    },
+    "/instances/{instanceId}": {
+      "put": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "update",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Update an instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceUpdatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "InstanceController.update"
+      },
+      "get": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "getById",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Get a instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.getById"
+      },
+      "delete": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "delete",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Delete a instance by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        },
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "InstanceController.delete"
+      }
+    },
+    "/instances": {
+      "post": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "create",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Create a instance",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceCreatorDto"
+              }
+            }
+          }
+        },
+        "operationId": "InstanceController.create"
+      },
+      "get": {
+        "x-controller-name": "InstanceController",
+        "x-operation-name": "getAll",
+        "tags": [
+          "InstanceController"
+        ],
+        "summary": "Get a list of all instances",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstanceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "operationId": "InstanceController.getAll"
+      }
+    },
+    "/ping": {
+      "get": {
+        "x-controller-name": "PingController",
+        "x-operation-name": "ping",
+        "tags": [
+          "PingController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ping Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "greeting": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "properties": {
+                        "Content-Type": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "PingController.ping"
+      }
+    },
+    "/plans/{planId}": {
+      "put": {
+        "x-controller-name": "PlanController",
+        "x-operation-name": "update",
+        "tags": [
+          "PlanController"
+        ],
+        "summary": "Update an plan by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanUpdatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "PlanController.update"
+      },
+      "get": {
+        "x-controller-name": "PlanController",
+        "x-operation-name": "getById",
+        "tags": [
+          "PlanController"
+        ],
+        "summary": "Get a plan by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "PlanController.getById"
+      },
+      "delete": {
+        "x-controller-name": "PlanController",
+        "x-operation-name": "delete",
+        "tags": [
+          "PlanController"
+        ],
+        "summary": "Delete a plan by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        },
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "PlanController.delete"
+      }
+    },
+    "/plans": {
+      "post": {
+        "x-controller-name": "PlanController",
+        "x-operation-name": "create",
+        "tags": [
+          "PlanController"
+        ],
+        "summary": "Create a plan",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanCreatorDto"
+              }
+            }
+          }
+        },
+        "operationId": "PlanController.create"
+      },
+      "get": {
+        "x-controller-name": "PlanController",
+        "x-operation-name": "getAll",
+        "tags": [
+          "PlanController"
+        ],
+        "summary": "Get a list of all plans",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlanDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "PlanController.getAll"
+      }
+    },
+    "/providers/{providerId}/flavours": {
+      "get": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "getFlavoursForProvider",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Get the flavours of a provider having a specific identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CloudFlavour"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ProviderController.getFlavoursForProvider"
+      }
+    },
+    "/providers/{providerId}/images/{imageId}/plans": {
+      "get": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "getPlansForProviderImage",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Get the flavours of a provider having a specific identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlanDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "imageId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ProviderController.getPlansForProviderImage"
+      }
+    },
+    "/providers/{providerId}/images": {
+      "get": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "getImagesForProvider",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Get the images of a provider having a specific identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CloudImage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ProviderController.getImagesForProvider"
+      }
+    },
+    "/providers/{providerId}": {
+      "put": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "update",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Update an provider by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Provider"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderDto"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ProviderController.update"
+      },
+      "get": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "getById",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Get a provider by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Provider"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ProviderController.getById"
+      },
+      "delete": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "delete",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Delete a provider by a given identifier",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        },
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ProviderController.delete"
+      }
+    },
+    "/providers": {
+      "post": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "create",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Add a provider",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Provider"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderCreatorDto"
+              }
+            }
+          }
+        },
+        "operationId": "ProviderController.create"
+      },
+      "get": {
+        "x-controller-name": "ProviderController",
+        "x-operation-name": "getAll",
+        "tags": [
+          "ProviderController"
+        ],
+        "summary": "Get a list of all providers",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Provider"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "ProviderController.getAll"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}/actions": {
+      "post": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "executeAction",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Invoke an action for a given instance for a specific user",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloudInstanceCommand"
+              }
+            }
+          },
+          "x-parameter-index": 2
+        },
+        "operationId": "UserInstanceController.executeAction"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}/members/{memberId}": {
+      "put": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "updateInstanceMember",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Update a member of an instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceMember"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "memberId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceMemberUpdatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 3
+        },
+        "operationId": "UserInstanceController.updateInstanceMember"
+      },
+      "delete": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "deleteInstanceMember",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Delete an instance member of an instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "memberId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.deleteInstanceMember"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}/members": {
+      "post": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "createInstanceMember",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Create a member for an instance for a specific user",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceMember"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceMemberCreatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 2
+        },
+        "operationId": "UserInstanceController.createInstanceMember"
+      },
+      "get": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "getAllInstanceMembers",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Get a list of all members for an instance for a given user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstanceMember"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.getAllInstanceMembers"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}/network": {
+      "get": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "getNetwork",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Get the network of an instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudInstanceNetwork"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.getNetwork"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}/state": {
+      "get": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "getState",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Get the state of an instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudInstanceState"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.getState"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}/token": {
+      "post": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "createToken",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Create an authorisation token for a given instance for a specific user",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorisationTokenDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.createToken"
+      }
+    },
+    "/users/{userId}/instances/{instanceId}": {
+      "put": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "update",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Update an instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceUpdatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 2
+        },
+        "operationId": "UserInstanceController.update"
+      },
+      "get": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "getById",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Get a instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.getById"
+      },
+      "delete": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "delete",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Delete a instance by a given identifier for a specific user",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "instanceId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "UserInstanceController.delete"
+      }
+    },
+    "/users/{userId}/instances": {
+      "post": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "create",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Create a instance for a specific user",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceDto"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceCreatorDto"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "UserInstanceController.create"
+      },
+      "get": {
+        "x-controller-name": "UserInstanceController",
+        "x-operation-name": "getAll",
+        "tags": [
+          "UserInstanceController"
+        ],
+        "summary": "Get a list of all instances for a given user",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstanceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "operationId": "UserInstanceController.getAll"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4010/api/v1"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "CloudFlavour": {
+        "title": "CloudFlavour",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cpu": {
+            "type": "number"
+          },
+          "memory": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CloudImage": {
+        "title": "CloudImage",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "environmentType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "protocols": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProviderDto": {
+        "title": "ProviderDto",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "PlanDto": {
+        "title": "PlanDto",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderDto"
+          },
+          "image": {
+            "$ref": "#/components/schemas/CloudImage"
+          },
+          "flavour": {
+            "$ref": "#/components/schemas/CloudFlavour"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "provider",
+          "image",
+          "flavour"
+        ],
+        "additionalProperties": false
+      },
+      "CloudInstanceState": {
+        "title": "CloudInstanceState",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "cpu": {
+            "type": "number"
+          },
+          "memory": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstanceDto": {
+        "title": "InstanceDto",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "cloudId": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hostname": {
+            "type": "string"
+          },
+          "protocols": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "flavour": {
+            "$ref": "#/components/schemas/CloudFlavour"
+          },
+          "image": {
+            "$ref": "#/components/schemas/CloudImage"
+          },
+          "plan": {
+            "$ref": "#/components/schemas/PlanDto"
+          },
+          "state": {
+            "$ref": "#/components/schemas/CloudInstanceState"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "CloudInstanceAccount": {
+        "title": "CloudInstanceAccount",
+        "properties": {
+          "userId": {
+            "type": "number"
+          },
+          "username": {
+            "type": "string"
+          },
+          "gid": {
+            "type": "number"
+          },
+          "uid": {
+            "type": "number"
+          },
+          "homePath": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstanceCreatorDto": {
+        "title": "InstanceCreatorDto",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "planId": {
+            "type": "number"
+          },
+          "account": {
+            "$ref": "#/components/schemas/CloudInstanceAccount"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstanceUpdatorDto": {
+        "title": "InstanceUpdatorDto",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CloudInstanceNetwork": {
+        "title": "CloudInstanceNetwork",
+        "properties": {
+          "hostname": {
+            "type": "string"
+          },
+          "protocols": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "CloudInstanceCommand": {
+        "title": "CloudInstanceCommand",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthorisationTokenDto": {
+        "title": "AuthorisationTokenDto",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "title": "User",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "InstanceMember": {
+        "title": "InstanceMember",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "instanceId": {
+            "type": "number"
+          },
+          "role": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "user",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "InstanceAuthorisationDto": {
+        "title": "InstanceAuthorisationDto",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/CloudInstanceAccount"
+          },
+          "member": {
+            "$ref": "#/components/schemas/InstanceMember"
+          },
+          "network": {
+            "$ref": "#/components/schemas/CloudInstanceNetwork"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstanceMemberCreatorDto": {
+        "title": "InstanceMemberCreatorDto",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstanceMemberUpdatorDto": {
+        "title": "InstanceMemberUpdatorDto",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlanCreatorDto": {
+        "title": "PlanCreatorDto",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "number"
+          },
+          "imageId": {
+            "type": "number"
+          },
+          "flavourId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "providerId",
+          "imageId",
+          "flavourId"
+        ],
+        "additionalProperties": false
+      },
+      "PlanUpdatorDto": {
+        "title": "PlanUpdatorDto",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "number"
+          },
+          "imageId": {
+            "type": "number"
+          },
+          "flavourId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "providerId",
+          "imageId",
+          "flavourId"
+        ],
+        "additionalProperties": false
+      },
+      "Provider": {
+        "title": "Provider",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderCreatorDto": {
+        "title": "ProviderCreatorDto",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

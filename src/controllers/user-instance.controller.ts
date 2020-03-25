@@ -20,6 +20,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @get('/users/{userId}/instances', {
     summary: 'Get a list of all instances for a given user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -49,6 +52,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @get('/users/{userId}/instances/{instanceId}', {
     summary: 'Get a instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -74,6 +80,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @post('/users/{userId}/instances', {
     summary: 'Create a instance for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -93,6 +102,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @put('/users/{userId}/instances/{instanceId}', {
     summary: 'Update an instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -123,6 +135,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @del('/users/{userId}/instances/{instanceId}', {
     summary: 'Delete a instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok'
@@ -145,6 +160,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @get('/users/{userId}/instances/{instanceId}/state', {
     summary: 'Get the state of an instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -171,6 +189,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @get('/users/{userId}/instances/{instanceId}/network', {
     summary: 'Get the network of an instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -197,6 +218,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @post('/users/{userId}/instances/{instanceId}/actions', {
     summary: 'Invoke an action for a given instance for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -231,6 +255,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @post('/users/{userId}/instances/{instanceId}/token', {
     summary: 'Create an authorisation token for a given instance for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -261,6 +288,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @get('/users/{userId}/instances/{instanceId}/members', {
     summary: 'Get a list of all members for an instance for a given user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -285,6 +315,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @post('/users/{userId}/instances/{instanceId}/members', {
     summary: 'Create a member for an instance for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -326,6 +359,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @put('/users/{userId}/instances/{instanceId}/members/{memberId}', {
     summary: 'Update a member of an instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -361,6 +397,9 @@ export class UserInstanceController extends BaseInstanceController {
 
   @del('/users/{userId}/instances/{instanceId}/members/{memberId}', {
     summary: 'Delete an instance member of an instance by a given identifier for a specific user',
+    "tags": [
+      "User instance"
+    ],
     responses: {
       '200': {
         description: 'Ok'

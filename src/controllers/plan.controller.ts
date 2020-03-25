@@ -17,6 +17,9 @@ export class PlanController extends BaseController {
 
   @get('/plans', {
     summary: 'Get a list of all plans',
+    "tags": [
+      "Plan"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -38,6 +41,9 @@ export class PlanController extends BaseController {
 
   @get('/plans/{planId}', {
     summary: 'Get a plan by a given identifier',
+    "tags": [
+      "Plan"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -58,6 +64,9 @@ export class PlanController extends BaseController {
 
   @post('/plans', {
     summary: 'Create a plan',
+    "tags": [
+      "Plan"
+    ],
     responses: {
       '201': {
         description: 'Created',
@@ -87,6 +96,9 @@ export class PlanController extends BaseController {
 
   @put('/plans/{planId}', {
     summary: 'Update an plan by a given identifier',
+    "tags": [
+      "Plan"
+    ],
     responses: {
       '200': {
         description: 'Ok',
@@ -120,6 +132,9 @@ export class PlanController extends BaseController {
 
   @del('/plans/{planId}', {
     summary: 'Delete a plan by a given identifier',
+    "tags": [
+      "Plan"
+    ],
     responses: {
       '200': {
         description: 'Ok'
