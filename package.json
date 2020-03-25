@@ -31,7 +31,8 @@
     "prestart": "npm run build",
     "start": "node -r source-map-support/register .",
     "debug": "nodemon -r source-map-support/register --inspect=0.0.0.0 .",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run test",
+    "preinstall": "npx npm-force-resolutions"
   },
   "repository": {
     "type": "git"
@@ -79,5 +80,8 @@
     "typescript": "~3.6.3",
     "sqlite3": "^4.1.0",
     "nodemon": "^2.0.2"
+  },
+  "resolutions": {
+    "minimist": ">=1.2.2"
   }
 }
