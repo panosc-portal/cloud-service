@@ -3,7 +3,7 @@ import { model, property } from '@loopback/repository';
 @model()
 export class Pagination {
   @property({
-    type: 'number',
+    type: 'number'
   })
   limit: number;
 

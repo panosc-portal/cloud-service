@@ -25,7 +25,7 @@ export class AuthorisationTokenService extends BaseService<AuthorisationToken, A
     const token = new AuthorisationToken({
       token: uuid(),
       instanceMember: instanceMember,
-      createdAtMs: (new Date).getTime()
+      createdAtMs: new Date().getTime()
     });
 
     return this.save(token);
@@ -46,9 +46,8 @@ export class AuthorisationTokenService extends BaseService<AuthorisationToken, A
       throw new TokenInvalidError(`Token ${token} is not longer valid`);
 
     } else {
-
       return new InstanceAuthorisation({
-        instanceMember: authorisationToken.instanceMember,
+        instanceMember: authorisationToken.instanceMember
       });
     }
   }

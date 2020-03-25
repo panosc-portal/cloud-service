@@ -1,4 +1,4 @@
-import { logger } from "../../utils";
+import { logger } from '../../utils';
 
 export abstract class Job {
 
@@ -12,7 +12,7 @@ export abstract class Job {
       if (this._running) {
         logger.debug(`Job '${name}' is already running`);
         resolve(null);
-
+        
       } else {
         this._running = true;
         this._execute(params)
@@ -29,5 +29,5 @@ export abstract class Job {
     });
   }
 
-  protected abstract _execute(params?: any): Promise<any>
+  protected abstract _execute(params?: any): Promise<any>;
 }

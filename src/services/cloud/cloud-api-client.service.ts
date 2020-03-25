@@ -4,7 +4,6 @@ import { Provider } from '../../models';
 
 @bind({ scope: BindingScope.SINGLETON })
 export class CloudApiClientService {
-
   private _clients = new Map<number, AxiosInstance>();
 
   constructor() {}
@@ -25,5 +24,4 @@ export class CloudApiClientService {
 
     return client;
   }
-
 }

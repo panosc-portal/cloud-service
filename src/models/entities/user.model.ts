@@ -13,7 +13,7 @@ export class User {
   id: number;
 
   @property({
-    type: 'string',
+    type: 'string'
   })
   @Column({ length: 100, nullable: true })
   email: string;

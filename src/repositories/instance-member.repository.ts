@@ -13,7 +13,7 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMembers = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
-      .andWhere('instance_id = :instanceId', {instanceId: instanceId})
+      .andWhere('instance_id = :instanceId', { instanceId: instanceId })
       .getMany();
 
     return instanceMembers;
@@ -24,8 +24,8 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMember = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
-      .andWhere('user.id = :userId', {userId: userId})
-      .andWhere('instance_id = :instanceId', {instanceId: instanceId})
+      .andWhere('user.id = :userId', { userId: userId })
+      .andWhere('instance_id = :instanceId', { instanceId: instanceId })
       .getOne();
 
     return instanceMember;
@@ -36,8 +36,8 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMember = await queryBuilder
       .innerJoinAndSelect('instanceMember.user', 'user')
-      .andWhere('instanceMember.role = :role', {role: InstanceMemberRole.OWNER})
-      .andWhere('instance_id = :instanceId', {instanceId: instanceId})
+      .andWhere('instanceMember.role = :role', { role: InstanceMemberRole.OWNER })
+      .andWhere('instance_id = :instanceId', { instanceId: instanceId })
       .getOne();
 
     return instanceMember;
@@ -48,7 +48,7 @@ export class InstanceMemberRepository extends BaseRepository<InstanceMember, num
 
     const instanceMemberWithInstance = await queryBuilder
       .innerJoinAndSelect('instanceMember.instance', 'instance')
-      .andWhere('instanceMember.id = :id', {id: instanceMember.id})
+      .andWhere('instanceMember.id = :id', { id: instanceMember.id })
       .getOne();
 
     return instanceMemberWithInstance.instance;

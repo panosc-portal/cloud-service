@@ -17,7 +17,7 @@ export class BaseService<T extends { id: number }, R extends BaseRepository<T, n
     return this._repository.save(object);
   }
 
-  delete(object: T ): Promise<boolean> {
+  delete(object: T): Promise<boolean> {
     return this._repository.deleteById(object.id);
   }
 

@@ -21,8 +21,8 @@ export class ApplicationConfig {
   };
 
   authorisation: {
-    tokenValidDurationS: number
-  }
+    tokenValidDurationS: number;
+  };
 
   constructor(data?: Partial<ApplicationConfig>) {
     Object.assign(this, data);

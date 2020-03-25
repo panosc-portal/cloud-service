@@ -41,8 +41,8 @@ export class AuthorisationToken {
       return true;
     }
 
-    const validTimeMs = this.createdAtMs + (1000 * tokenValidDurationS);
-    const currentTimeMs = (new Date()).getTime();
+    const validTimeMs = this.createdAtMs + 1000 * tokenValidDurationS;
+    const currentTimeMs = new Date().getTime();
     const diffMs = currentTimeMs - validTimeMs;
 
     return diffMs < 0;

@@ -1,4 +1,4 @@
-import { CloudInstanceAccount } from "../../../models";
+import { CloudInstanceAccount } from '../../../models';
 
 export class CloudInstanceCreatorDto {
   name: string;

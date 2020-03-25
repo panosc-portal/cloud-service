@@ -3,7 +3,6 @@ import { InstanceMember } from './instance-member.model';
 
 @model()
 export class InstanceAuthorisation {
-
   @property({
     type: InstanceMember,
     required: true

@@ -35,5 +35,4 @@ export class CloudInstanceAccount {
   constructor(data?: Partial<CloudInstanceAccount>) {
     Object.assign(this, data);
   }
-
 }
