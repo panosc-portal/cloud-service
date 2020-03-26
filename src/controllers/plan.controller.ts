@@ -25,7 +25,7 @@ export class PlanController extends BaseController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(PlanDto) }
+            schema: { type: 'array', items: getModelSchemaRef(PlanDto, {title: 'Plan'}) }
           }
         }
       }
@@ -49,7 +49,7 @@ export class PlanController extends BaseController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(PlanDto)
+            schema: getModelSchemaRef(PlanDto, {title: 'Plan'})
           }
         }
       }
@@ -72,7 +72,7 @@ export class PlanController extends BaseController {
         description: 'Created',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(PlanDto)
+            schema: getModelSchemaRef(PlanDto, {title: 'Plan'})
           }
         }
       }
@@ -104,7 +104,7 @@ export class PlanController extends BaseController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(PlanDto)
+            schema: getModelSchemaRef(PlanDto, {title: 'Plan'})
           }
         }
       }

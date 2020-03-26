@@ -28,7 +28,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(InstanceDto) }
+            schema: { type: 'array', items: getModelSchemaRef(InstanceDto, {title: 'Instance'}) }
           }
         }
       }
@@ -60,7 +60,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(InstanceDto)
+            schema: getModelSchemaRef(InstanceDto, {title: 'Instance'})
           }
         }
       }
@@ -88,7 +88,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Created',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(InstanceDto)
+            schema: getModelSchemaRef(InstanceDto, {title: 'Instance'})
           }
         }
       }
@@ -110,7 +110,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(InstanceDto)
+            schema: getModelSchemaRef(InstanceDto, {title: 'Instance'})
           }
         }
       }
@@ -168,7 +168,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(CloudInstanceState)
+            schema: getModelSchemaRef(CloudInstanceState, {title: 'InstanceState'})
           }
         }
       }
@@ -197,7 +197,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(CloudInstanceNetwork)
+            schema: getModelSchemaRef(CloudInstanceNetwork, {title: 'InstanceNetwork'})
           }
         }
       }
@@ -226,7 +226,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Created',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(InstanceDto)
+            schema: getModelSchemaRef(InstanceDto, {title: 'Instance'})
           }
         }
       }
@@ -263,7 +263,7 @@ export class UserInstanceController extends BaseInstanceController {
         description: 'Created',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(AuthorisationTokenDto)
+            schema: getModelSchemaRef(AuthorisationTokenDto, {title: 'AuthorisationToken'})
           }
         }
       }

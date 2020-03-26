@@ -144,7 +144,7 @@ export class ProviderController extends BaseController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(CloudImage) }
+            schema: { type: 'array', items: getModelSchemaRef(CloudImage, {title: 'Image'}) }
           }
         }
       }
@@ -168,7 +168,7 @@ export class ProviderController extends BaseController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(PlanDto) }
+            schema: { type: 'array', items: getModelSchemaRef(PlanDto, {title: 'Plan'}) }
           }
         }
       }
@@ -213,7 +213,7 @@ export class ProviderController extends BaseController {
         description: 'Ok',
         content: {
           'application/json': {
-            schema: { type: 'array', items: getModelSchemaRef(CloudFlavour) }
+            schema: { type: 'array', items: getModelSchemaRef(CloudFlavour, {title: 'Flavour'}) }
           }
         }
       }
