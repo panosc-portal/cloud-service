@@ -51,7 +51,7 @@ export function APPLICATION_CONFIG(): ApplicationConfig {
       scheduler: {
         enabled:
           process.env.CLOUD_SERVICE_SCHEDULER_ENABLED != null
-            ? process.env.CLOUD_SERVICE_SCHEDULER_CONFIG === 'true'
+            ? process.env.CLOUD_SERVICE_SCHEDULER_ENABLED === 'true'
             : true,
         config: process.env.CLOUD_SERVICE_SCHEDULER_CONFIG
       },
