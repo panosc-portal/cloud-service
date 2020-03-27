@@ -17,7 +17,7 @@ The catalogue of Plans is built up from data provided by the Cloud Providers. Al
 
 A user-initiated request to instantiate a Plan is then forwarded to the relevant provider which will in turn create a container or virtual machine. The IP:PORT of the instance is returned and stored in the Instance table of the Cloud Service database.
 
-To access an instance an authenticated (OpenId Connect) request is made via the API Service to generated a time-limited token for an instance. A user then passes this token through the Desktop or Notebook Services which then validate the token with the Cloud Service from which they obtain the IP and Port of the instance.
+To access an instance an authenticated (OpenId Connect) request is made via the API Service to generate a time-limited token for an instance. A user then passes this token through the Desktop or Notebook Services which then validate the token with the Cloud Service from which they obtain the IP and Port of the instance.
 
 Further documentation and the design details can be found at [PaNOSC Portal Cloud Service Design](https://confluence.panosc.eu/x/0gCm) page.
 
