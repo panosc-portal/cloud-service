@@ -55,7 +55,7 @@
     "@loopback/rest": "^1.20.1",
     "@loopback/rest-explorer": "^1.4.1",
     "@types/uuid": "^3.4.7",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cron": "^1.7.2",
     "dotenv": "^8.2.0",
     "node-filter-async": "^1.1.3",
