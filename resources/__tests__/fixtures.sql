@@ -1,9 +1,9 @@
 insert into provider (id, name, description, url)
-values (1, 'provider 1', 'Cloud Provider 1', 'http://localhost:5000/api/v1');
+values (1, 'provider 1', 'Cloud Provider 1', 'http://localhost:5000/api');
 insert into provider (id, name, description, url)
-values (2, 'provider 2', 'Cloud Provider 2', 'http://localhost:5001/api/v1');
+values (2, 'provider 2', 'Cloud Provider 2', 'http://localhost:5001/api');
 insert into provider (id, name, description, url)
-values (3, 'provider 3', 'Cloud Provider 3 (unused)', 'http://localhost:4002/api/v1');
+values (3, 'provider 3', 'Cloud Provider 3 (unused)', 'http://localhost:4002/api');
 
 insert into plan (id, name, description, provider_id, cloud_image_id, cloud_flavour_id)
 values (1, 'plan 1', 'Plan 1', 1, 1, 1);

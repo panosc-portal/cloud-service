@@ -33,7 +33,7 @@ describe('ProviderService', () => {
     const provider = new Provider({
       name: 'provider 4',
       description: 'A new provider',
-      url: 'http://localhost:4003/api/v1'
+      url: 'http://localhost:4003/api'
     });
     await context.providerService.save(provider);
     expect(provider.id || null).to.not.be.null();

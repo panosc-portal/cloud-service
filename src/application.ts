@@ -24,7 +24,7 @@ export class CloudServiceApplication extends BootMixin(ServiceMixin(RepositoryMi
     });
     this.component(RestExplorerComponent);
 
-    this.basePath('/api/v1');
+    this.basePath('/api');
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

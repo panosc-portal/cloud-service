@@ -37,8 +37,8 @@ describe('InstanceController', () => {
     await stopCloudProviderMockServers(cloudProviderServers);
   });
 
-  it('invokes GET /api/v1/instances', async () => {
-    const res = await client.get('/api/v1/instances').expect(200);
+  it('invokes GET /api/instances', async () => {
+    const res = await client.get('/api/instances').expect(200);
 
     const instances = res.body as InstanceDto[];
     expect(instances.length).to.equal(9);
@@ -54,8 +54,8 @@ describe('InstanceController', () => {
     expect(cloudInstance.flavour.id).to.equal(1);
   });
 
-  it('invokes GET /api/v1/instances/{:id}', async () => {
-    const res = await client.get('/api/v1/instances/1').expect(200);
+  it('invokes GET /api/instances/{:id}', async () => {
+    const res = await client.get('/api/instances/1').expect(200);
 
     const cloudInstance = res.body as InstanceDto;
     expect(cloudInstance || null).to.not.be.null();
@@ -71,8 +71,8 @@ describe('InstanceController', () => {
   });
 
 
-  it('invokes POST /api/v1/instances', async () => {
-    const initRes = await client.get('/api/v1/instances').expect(200);
+  it('invokes POST /api/instances', async () => {
+    const initRes = await client.get('/api/instances').expect(200);
     const initInstances = initRes.body as InstanceDto[];
 
     const instanceData = new InstanceCreatorDto({
@@ -89,18 +89,18 @@ describe('InstanceController', () => {
       }),
     });
 
-    const res1 = await client.post('/api/v1/instances').send(instanceData).expect(200);
+    const res1 = await client.post('/api/instances').send(instanceData).expect(200);
 
     const instance = res1.body as InstanceDto;
     expect(instance || null).to.not.be.null();
     expect(instance.id || null).to.not.be.null();
 
-    const res2 = await client.get('/api/v1/instances').expect(200);
+    const res2 = await client.get('/api/instances').expect(200);
 
     const instances = res2.body as InstanceDto[];
     expect(instances.length).to.equal(initInstances.length + 1);
 
-    const res3 = await client.get(`/api/v1/instances/${instance.id}`).expect(200);
+    const res3 = await client.get(`/api/instances/${instance.id}`).expect(200);
 
     const instance2 = res3.body as InstanceDto;
     expect(instance2 || null).to.not.be.null();
@@ -120,9 +120,9 @@ describe('InstanceController', () => {
     expect(instance2.members[0].role).to.equal(InstanceMemberRole.OWNER);
   });
 
-  it('invokes PUT /api/v1/instances/{:id}', async () => {
+  it('invokes PUT /api/instances/{:id}', async () => {
 
-    const res = await client.get('/api/v1/instances/1').expect(200);
+    const res = await client.get('/api/instances/1').expect(200);
     const instance = res.body as InstanceDto;
     expect(instance || null).to.not.be.null();
     expect(instance.id).to.equal(1);
@@ -130,7 +130,7 @@ describe('InstanceController', () => {
     const newName = 'a test';
     const newDescripion = 'a test to test';
 
-    const res1 = await client.put(`/api/v1/instances/${instance.id}`).send(new InstanceUpdatorDto({
+    const res1 = await client.put(`/api/instances/${instance.id}`).send(new InstanceUpdatorDto({
       id: instance.id,
       name: newName,
       description: newDescripion,
@@ -139,7 +139,7 @@ describe('InstanceController', () => {
     expect(returnedInstance || null).to.not.be.null();
     expect(returnedInstance.id).to.equal(instance.id);
 
-    const res2 = await client.get(`/api/v1/instances/${instance.id}`).expect(200);
+    const res2 = await client.get(`/api/instances/${instance.id}`).expect(200);
     const instance2 = res2.body as InstanceDto;
     expect(instance2 || null).to.not.be.null();
     expect(instance2.id).to.equal(instance.id);
@@ -147,23 +147,23 @@ describe('InstanceController', () => {
     expect(instance2.description).to.equal(newDescripion);
   });
 
-  it('invokes DEL /api/v1/instances/{:id}', async () => {
+  it('invokes DEL /api/instances/{:id}', async () => {
 
-    const initRes = await client.get('/api/v1/instances').expect(200);
+    const initRes = await client.get('/api/instances').expect(200);
     const initInstances = initRes.body as InstanceDto[];
 
-    const res = await client.delete('/api/v1/instances/1').expect(200);
+    const res = await client.delete('/api/instances/1').expect(200);
     const ok = res.body;
     expect(ok || null).to.not.be.null();
     expect(ok).to.equal(true);
 
-    const finalRes = await client.get('/api/v1/instances').expect(200);
+    const finalRes = await client.get('/api/instances').expect(200);
     const finalInstances = finalRes.body as InstanceDto[];
     expect(finalInstances.length).to.equal(initInstances.length - 1);
   });
 
-  it('invokes GET /api/v1/instances/{:id}/state', async () => {
-    const res = await client.get('/api/v1/instances/1/state').expect(200);
+  it('invokes GET /api/instances/{:id}/state', async () => {
+    const res = await client.get('/api/instances/1/state').expect(200);
 
     const cloudInstanceState = res.body as CloudInstanceState;
     expect(cloudInstanceState || null).to.not.be.null();
@@ -172,8 +172,8 @@ describe('InstanceController', () => {
     expect(cloudInstanceState.memory).to.equal(1024);
   });
 
-  it('invokes GET /api/v1/instances/{:id}/network', async () => {
-    const res = await client.get('/api/v1/instances/1/network').expect(200);
+  it('invokes GET /api/instances/{:id}/network', async () => {
+    const res = await client.get('/api/instances/1/network').expect(200);
 
     const cloudInstanceNetwork = res.body as CloudInstanceNetwork;
     expect(cloudInstanceNetwork || null).to.not.be.null();
@@ -183,9 +183,9 @@ describe('InstanceController', () => {
     expect(cloudInstanceNetwork.protocols[1].name).to.equal('GUACD');
   });
 
-  it('invokes POST /api/v1/instances/{:id}/actions', async () => {
+  it('invokes POST /api/instances/{:id}/actions', async () => {
     const command = new CloudInstanceCommand({type: CloudInstanceCommandType.REBOOT});
-    const res = await client.post('/api/v1/instances/1/actions').send(command).expect(200);
+    const res = await client.post('/api/instances/1/actions').send(command).expect(200);
 
     const instance = res.body as InstanceDto;
     expect(instance || null).to.not.be.null();
@@ -194,8 +194,8 @@ describe('InstanceController', () => {
   });
 
 
-  it('invokes POST /api/v1/instances/{:id}/token', async () => {
-    const res = await client.post('/api/v1/instances/3/token').expect(200);
+  it('invokes POST /api/instances/{:id}/token', async () => {
+    const res = await client.post('/api/instances/3/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.token || null).to.not.be.null();
@@ -203,11 +203,11 @@ describe('InstanceController', () => {
 
   it('invokes GET /instances/{instanceId}/token/{token}/validate', async () => {
     // Create token
-    const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);
+    const res = await client.post('/api/users/1/instances/1/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
 
-    const res2 = await client.get(`/api/v1/instances/1/token/${authorisationToken.token}/validate`).expect(200);
+    const res2 = await client.get(`/api/instances/1/token/${authorisationToken.token}/validate`).expect(200);
     const instanceAuthorisation = res2.body as InstanceAuthorisationDto;
     expect(instanceAuthorisation || null).to.not.be.null();
     expect(instanceAuthorisation.network || null).to.not.be.null();
@@ -224,7 +224,7 @@ describe('InstanceController', () => {
 
   it('fails to invoke GET /instances/{instanceId}/token/{token}/validate because delay too long', async () => {
     // Create token
-    const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);
+    const res = await client.post('/api/users/1/instances/1/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
 
@@ -233,30 +233,30 @@ describe('InstanceController', () => {
     const delay = (delayS: number) => new Promise((resolve) => setTimeout(resolve, delayS * 1000));
     await delay(APPLICATION_CONFIG().authorisation.tokenValidDurationS);
 
-    await client.get(`/api/v1/instances/1/token/${authorisationToken.token}/validate`).expect(401);
+    await client.get(`/api/instances/1/token/${authorisationToken.token}/validate`).expect(401);
 
     APPLICATION_CONFIG().authorisation.tokenValidDurationS = originalDelayS;
   });
 
   it('fails to invoke GET /instances/{instanceId}/token/{token}/validate because instance is not coherent', async () => {
     // Create token
-    const res = await client.post('/api/v1/users/1/instances/1/token').expect(200);
+    const res = await client.post('/api/users/1/instances/1/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
 
-    await client.get(`/api/v1/instances/2/token/${authorisationToken.token}/validate`).expect(401);
+    await client.get(`/api/instances/2/token/${authorisationToken.token}/validate`).expect(401);
   });
 
-  it('invokes GET /api/v1/instances/{:id}/members', async () => {
-    const res = await client.get('/api/v1/instances/1/members').expect(200);
+  it('invokes GET /api/instances/{:id}/members', async () => {
+    const res = await client.get('/api/instances/1/members').expect(200);
 
     const members = res.body as InstanceMember[];
     expect(members || null).to.not.be.null();
     expect(members.length).to.equal(3);
   });
 
-  it('invokes POST /api/v1/instances/{:id}/members', async () => {
-    const listRes1 = await client.get('/api/v1/instances/1/members').expect(200);
+  it('invokes POST /api/instances/{:id}/members', async () => {
+    const listRes1 = await client.get('/api/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     expect(members1 || null).to.not.be.null();
 
@@ -268,18 +268,18 @@ describe('InstanceController', () => {
       })
     })
 
-    const res = await client.post('/api/v1/instances/1/members').send(member).expect(200);
+    const res = await client.post('/api/instances/1/members').send(member).expect(200);
     const createdMember = res.body as InstanceMember;
     expect(createdMember || null).to.not.be.null();
     expect(createdMember.id || null).to.not.be.null();
 
-    const listRes2 = await client.get('/api/v1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
     expect(members2.length).to.equal(members1.length + 1);
   });
 
-  it('fails to invoke POST /api/v1/instances/{:id}/members because role is owner', async () => {
+  it('fails to invoke POST /api/instances/{:id}/members because role is owner', async () => {
     const member = new InstanceMemberCreatorDto({
       role: InstanceMemberRole.OWNER,
       user: new User({
@@ -288,11 +288,11 @@ describe('InstanceController', () => {
       })
     })
 
-    await client.post('/api/v1/instances/1/members').send(member).expect(400);
+    await client.post('/api/instances/1/members').send(member).expect(400);
   });
 
-  it('invokes PUT /api/v1/instances/{:id}/members/{memberId}', async () => {
-    const listRes1 = await client.get('/api/v1/instances/1/members').expect(200);
+  it('invokes PUT /api/instances/{:id}/members/{memberId}', async () => {
+    const listRes1 = await client.get('/api/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     expect(members1 || null).to.not.be.null();
 
@@ -303,11 +303,11 @@ describe('InstanceController', () => {
       role: InstanceMemberRole.GUEST
     });
 
-    const res = await client.put(`/api/v1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(200);
+    const res = await client.put(`/api/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(200);
     const updatedMember = res.body as InstanceMember;
     expect(updatedMember || null).to.not.be.null();
 
-    const listRes2 = await client.get('/api/v1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
 
@@ -315,8 +315,8 @@ describe('InstanceController', () => {
     expect(updatedExistingMember.role).to.equal(InstanceMemberRole.GUEST);
   });
 
-  it('fails to invoke PUT /api/v1/instances/{:id}/members/{memberId} because cannot have more than one owner', async () => {
-    const listRes1 = await client.get('/api/v1/instances/1/members').expect(200);
+  it('fails to invoke PUT /api/instances/{:id}/members/{memberId} because cannot have more than one owner', async () => {
+    const listRes1 = await client.get('/api/instances/1/members').expect(200);
     const members = listRes1.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 2);
 
@@ -325,31 +325,31 @@ describe('InstanceController', () => {
       role: InstanceMemberRole.OWNER
     });
 
-    await client.put(`/api/v1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(400);
+    await client.put(`/api/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(400);
   });
 
-  it('invokes DELETE /api/v1/instances/{:id}/members/{memberId}', async () => {
-    const listRes1 = await client.get('/api/v1/instances/1/members').expect(200);
+  it('invokes DELETE /api/instances/{:id}/members/{memberId}', async () => {
+    const listRes1 = await client.get('/api/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     const existingMember = members1.find(member => member.id === 3);
 
-    const res = await client.delete(`/api/v1/instances/1/members/${existingMember.id}`).expect(200);
+    const res = await client.delete(`/api/instances/1/members/${existingMember.id}`).expect(200);
     const ok = res.body;
     expect(ok || null).to.not.be.null();
     expect(ok).to.equal(true);
 
-    const listRes2 = await client.get('/api/v1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
     expect(members2.length).to.equal(members1.length - 1);
   });
 
-  it('fails to invoke DELETE /api/v1/instances/{:id}/members/{memberId} because owner cannot be deleted', async () => {
-    const res = await client.get('/api/v1/instances/1/members').expect(200);
+  it('fails to invoke DELETE /api/instances/{:id}/members/{memberId} because owner cannot be deleted', async () => {
+    const res = await client.get('/api/instances/1/members').expect(200);
     const members = res.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 1);
 
-    await client.delete(`/api/v1/instances/1/members/${existingMember.id}`).expect(400);
+    await client.delete(`/api/instances/1/members/${existingMember.id}`).expect(400);
   });
 
 });

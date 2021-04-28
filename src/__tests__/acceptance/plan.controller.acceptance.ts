@@ -31,8 +31,8 @@ describe('PlanController', () => {
     await stopCloudProviderMockServers(cloudProviderServers);
   });
 
-  it('invokes GET /api/v1/plans', async () => {
-    const res = await client.get('/api/v1/plans').expect(200);
+  it('invokes GET /api/plans', async () => {
+    const res = await client.get('/api/plans').expect(200);
 
     const plans = res.body as PlanDto[];
     expect(plans.length).to.equal(7);
@@ -42,8 +42,8 @@ describe('PlanController', () => {
     expect(plans[0].flavour.id).to.equal(1);
   });
 
-  it('invokes GET /api/v1/plans/{:id}', async () => {
-    const res = await client.get('/api/v1/plans/1').expect(200);
+  it('invokes GET /api/plans/{:id}', async () => {
+    const res = await client.get('/api/plans/1').expect(200);
 
     const plan = res.body as PlanDto;
     expect(plan || null).to.not.be.null();
@@ -53,8 +53,8 @@ describe('PlanController', () => {
     expect(plan.flavour.id).to.equal(1);
   });
 
-  it('invokes POST /api/v1/plans', async () => {
-    const initRes = await client.get('/api/v1/plans').expect(200);
+  it('invokes POST /api/plans', async () => {
+    const initRes = await client.get('/api/plans').expect(200);
     const initPlans = initRes.body as PlanDto[];
 
     const planData = {
@@ -65,18 +65,18 @@ describe('PlanController', () => {
       flavourId: 1
     }
 
-    const res1 = await client.post('/api/v1/plans').send(planData).expect(200);
+    const res1 = await client.post('/api/plans').send(planData).expect(200);
 
     const plan = res1.body as PlanDto;
     expect(plan || null).to.not.be.null();
     expect(plan.id || null).to.not.be.null();
 
-    const res2 = await client.get('/api/v1/plans').expect(200);
+    const res2 = await client.get('/api/plans').expect(200);
 
     const plans = res2.body as PlanDto[];
     expect(plans.length).to.equal(initPlans.length + 1);
 
-    const res3 = await client.get(`/api/v1/plans/${plan.id}`).expect(200);
+    const res3 = await client.get(`/api/plans/${plan.id}`).expect(200);
 
     const plan2 = res3.body as PlanDto;
     expect(plan2 || null).to.not.be.null();
@@ -86,16 +86,16 @@ describe('PlanController', () => {
     expect(plan2.flavour.id).to.equal(1);
   });
 
-  it('invokes PUT /api/v1/plans/{:id}', async () => {
+  it('invokes PUT /api/plans/{:id}', async () => {
 
-    const res = await client.get('/api/v1/plans/1').expect(200);
+    const res = await client.get('/api/plans/1').expect(200);
     const plan = res.body as PlanDto;
     expect(plan || null).to.not.be.null();
     expect(plan.id).to.equal(1);
 
     const newName = 'a test';
 
-    const res1 = await client.put(`/api/v1/plans/${plan.id}`).send({
+    const res1 = await client.put(`/api/plans/${plan.id}`).send({
       id: plan.id,
       name: newName,
       description: plan.description,
@@ -107,24 +107,24 @@ describe('PlanController', () => {
     expect(returnedPlan || null).to.not.be.null();
     expect(returnedPlan.id).to.equal(plan.id);
 
-    const res2 = await client.get(`/api/v1/plans/${plan.id}`).expect(200);
+    const res2 = await client.get(`/api/plans/${plan.id}`).expect(200);
     const plan2 = res2.body as PlanDto;
     expect(plan2 || null).to.not.be.null();
     expect(plan2.id).to.equal(plan.id);
     expect(plan2.name).to.equal(newName);
   });
 
-  it('invokes DEL /api/v1/plans/{:id}', async () => {
+  it('invokes DEL /api/plans/{:id}', async () => {
 
-    const initRes = await client.get('/api/v1/plans').expect(200);
+    const initRes = await client.get('/api/plans').expect(200);
     const initPlans = initRes.body as PlanDto[];
 
-    const res = await client.delete('/api/v1/plans/7').expect(200);
+    const res = await client.delete('/api/plans/7').expect(200);
     const ok = res.body;
     expect(ok || null).to.not.be.null();
     expect(ok).to.equal(true);
 
-    const finalRes = await client.get('/api/v1/plans').expect(200);
+    const finalRes = await client.get('/api/plans').expect(200);
     const finalPlans = finalRes.body as PlanDto[];
     expect(finalPlans.length).to.equal(initPlans.length - 1);
 

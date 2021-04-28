@@ -24,8 +24,8 @@ describe('HealthController', () => {
     ]);
   });
 
-  it('invokes GET /api/v1/health', async () => {
-    const res = await client.get('/api/v1/health').expect(200);
+  it('invokes GET /api/health', async () => {
+    const res = await client.get('/api/health').expect(200);
     const health = res.body as Health;
     expect(health).to.equal(Health.UP);
   });

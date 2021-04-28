@@ -35,8 +35,8 @@ describe('UserInstanceController', () => {
     await stopCloudProviderMockServers(cloudProviderServers);
   });
 
-  it('invokes GET /api/v1/users/{:userId}/instances', async () => {
-    const res = await client.get('/api/v1/users/1/instances').expect(200);
+  it('invokes GET /api/users/{:userId}/instances', async () => {
+    const res = await client.get('/api/users/1/instances').expect(200);
 
     const instances = res.body as InstanceDto[];
     expect(instances.length).to.equal(3);
@@ -52,8 +52,8 @@ describe('UserInstanceController', () => {
     expect(cloudInstance.flavour.id).to.equal(1);
   });
 
-  it('invokes GET /api/v1/users/{:userId}/instances/{:id}', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1').expect(200);
+  it('invokes GET /api/users/{:userId}/instances/{:id}', async () => {
+    const res = await client.get('/api/users/1/instances/1').expect(200);
 
     const cloudInstance = res.body as InstanceDto;
     expect(cloudInstance || null).to.not.be.null();
@@ -68,12 +68,12 @@ describe('UserInstanceController', () => {
     expect(cloudInstance.flavour.id).to.equal(1);
   });
 
-  it('fails to invoke GET /api/v1/users/{:userId}/instances/{:id} because user is not a member of the instance', async () => {
-    await client.get('/api/v1/users/4/instances/1').expect(404);
+  it('fails to invoke GET /api/users/{:userId}/instances/{:id} because user is not a member of the instance', async () => {
+    await client.get('/api/users/4/instances/1').expect(404);
   });
 
-  it('invokes POST /api/v1/users/{:userId}/instances', async () => {
-    const initRes = await client.get('/api/v1/users/1000/instances').expect(200);
+  it('invokes POST /api/users/{:userId}/instances', async () => {
+    const initRes = await client.get('/api/users/1000/instances').expect(200);
     const initInstances = initRes.body as InstanceDto[];
     expect(initInstances.length).to.equal(0);
 
@@ -91,18 +91,18 @@ describe('UserInstanceController', () => {
       }),
     });
 
-    const res1 = await client.post('/api/v1/users/1000/instances').send(instanceData).expect(200);
+    const res1 = await client.post('/api/users/1000/instances').send(instanceData).expect(200);
 
     const instance = res1.body as InstanceDto;
     expect(instance || null).to.not.be.null();
     expect(instance.id || null).to.not.be.null();
 
-    const res2 = await client.get('/api/v1/users/1000/instances').expect(200);
+    const res2 = await client.get('/api/users/1000/instances').expect(200);
 
     const instances = res2.body as InstanceDto[];
     expect(instances.length).to.equal(1);
 
-    const res3 = await client.get(`/api/v1/users/1000/instances/${instance.id}`).expect(200);
+    const res3 = await client.get(`/api/users/1000/instances/${instance.id}`).expect(200);
 
     const instance2 = res3.body as InstanceDto;
     expect(instance2 || null).to.not.be.null();
@@ -122,7 +122,7 @@ describe('UserInstanceController', () => {
     expect(instance2.members[0].role).to.equal(InstanceMemberRole.OWNER);
   });
 
-  it('fails on invoking POST /api/v1/users/{:userId}/instances when userId not equal to instance.user.accountId', async () => {
+  it('fails on invoking POST /api/users/{:userId}/instances when userId not equal to instance.user.accountId', async () => {
     const instanceData = new InstanceCreatorDto({
       name: 'new instance',
       description: 'A new instance',
@@ -137,11 +137,11 @@ describe('UserInstanceController', () => {
       }),
     });
 
-    await client.post('/api/v1/users/1/instances').send(instanceData).expect(400);
+    await client.post('/api/users/1/instances').send(instanceData).expect(400);
   });
 
-  it('invokes PUT /api/v1/users/{userId}/instances/{:id}', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1').expect(200);
+  it('invokes PUT /api/users/{userId}/instances/{:id}', async () => {
+    const res = await client.get('/api/users/1/instances/1').expect(200);
     const instance = res.body as InstanceDto;
     expect(instance || null).to.not.be.null();
     expect(instance.id).to.equal(1);
@@ -149,7 +149,7 @@ describe('UserInstanceController', () => {
     const newName = 'a test';
     const newDescripion = 'a test to test';
 
-    const res1 = await client.put(`/api/v1/users/1/instances/${instance.id}`).send(new InstanceUpdatorDto({
+    const res1 = await client.put(`/api/users/1/instances/${instance.id}`).send(new InstanceUpdatorDto({
       id: instance.id,
       name: newName,
       description: newDescripion,
@@ -158,7 +158,7 @@ describe('UserInstanceController', () => {
     expect(returnedInstance || null).to.not.be.null();
     expect(returnedInstance.id).to.equal(instance.id);
 
-    const res2 = await client.get(`/api/v1/users/1/instances/${instance.id}`).expect(200);
+    const res2 = await client.get(`/api/users/1/instances/${instance.id}`).expect(200);
     const instance2 = res2.body as InstanceDto;
     expect(instance2 || null).to.not.be.null();
     expect(instance2.id).to.equal(instance.id);
@@ -166,8 +166,8 @@ describe('UserInstanceController', () => {
     expect(instance2.description).to.equal(newDescripion);
   });
 
-  it('fails to invoke PUT /api/v1/users/{userId}/instances/{:id} because user is not a member of the instance', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1').expect(200);
+  it('fails to invoke PUT /api/users/{userId}/instances/{:id} because user is not a member of the instance', async () => {
+    const res = await client.get('/api/users/1/instances/1').expect(200);
     const instance = res.body as InstanceDto;
     expect(instance || null).to.not.be.null();
     expect(instance.id).to.equal(1);
@@ -175,15 +175,15 @@ describe('UserInstanceController', () => {
     const newName = 'a test';
     const newDescripion = 'a test to test';
 
-    await client.put(`/api/v1/users/4/instances/${instance.id}`).send(new InstanceUpdatorDto({
+    await client.put(`/api/users/4/instances/${instance.id}`).send(new InstanceUpdatorDto({
       id: instance.id,
       name: newName,
       description: newDescripion,
     })).expect(404);
   });
 
-  it('fails to invoke PUT /api/v1/users/{userId}/instances/{:id} because user is not the owner', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1').expect(200);
+  it('fails to invoke PUT /api/users/{userId}/instances/{:id} because user is not the owner', async () => {
+    const res = await client.get('/api/users/1/instances/1').expect(200);
     const instance = res.body as InstanceDto;
     expect(instance || null).to.not.be.null();
     expect(instance.id).to.equal(1);
@@ -191,37 +191,37 @@ describe('UserInstanceController', () => {
     const newName = 'a test';
     const newDescripion = 'a test to test';
 
-    await client.put(`/api/v1/users/2/instances/${instance.id}`).send(new InstanceUpdatorDto({
+    await client.put(`/api/users/2/instances/${instance.id}`).send(new InstanceUpdatorDto({
       id: instance.id,
       name: newName,
       description: newDescripion,
     })).expect(401);
   });
 
-  it('invokes DEL /api/v1/users/{userId}/instances/{:id}', async () => {
-    const initRes = await client.get('/api/v1/users/1/instances').expect(200);
+  it('invokes DEL /api/users/{userId}/instances/{:id}', async () => {
+    const initRes = await client.get('/api/users/1/instances').expect(200);
     const initInstances = initRes.body as InstanceDto[];
 
-    const res = await client.delete('/api/v1/users/1/instances/1').expect(200);
+    const res = await client.delete('/api/users/1/instances/1').expect(200);
     const ok = res.body;
     expect(ok || null).to.not.be.null();
     expect(ok).to.equal(true);
 
-    const finalRes = await client.get('/api/v1/users/1/instances').expect(200);
+    const finalRes = await client.get('/api/users/1/instances').expect(200);
     const finalInstances = finalRes.body as InstanceDto[];
     expect(finalInstances.length).to.equal(initInstances.length - 1);
   });
 
-  it('fails to invoke DEL /api/v1/users/{userId}/instances/{:id} because user is not a member of the instance', async () => {
-    await client.delete('/api/v1/users/4/instances/1').expect(404);
+  it('fails to invoke DEL /api/users/{userId}/instances/{:id} because user is not a member of the instance', async () => {
+    await client.delete('/api/users/4/instances/1').expect(404);
   });
 
-  it('fails to invoke DEL /api/v1/users/{userId}/instances/{:id} because user is not the owner', async () => {
-    await client.delete('/api/v1/users/2/instances/1').expect(401);
+  it('fails to invoke DEL /api/users/{userId}/instances/{:id} because user is not the owner', async () => {
+    await client.delete('/api/users/2/instances/1').expect(401);
   });
 
-  it('invokes GET /api/v1/users/{:userId}/instances/{:id}/state', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1/state').expect(200);
+  it('invokes GET /api/users/{:userId}/instances/{:id}/state', async () => {
+    const res = await client.get('/api/users/1/instances/1/state').expect(200);
 
     const cloudInstanceState = res.body as CloudInstanceState;
     expect(cloudInstanceState || null).to.not.be.null();
@@ -230,12 +230,12 @@ describe('UserInstanceController', () => {
     expect(cloudInstanceState.memory).to.equal(1024);
   });
 
-  it('fails to invoke GET /api/v1/users/{:userId}/instances/{:id}/state because user is not a member of the instance', async () => {
-    await client.get('/api/v1/users/4/instances/1/state').expect(404);
+  it('fails to invoke GET /api/users/{:userId}/instances/{:id}/state because user is not a member of the instance', async () => {
+    await client.get('/api/users/4/instances/1/state').expect(404);
   });
 
-  it('invokes GET /api/v1/users/{:userId}/instances/{:id}/network', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1/network').expect(200);
+  it('invokes GET /api/users/{:userId}/instances/{:id}/network', async () => {
+    const res = await client.get('/api/users/1/instances/1/network').expect(200);
 
     const cloudInstanceNetwork = res.body as CloudInstanceNetwork;
     expect(cloudInstanceNetwork || null).to.not.be.null();
@@ -245,13 +245,13 @@ describe('UserInstanceController', () => {
     expect(cloudInstanceNetwork.protocols[1].name).to.equal('GUACD');
   });
 
-  it('fails to invoke GET /api/v1/users/{:userId}/instances/{:id}/network because user is not a member of the instance', async () => {
-    await client.get('/api/v1/users/4/instances/1/network').expect(404);
+  it('fails to invoke GET /api/users/{:userId}/instances/{:id}/network because user is not a member of the instance', async () => {
+    await client.get('/api/users/4/instances/1/network').expect(404);
   });
 
-  it('invokes POST /api/v1/users/{:userId}/instances/{:id}/actions', async () => {
+  it('invokes POST /api/users/{:userId}/instances/{:id}/actions', async () => {
     const command = new CloudInstanceCommand({type: CloudInstanceCommandType.REBOOT});
-    const res = await client.post('/api/v1/users/1/instances/1/actions').send(command).expect(200);
+    const res = await client.post('/api/users/1/instances/1/actions').send(command).expect(200);
 
     const instance = res.body as InstanceDto;
     expect(instance || null).to.not.be.null();
@@ -259,41 +259,41 @@ describe('UserInstanceController', () => {
     expect(instance.state.status).to.equal('REBOOTING');
   });
 
-  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/actions because user is not a member of the instance', async () => {
+  it('fails to invoke POST /api/users/{:userId}/instances/{:id}/actions because user is not a member of the instance', async () => {
     const command = new CloudInstanceCommand({type: CloudInstanceCommandType.REBOOT});
-    await client.post('/api/v1/users/4/instances/1/actions').send(command).expect(404);
+    await client.post('/api/users/4/instances/1/actions').send(command).expect(404);
   });
 
-  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/actions because user is not the owner', async () => {
+  it('fails to invoke POST /api/users/{:userId}/instances/{:id}/actions because user is not the owner', async () => {
     const command = new CloudInstanceCommand({type: CloudInstanceCommandType.REBOOT});
-    await client.post('/api/v1/users/2/instances/1/actions').send(command).expect(401);
+    await client.post('/api/users/2/instances/1/actions').send(command).expect(401);
   });
 
-  it('invokes POST /api/v1/users/{:userId}/instances/{:id}/token', async () => {
-    const res = await client.post('/api/v1/users/1/instances/2/token').expect(200);
+  it('invokes POST /api/users/{:userId}/instances/{:id}/token', async () => {
+    const res = await client.post('/api/users/1/instances/2/token').expect(200);
     const authorisationToken = res.body as AuthorisationTokenDto;
     expect(authorisationToken || null).to.not.be.null();
     expect(authorisationToken.token || null).to.not.be.null();
   });
 
-  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/token if user is not member', async () => {
-    await client.post('/api/v1/users/2/instances/2/token').expect(404);
+  it('fails to invoke POST /api/users/{:userId}/instances/{:id}/token if user is not member', async () => {
+    await client.post('/api/users/2/instances/2/token').expect(404);
   });
 
-  it('invokes GET /api/v1/users/{:userId}/instances/{:id}/members', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('invokes GET /api/users/{:userId}/instances/{:id}/members', async () => {
+    const res = await client.get('/api/users/1/instances/1/members').expect(200);
 
     const members = res.body as InstanceMember[];
     expect(members || null).to.not.be.null();
     expect(members.length).to.equal(3);
   });
 
-  it('fails to invoke GET /api/v1/users/{:userId}/instances/{:id}/members because user is not a member of the instance', async () => {
-    await client.get('/api/v1/users/4/instances/1/members').expect(404);
+  it('fails to invoke GET /api/users/{:userId}/instances/{:id}/members because user is not a member of the instance', async () => {
+    await client.get('/api/users/4/instances/1/members').expect(404);
   });
 
-  it('invokes POST /api/v1/users/{:userId}/instances/{:id}/members', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('invokes POST /api/users/{:userId}/instances/{:id}/members', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     expect(members1 || null).to.not.be.null();
 
@@ -305,18 +305,18 @@ describe('UserInstanceController', () => {
       })
     })
 
-    const res = await client.post('/api/v1/users/1/instances/1/members').send(member).expect(200);
+    const res = await client.post('/api/users/1/instances/1/members').send(member).expect(200);
     const createdMember = res.body as InstanceMember;
     expect(createdMember || null).to.not.be.null();
     expect(createdMember.id || null).to.not.be.null();
 
-    const listRes2 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
     expect(members2.length).to.equal(members1.length + 1);
   });
 
-  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/members because user is not a member of the instance', async () => {
+  it('fails to invoke POST /api/users/{:userId}/instances/{:id}/members because user is not a member of the instance', async () => {
     const member = new InstanceMemberCreatorDto({
       role: InstanceMemberRole.USER,
       user: new User({
@@ -325,10 +325,10 @@ describe('UserInstanceController', () => {
       })
     })
 
-    await client.post('/api/v1/users/4/instances/1/members').send(member).expect(404);
+    await client.post('/api/users/4/instances/1/members').send(member).expect(404);
   });
 
-  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/members because user is not the owner', async () => {
+  it('fails to invoke POST /api/users/{:userId}/instances/{:id}/members because user is not the owner', async () => {
     const member = new InstanceMemberCreatorDto({
       role: InstanceMemberRole.USER,
       user: new User({
@@ -337,10 +337,10 @@ describe('UserInstanceController', () => {
       })
     })
 
-    await client.post('/api/v1/users/2/instances/1/members').send(member).expect(401);
+    await client.post('/api/users/2/instances/1/members').send(member).expect(401);
   });
 
-  it('fails to invoke POST /api/v1/users/{:userId}/instances/{:id}/members because role is owner', async () => {
+  it('fails to invoke POST /api/users/{:userId}/instances/{:id}/members because role is owner', async () => {
     const member = new InstanceMemberCreatorDto({
       role: InstanceMemberRole.OWNER,
       user: new User({
@@ -349,11 +349,11 @@ describe('UserInstanceController', () => {
       })
     })
 
-    await client.post('/api/v1/users/1/instances/1/members').send(member).expect(400);
+    await client.post('/api/users/1/instances/1/members').send(member).expect(400);
   });
 
-  it('invoke POST /api/v1/users/{:userId}/instances/{:id}/members with existing member', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('invoke POST /api/users/{:userId}/instances/{:id}/members with existing member', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     expect(members1 || null).to.not.be.null();
 
@@ -364,19 +364,19 @@ describe('UserInstanceController', () => {
       user: existingMember.user
     })
 
-    const res = await client.post('/api/v1/users/1/instances/1/members').send(member).expect(200);
+    const res = await client.post('/api/users/1/instances/1/members').send(member).expect(200);
     const createdMember = res.body as InstanceMember;
     expect(createdMember || null).to.not.be.null();
     expect(createdMember.id || null).to.not.be.null();
 
-    const listRes2 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
     expect(members2.length).to.equal(members1.length);
   });
 
-  it('invokes PUT /api/v1/users/{:userId}/instances/{:id}/members/{:memberId}', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('invokes PUT /api/users/{:userId}/instances/{:id}/members/{:memberId}', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     expect(members1 || null).to.not.be.null();
 
@@ -387,11 +387,11 @@ describe('UserInstanceController', () => {
       role: InstanceMemberRole.GUEST
     });
 
-    const res = await client.put(`/api/v1/users/1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(200);
+    const res = await client.put(`/api/users/1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(200);
     const updatedMember = res.body as InstanceMember;
     expect(updatedMember || null).to.not.be.null();
 
-    const listRes2 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
 
@@ -399,8 +399,8 @@ describe('UserInstanceController', () => {
     expect(updatedExistingMember.role).to.equal(InstanceMemberRole.GUEST);
   });
 
-  it('fails to invoke PUT /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because user is not a member of the instance', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke PUT /api/users/{:userId}/instances/{:id}/members/{:memberId} because user is not a member of the instance', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = listRes1.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 2);
 
@@ -409,11 +409,11 @@ describe('UserInstanceController', () => {
       role: InstanceMemberRole.GUEST
     });
 
-    await client.put(`/api/v1/users/4/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(404);
+    await client.put(`/api/users/4/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(404);
   });
 
-  it('fails to invoke PUT /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because user is not the owner', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke PUT /api/users/{:userId}/instances/{:id}/members/{:memberId} because user is not the owner', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = listRes1.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 2);
 
@@ -422,11 +422,11 @@ describe('UserInstanceController', () => {
       role: InstanceMemberRole.GUEST
     });
 
-    await client.put(`/api/v1/users/2/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(401);
+    await client.put(`/api/users/2/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(401);
   });
 
-  it('fails to invoke PUT /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because owner cannot change their role', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke PUT /api/users/{:userId}/instances/{:id}/members/{:memberId} because owner cannot change their role', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = listRes1.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 1);
 
@@ -435,11 +435,11 @@ describe('UserInstanceController', () => {
       role: InstanceMemberRole.GUEST
     });
 
-    await client.put(`/api/v1/users/1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(400);
+    await client.put(`/api/users/1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(400);
   });
 
-  it('fails to invoke PUT /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because cannot have more than one owner', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke PUT /api/users/{:userId}/instances/{:id}/members/{:memberId} because cannot have more than one owner', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = listRes1.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 2);
 
@@ -448,46 +448,46 @@ describe('UserInstanceController', () => {
       role: InstanceMemberRole.OWNER
     });
 
-    await client.put(`/api/v1/users/1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(400);
+    await client.put(`/api/users/1/instances/1/members/${existingMember.id}`).send(memberUpdator).expect(400);
   });
 
-  it('invokes DELETE /api/v1/users/{:userId}/instances/{:id}/members/{:memberId}', async () => {
-    const listRes1 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('invokes DELETE /api/users/{:userId}/instances/{:id}/members/{:memberId}', async () => {
+    const listRes1 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members1 = listRes1.body as InstanceMember[];
     const existingMember = members1.find(member => member.id === 3);
 
-    const res = await client.delete(`/api/v1/users/1/instances/1/members/${existingMember.id}`).expect(200);
+    const res = await client.delete(`/api/users/1/instances/1/members/${existingMember.id}`).expect(200);
     const ok = res.body;
     expect(ok || null).to.not.be.null();
     expect(ok).to.equal(true);
 
-    const listRes2 = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+    const listRes2 = await client.get('/api/users/1/instances/1/members').expect(200);
     const members2 = listRes2.body as InstanceMember[];
     expect(members2 || null).to.not.be.null();
     expect(members2.length).to.equal(members1.length - 1);
   });
 
-  it('fails to invoke DELETE /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because user is not a member of the instance', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke DELETE /api/users/{:userId}/instances/{:id}/members/{:memberId} because user is not a member of the instance', async () => {
+    const res = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = res.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 2);
 
-    await client.delete(`/api/v1/users/4/instances/1/members/${existingMember.id}`).expect(404);
+    await client.delete(`/api/users/4/instances/1/members/${existingMember.id}`).expect(404);
   });
 
-  it('fails to invoke DELETE /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because user is not the owner', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke DELETE /api/users/{:userId}/instances/{:id}/members/{:memberId} because user is not the owner', async () => {
+    const res = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = res.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 2);
 
-    await client.delete(`/api/v1/users/2/instances/1/members/${existingMember.id}`).expect(401);
+    await client.delete(`/api/users/2/instances/1/members/${existingMember.id}`).expect(401);
   });
 
-  it('fails to invoke DELETE /api/v1/users/{:userId}/instances/{:id}/members/{:memberId} because owner cannot be deleted', async () => {
-    const res = await client.get('/api/v1/users/1/instances/1/members').expect(200);
+  it('fails to invoke DELETE /api/users/{:userId}/instances/{:id}/members/{:memberId} because owner cannot be deleted', async () => {
+    const res = await client.get('/api/users/1/instances/1/members').expect(200);
     const members = res.body as InstanceMember[];
     const existingMember = members.find(member => member.id === 1);
 
-    await client.delete(`/api/v1/users/1/instances/1/members/${existingMember.id}`).expect(400);
+    await client.delete(`/api/users/1/instances/1/members/${existingMember.id}`).expect(400);
   });
 });

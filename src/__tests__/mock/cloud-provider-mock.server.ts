@@ -49,11 +49,11 @@ export class CloudProviderMockServer {
         next();
       })
 
-      app.get('/api/v1/flavours', (req, res) => {
+      app.get('/api/flavours', (req, res) => {
         res.status(200).send(this.flavours);
       });
 
-      app.get('/api/v1/flavours/:flavourId', (req, res) => {
+      app.get('/api/flavours/:flavourId', (req, res) => {
         const flavourId = +req.params.flavourId;
         const flavour = this.flavours.find(aFlavour => aFlavour.id === flavourId);
         if (flavour != null) {
@@ -64,11 +64,11 @@ export class CloudProviderMockServer {
         }
       });
 
-      app.get('/api/v1/images', (req, res) => {
+      app.get('/api/images', (req, res) => {
         res.status(200).send(this.images);
       });
 
-      app.get('/api/v1/images/:imageId', (req, res) => {
+      app.get('/api/images/:imageId', (req, res) => {
         const imageId = +req.params.imageId;
         const image = this.images.find(anImage => anImage.id === imageId);
         if (image != null) {
@@ -79,11 +79,11 @@ export class CloudProviderMockServer {
         }
       });
 
-      app.get('/api/v1/instances', (req, res) => {
+      app.get('/api/instances', (req, res) => {
         res.status(200).send(this.instances);
       });
 
-      app.get('/api/v1/instances/:instanceId', (req, res) => {
+      app.get('/api/instances/:instanceId', (req, res) => {
         const instanceId = +req.params.instanceId;
         const instance = this.instances.find(anInstance => anInstance.id === instanceId);
         if (instance != null) {
@@ -94,7 +94,7 @@ export class CloudProviderMockServer {
         }
       });
 
-      app.post('/api/v1/instances', (req, res) => {
+      app.post('/api/instances', (req, res) => {
         const instanceCreatorDto = req.body as CloudInstanceCreatorDto;
 
         // Validate image Id and flavour Id
@@ -131,7 +131,7 @@ export class CloudProviderMockServer {
         }
       });
 
-      app.put('/api/v1/instances/:instanceId', (req, res) => {
+      app.put('/api/instances/:instanceId', (req, res) => {
         const instanceUpdatorDto = req.body as CloudInstanceUpdatorDto;
 
         const instanceId = +req.params['instanceId'];
@@ -153,7 +153,7 @@ export class CloudProviderMockServer {
         }
       });
 
-      app.delete('/api/v1/instances/:instanceId', (req, res) => {
+      app.delete('/api/instances/:instanceId', (req, res) => {
         const instanceId = +req.params['instanceId'];
 
         const instance = this.instances.find(anInstance => anInstance.id === instanceId);
@@ -169,7 +169,7 @@ export class CloudProviderMockServer {
         }
       });
 
-      app.get('/api/v1/instances/:instanceId/state', (req, res) => {
+      app.get('/api/instances/:instanceId/state', (req, res) => {
         const instanceId = +req.params.instanceId;
         const instance = this.instances.find(anInstance => anInstance.id === instanceId);
         if (instance != null) {
@@ -181,7 +181,7 @@ export class CloudProviderMockServer {
       });
 
 
-      app.post('/api/v1/instances/:instanceId/actions', (req, res) => {
+      app.post('/api/instances/:instanceId/actions', (req, res) => {
         const cloudInstanceCommand = req.body as CloudInstanceCommand;
 
         const instanceId = +req.params['instanceId'];

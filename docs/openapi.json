@@ -1589,7 +1589,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:4010/api/v1"
+      "url": "http://localhost:4010/api"
     }
   ],
   "components": {
