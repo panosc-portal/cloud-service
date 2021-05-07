@@ -54,7 +54,7 @@
     "@loopback/openapi-v3": "^1.9.9",
     "@loopback/rest": "^1.20.1",
     "@loopback/rest-explorer": "^1.4.1",
-    "@panosc-portal/panosc-common-ts": "0.0.1",
+    "@panosc-portal/panosc-common-ts": "^0.0.2",
     "@types/uuid": "^3.4.7",
     "axios": "^0.19.2",
     "cron": "^1.7.2",
