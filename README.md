@@ -50,6 +50,7 @@ The following environment variables are used to configure the Account Service an
 | CLOUD_SERVICE_TOKEN_VALID_DURATION_S | 10 | The duration of the validity of the authorisation tokens (0 is permanently valid)
 | CLOUD_SERVICE_SCHEDULER_ENABLED | true | Specifies whether the scheduler is enabled (removes instances that no longer exist in the cloud provider)
 | CLOUD_SERVICE_SCHEDULER_CONFIG | | Specifies the path to the scheduler config file. If not provided the default one in *resources/scheduler.config.json* is used
+| PORTAL_GATEWAY_HOST | kong:8000 | The hostname and port of the Kong Gateway |
 
 
 
