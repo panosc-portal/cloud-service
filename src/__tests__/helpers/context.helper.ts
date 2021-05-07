@@ -2,6 +2,7 @@ import { testDataSource } from '../fixtures/datasources/testdb.datasource';
 import { ProviderRepository, PlanRepository, InstanceRepository, UserRepository, InstanceMemberRepository, AuthorisationTokenRepository } from '../../repositories';
 import { ProviderService, PlanService, InstanceService, UserService, InstanceMemberService, CloudFlavourService, CloudApiClientService, CloudImageService, CloudInstanceService } from '../../services';
 import { AuthorisationTokenService } from '../../services/authorisation-token.service';
+import {ConsoleLogger} from '@panosc-portal/panosc-common-ts';
 
 export interface TestApplicationContext {
   providerRepository: ProviderRepository;
@@ -19,6 +20,7 @@ export interface TestApplicationContext {
   cloudFlavourService: CloudFlavourService;
   cloudImageService: CloudImageService;
   cloudInstanceService: CloudInstanceService;
+  logger: ConsoleLogger;
 }
 
 export function createTestApplicationContext(): TestApplicationContext {
@@ -34,11 +36,12 @@ export function createTestApplicationContext(): TestApplicationContext {
   const instanceService = new InstanceService(instanceRepository, instanceMemberService);
   const authorisationTokenRepository = new AuthorisationTokenRepository(testDataSource);
   const authorisationTokenService = new AuthorisationTokenService(authorisationTokenRepository, instanceMemberService);
+  const logger = new ConsoleLogger(process.env.ACCOUNT_SERVICE_LOG_LEVEL);
 
   const cloudApiClientService = new CloudApiClientService();
-  const cloudFlavourService = new CloudFlavourService(cloudApiClientService);
-  const cloudImageService = new CloudImageService(cloudApiClientService);
-  const cloudInstanceService = new CloudInstanceService(cloudApiClientService);
+  const cloudFlavourService = new CloudFlavourService(cloudApiClientService, logger);
+  const cloudImageService = new CloudImageService(cloudApiClientService, logger);
+  const cloudInstanceService = new CloudInstanceService(cloudApiClientService, logger);
 
   return {
     providerRepository,
@@ -55,6 +58,7 @@ export function createTestApplicationContext(): TestApplicationContext {
     authorisationTokenService,
     cloudFlavourService,
     cloudImageService,
-    cloudInstanceService
+    cloudInstanceService,
+    logger
   };
 }

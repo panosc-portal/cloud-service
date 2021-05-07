@@ -1,10 +1,14 @@
+import { inject } from '@loopback/core';
 import { AxiosInstance } from 'axios';
 import { Provider } from '../../models';
-import { logger } from '../../utils';
+import { PanoscCommonTsComponentBindings, ILogger } from '@panosc-portal/panosc-common-ts';
 import { CloudApiClientService } from './cloud-api-client.service';
 
 export class CloudService<T> {
-  constructor(protected _cloudApiClientService: CloudApiClientService, protected _baseUrl: string) {}
+  constructor(
+    protected _cloudApiClientService: CloudApiClientService,
+    protected _baseUrl: string,
+    @inject(PanoscCommonTsComponentBindings.LOGGER) protected _logger: ILogger) {}
 
   protected _apiClient(provider: Provider): AxiosInstance {
     return this._cloudApiClientService.getApiClient(provider);
@@ -17,7 +21,7 @@ export class CloudService<T> {
       return elements;
 
     } catch (error) {
-      logger.error(`Got error getting ${this._baseUrl} from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error getting ${this._baseUrl} from provider '${provider.name}': ${error}`);
       throw error;
     }
   }
@@ -29,7 +33,7 @@ export class CloudService<T> {
       return element;
 
     } catch (error) {
-      logger.error(`Got error getting element from ${this._baseUrl} with id '${elementId}' from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error getting element from ${this._baseUrl} with id '${elementId}' from provider '${provider.name}': ${error}`);
       throw error;
     }
   }

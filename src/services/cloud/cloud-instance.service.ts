@@ -4,12 +4,15 @@ import { CloudInstance, Provider, CloudInstanceState, CloudInstanceCommand, Clou
 import { CloudApiClientService } from './cloud-api-client.service';
 import { CloudService } from './cloud.service';
 import { CloudInstanceCreatorDto, CloudInstanceUpdatorDto } from './dto';
-import { logger } from '../../utils';
+import { PanoscCommonTsComponentBindings, ILogger } from '@panosc-portal/panosc-common-ts';
+
 
 @bind({ scope: BindingScope.SINGLETON })
 export class CloudInstanceService extends CloudService<CloudInstance> {
-  constructor(@inject('services.CloudApiClientService') cloudApiClientService: CloudApiClientService) {
-    super(cloudApiClientService, 'instances');
+  constructor(
+    @inject('services.CloudApiClientService') cloudApiClientService: CloudApiClientService,
+    @inject(PanoscCommonTsComponentBindings.LOGGER) _logger: ILogger) {
+      super(cloudApiClientService, 'instances', _logger);
   }
 
   async save(cloudInstanceCreatorDto: CloudInstanceCreatorDto, provider: Provider): Promise<CloudInstance> {
@@ -19,7 +22,7 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
       return instance;
 
     } catch (error) {
-      logger.error(`Got error creating instance at ${this._baseUrl} from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error creating instance at ${this._baseUrl} from provider '${provider.name}': ${error}`);
       throw error;
     }
   }
@@ -31,7 +34,7 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
       return instance;
 
     } catch (error) {
-      logger.error(`Got error updating instance at ${this._baseUrl} from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error updating instance at ${this._baseUrl} from provider '${provider.name}': ${error}`);
       throw error;
     }
   }
@@ -43,7 +46,7 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
       return deleted;
 
     } catch (error) {
-      logger.error(`Got error updating instance at ${this._baseUrl} from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error updating instance at ${this._baseUrl} from provider '${provider.name}': ${error}`);
       throw error;
     }
   }
@@ -55,7 +58,7 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
       return state;
 
     } catch (error) {
-      logger.error(`Got error getting instance state from ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error getting instance state from ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
       throw error;
     }
   }
@@ -71,7 +74,7 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
       });
 
     } catch (error) {
-      logger.error(`Got error getting instance network from ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error getting instance network from ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
       throw error;
     }
   }
@@ -83,7 +86,7 @@ export class CloudInstanceService extends CloudService<CloudInstance> {
       return instance;
 
     } catch (error) {
-      logger.error(`Got error executing instance action at ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
+      this._logger.error(`Got error executing instance action at ${this._baseUrl} with id '${cloudInstanceId}' from provider '${provider.name}': ${error}`);
       throw error;
     }
   }

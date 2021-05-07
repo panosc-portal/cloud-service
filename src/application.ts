@@ -6,6 +6,8 @@ import { RestApplication } from '@loopback/rest';
 import { ServiceMixin } from '@loopback/service-proxy';
 import * as path from 'path';
 import { MySequence } from './sequence';
+import { PanoscCommonTsComponent, PanoscCommonTsComponentBindings } from '@panosc-portal/panosc-common-ts';
+import { APPLICATION_CONFIG } from './application-config';
 import 'reflect-metadata';
 
 export class CloudServiceApplication extends BootMixin(ServiceMixin(RepositoryMixin(RestApplication))) {
@@ -23,6 +25,13 @@ export class CloudServiceApplication extends BootMixin(ServiceMixin(RepositoryMi
       path: '/explorer'
     });
     this.component(RestExplorerComponent);
+
+    this.component(PanoscCommonTsComponent);
+    this.configure(PanoscCommonTsComponentBindings.COMPONENT).to({
+      defaultGatewayHost: APPLICATION_CONFIG().gateway.host,
+      consoleLoggerThreshold: APPLICATION_CONFIG().logging.level,
+      applicationName: 'cloud-service'
+    });
 
     this.basePath('/api');
 

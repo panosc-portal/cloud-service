@@ -1,7 +1,8 @@
+import { inject } from '@loopback/core';
 import { Job } from "./job";
 import { job, jobInject } from "./job-provider";
 import { InstanceService } from "../instance.service";
-import { logger } from "../../utils";
+import { PanoscCommonTsComponentBindings, ILogger } from '@panosc-portal/panosc-common-ts';
 import { CloudInstanceService } from "../cloud";
 
 @job()
@@ -12,6 +13,9 @@ export class InstanceCleanupJob extends Job {
 
   @jobInject('services.CloudInstanceService')
   private _cloudInstanceService: CloudInstanceService;
+
+  @inject(PanoscCommonTsComponentBindings.LOGGER)
+  private _logger: ILogger;
 
   protected async _execute(params?: any): Promise<any> {
     try {
@@ -49,11 +53,11 @@ export class InstanceCleanupJob extends Job {
       }
 
       if (defunctInstances.length > 0) {
-        logger.info(`Instance Cleanup: deleted ${defunctInstances.length} instances`);
+        this._logger.info(`Instance Cleanup: deleted ${defunctInstances.length} instances`);
       }
 
     } catch (error) {
-      logger.error(`Error during instance cleanup: ${error.message}`);
+      this._logger.error(`Error during instance cleanup: ${error.message}`);
       throw error;
     }
   }

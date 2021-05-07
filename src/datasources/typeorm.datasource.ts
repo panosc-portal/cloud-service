@@ -1,7 +1,7 @@
 import { Connection, createConnection, EntityManager, ObjectType, Repository } from 'typeorm';
-import { lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
-import { logger } from '../utils';
+import { lifeCycleObserver, LifeCycleObserver, inject } from '@loopback/core';
 import { APPLICATION_CONFIG } from '../application-config';
+import { PanoscCommonTsComponentBindings, ILogger } from '@panosc-portal/panosc-common-ts';
 
 @lifeCycleObserver('datasource')
 export class TypeORMDataSource implements LifeCycleObserver {
@@ -11,7 +11,7 @@ export class TypeORMDataSource implements LifeCycleObserver {
   private _connection: Connection;
   private _connectionPromise: Promise<Connection>;
 
-  constructor() {
+  constructor(@inject(PanoscCommonTsComponentBindings.LOGGER) private _logger: ILogger) {
     this._config = {
       type: APPLICATION_CONFIG().database.type,
       host: APPLICATION_CONFIG().database.host,
@@ -30,7 +30,7 @@ export class TypeORMDataSource implements LifeCycleObserver {
    * Start the datasource when application is started
    */
   async start(): Promise<void> {
-    logger.info('Initialising database connection');
+    this._logger.info('Initialising database connection');
     await this.connection();
   }
 
@@ -40,7 +40,7 @@ export class TypeORMDataSource implements LifeCycleObserver {
    */
   async stop(): Promise<void> {
     if (this._connection) {
-      logger.info('Closing database connection');
+      this._logger.info('Closing database connection');
       await this._connection.close();
       this._connection = null;
       this._connectionPromise = null;
@@ -61,7 +61,7 @@ export class TypeORMDataSource implements LifeCycleObserver {
 
       return connection;
     } catch (error) {
-      logger.error(`Could not connect to the database : ${error.message}`);
+      this._logger.error(`Could not connect to the database : ${error.message}`);
       process.exit();
     }
   }

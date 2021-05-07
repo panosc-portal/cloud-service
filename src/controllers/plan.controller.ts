@@ -5,13 +5,15 @@ import { PlanService, ProviderService, CloudFlavourService } from '../services';
 import { BaseController } from './base.controller';
 import { PlanDto, PlanCreatorDto, PlanUpdatorDto } from './dto';
 import { CloudImageService } from '../services';
+import { PanoscCommonTsComponentBindings, ILogger } from '@panosc-portal/panosc-common-ts';
 
 export class PlanController extends BaseController {
   constructor(
     @inject('services.PlanService') private _planService: PlanService,
     @inject('services.ProviderService') private _providerService: ProviderService,
     @inject('services.CloudImageService') cloudImageService: CloudImageService,
-    @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService) {
+    @inject('services.CloudFlavourService') cloudFlavourService: CloudFlavourService,
+    @inject(PanoscCommonTsComponentBindings.LOGGER) private _logger: ILogger) {
     super(cloudImageService, cloudFlavourService);
   }
 
@@ -33,6 +35,7 @@ export class PlanController extends BaseController {
   })
   async getAll(): Promise<PlanDto[]> {
     // Get all plans from DB
+    this._logger.warning('eh ma porko dio');
     const plans = await this._planService.getAll();
 
     // Convert to DTOs

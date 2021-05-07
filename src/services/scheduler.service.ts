@@ -1,6 +1,6 @@
 import { bind, BindingScope, Application, inject, CoreBindings, lifeCycleObserver } from '@loopback/core';
 import * as fs from 'fs';
-import { logger } from '../utils';
+import { PanoscCommonTsComponentBindings, ILogger } from '@panosc-portal/panosc-common-ts';
 import { JOB_PROVIDER } from './jobs/job-provider';
 import { CronJob } from 'cron';
 import { Job } from './jobs/job';
@@ -25,7 +25,9 @@ interface JobConfig {
 export class SchedulerService {
   private _jobs: Map<string, CronJob> = new Map();
 
-  constructor(@inject(CoreBindings.APPLICATION_INSTANCE) private _application?: Application) {}
+  constructor(
+    @inject(PanoscCommonTsComponentBindings.LOGGER) private _logger: ILogger,
+    @inject(CoreBindings.APPLICATION_INSTANCE) private _application?: Application) {}
 
   async start(): Promise<void> {
     return this.init();
@@ -61,7 +63,7 @@ export class SchedulerService {
 
                   } else {
                     jobIsOk = false;
-                    logger.error(`Dependency '${injectionIdentifier}' in Job class '${jobConfig.jobClass}' could not be found`);
+                    this._logger.error(`Dependency '${injectionIdentifier}' in Job class '${jobConfig.jobClass}' could not be found`);
                   }
                 }
 
@@ -75,16 +77,16 @@ export class SchedulerService {
               }
 
             } else {
-              logger.error(`Job class '${jobConfig.jobClass}' specified in scheduler config does not exist`);
+              this._logger.error(`Job class '${jobConfig.jobClass}' specified in scheduler config does not exist`);
             }
           }
 
-          logger.info('Scheduler running');
+          this._logger.info('Scheduler running');
         }
       }
 
     } catch (error) {
-      logger.error(`Error initialising Scheduler: ${error.message}`);
+      this._logger.error(`Error initialising Scheduler: ${error.message}`);
       throw error;
     }
   }
@@ -95,7 +97,7 @@ export class SchedulerService {
       if (fs.existsSync(configFile)) {
         fs.readFile(configFile, (err, data) => {
           if (err) {
-            logger.error(`Unable to read scheduler config file '${configFile}': ${err.message}`);
+            this._logger.error(`Unable to read scheduler config file '${configFile}': ${err.message}`);
             reject(err);
 
           } else {
@@ -105,9 +107,9 @@ export class SchedulerService {
             resolve(jobConfigs);
           }
         });
-        
+
       } else {
-        logger.warn(`No scheduler config file has been provided`);
+        this._logger.warning(`No scheduler config file has been provided`);
         resolve(null);
       }
     });

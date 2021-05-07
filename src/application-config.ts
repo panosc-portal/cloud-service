@@ -24,6 +24,10 @@ export class ApplicationConfig {
     tokenValidDurationS: number;
   };
 
+  gateway: {
+    host: string;
+  }
+
   constructor(data?: Partial<ApplicationConfig>) {
     Object.assign(this, data);
   }
@@ -57,6 +61,9 @@ export function APPLICATION_CONFIG(): ApplicationConfig {
       },
       authorisation: {
         tokenValidDurationS: +process.env.CLOUD_SERVICE_TOKEN_VALID_DURATION_S || 10
+      },
+      gateway: {
+        host: process.env.PORTAL_GATEWAY_HOST
       }
     };
   }
