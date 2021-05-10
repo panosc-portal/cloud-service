@@ -63,7 +63,7 @@ export function APPLICATION_CONFIG(): ApplicationConfig {
         tokenValidDurationS: +process.env.CLOUD_SERVICE_TOKEN_VALID_DURATION_S || 10
       },
       gateway: {
-        host: process.env.PORTAL_GATEWAY_HOST
+        host: process.env.PORTAL_GATEWAY_HOST || 'kong:8000'
       }
     };
   }
